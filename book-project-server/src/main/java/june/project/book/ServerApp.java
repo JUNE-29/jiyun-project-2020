@@ -1,15 +1,73 @@
 package june.project.book;
 
 import java.io.PrintStream;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+import june.project.book.context.ApplicationContextListener;
+import june.project.book.domain.BookBasket;
+import june.project.book.domain.BookBoard;
+import june.project.book.domain.Member;
+import june.project.book.domain.TranscriptionBoard;
 
 public class ServerApp {
 
+  // 옵저버 목록을 관리할 객체 준비
+  Set<ApplicationContextListener> listeners = new HashSet<>();
+
+  Map<String, Object> context = new HashMap<>();
+
+  // 옵저버를 등록하는 메서드이다.
+  public void addApplicationContextListener(ApplicationContextListener listener) {
+    listeners.add(listener);
+  }
+
+  // 옵저버를 제거하는 메서드이다.
+  public void removeApplicationContextListener(ApplicationContextListener listener) {
+    listeners.remove(listener);
+  }
+
+  // 애플리케이션이 시작되면, 등록된 리스너에게 알린다.
+  private void notifyApplicationInitialized() {
+    for (ApplicationContextListener listener : listeners) {
+      listener.contextInitialized(context);
+    }
+  }
+
+  // 애플리케이션이 종료되면, 등록된 리스너에게 알린다.
+  private void notifyApplicationDestroyed() {
+    for (ApplicationContextListener listener : listeners) {
+      listener.contextDestroyed(context);
+    }
+  }
+
+  public void service() {
+
+    notifyApplicationInitialized();
+
+    List<BookBoard> bookBoardList = (List<BookBoard>) context.get("bookBoardList");
+    List<TranscriptionBoard> transcriptionBoardList =
+        (List<TranscriptionBoard>) context.get("transcriptionBoardList");
+    List<BookBasket> bookBasketList = (List<BookBasket>) context.get("bookBasketList");
+    List<Member> memberList = (List<Member>) context.get("memberList");
+
+    notifyApplicationDestroyed();
+
+  } // service()
+
+
   public static void main(String[] args) {
     System.out.println("서버 책 관리 시스템입니다");
+    ServerApp app = new ServerApp();
 
+    app.addApplicationContextListener(new DataLoaderListener());
+    app.service();
+    
+    /*
     try (
         // 서버쪽 연결 준비
         // => 클라이언트의 연결을 9999번 포트에서 기다린다.
@@ -30,6 +88,7 @@ public class ServerApp {
       System.out.println("서버 준비 중 오류 발생!");
       return;
     }
+    */
   }
 
   static void processRequest(Socket clientSocket) {
