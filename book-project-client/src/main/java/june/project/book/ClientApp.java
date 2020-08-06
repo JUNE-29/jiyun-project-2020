@@ -1,7 +1,5 @@
 package june.project.book;
 
-import java.io.PrintStream;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
