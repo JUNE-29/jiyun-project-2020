@@ -1,38 +1,41 @@
 package june.project.book.handler;
 
-import java.util.List;
-import june.project.book.domain.BookBoard;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import june.project.util.Prompt;
 
 public class BookBoardDeleteCommand implements Command {
 
-  List<BookBoard> bookBoardList;
+  ObjectOutputStream out;
+  ObjectInputStream in;
+  public Prompt prompt;
 
-  Prompt prompt;
-
-  public BookBoardDeleteCommand(Prompt prompt, List<BookBoard> list) {
+  public BookBoardDeleteCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    this.bookBoardList = list;
   }
 
   @Override
   public void execute() {
-    int index = indexOfRecommendation(prompt.inputInt("번호? "));
 
-    if (index == -1) {
-      System.out.println("도서 게시판의 번호가 유효하지 않습니다.");
-      return;
-    }
-    this.bookBoardList.remove(index);
-    System.out.println("도서 게시판의 정보를 삭제했습니다.");
-  }
+    try {
+      int no = prompt.inputInt("번호? ");
 
-  private int indexOfRecommendation(int no) {
-    for (int i = 0; i < this.bookBoardList.size(); i++) {
-      if (this.bookBoardList.get(i).getNo() == no) {
-        return i;
+      out.writeUTF("/book/delete");
+      out.writeInt(no);
+      out.flush();
+
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
       }
+
+      System.out.println("도서 게시판의 정보를 삭제했습니다.");
+
+    } catch (Exception e) {
+      System.out.println("명령 실행 중 오류 발생!");
     }
-    return -1;
   }
 }

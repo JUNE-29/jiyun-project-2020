@@ -1,46 +1,50 @@
 package june.project.book.handler;
 
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import june.project.book.domain.TranscriptionBoard;
 import june.project.util.Prompt;
 
 public class TranscriptionBoardDetailCommand implements Command {
 
-  List<TranscriptionBoard> transcriptionBoardList;
-
+  ObjectOutputStream out;
+  ObjectInputStream in;
   public Prompt prompt;
 
-  public TranscriptionBoardDetailCommand(Prompt prompt, List<TranscriptionBoard> list) {
+  public TranscriptionBoardDetailCommand(ObjectOutputStream out, ObjectInputStream in,
+      Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    this.transcriptionBoardList = list;
   }
 
   @Override
   public void execute() {
-    int index = indexOfReading(prompt.inputInt("번호? "));
 
-    if (index == -1) {
-      System.out.println("필사 게시판의 번호가 유효하지 않습니다.");
-      return;
-    }
+    try {
+      int no = prompt.inputInt("번호? ");
 
-    TranscriptionBoard transcriptionBoard = this.transcriptionBoardList.get(index);
-    System.out.printf("번호: %d\n", transcriptionBoard.getNo());
-    System.out.printf("제목: %s\n", transcriptionBoard.getTitle());
-    System.out.printf("도서명: %s\n", transcriptionBoard.getBookTitle());
-    System.out.printf("지은이: %s\n", transcriptionBoard.getAuthor());
-    System.out.printf("출판사: %s\n", transcriptionBoard.getPublisher());
-    System.out.printf("필사 내용: %s\n", transcriptionBoard.getContent());
-    System.out.printf("사진:%s\n", transcriptionBoard.getPhoto());
-    System.out.printf("등록일:%s\n", transcriptionBoard.getDate());
-  }
+      out.writeUTF("/transcription/detail");
+      out.writeInt(no);
+      out.flush();
 
-  private int indexOfReading(int no) {
-    for (int i = 0; i < this.transcriptionBoardList.size(); i++) {
-      if (this.transcriptionBoardList.get(i).getNo() == no) {
-        return i;
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
       }
+
+      TranscriptionBoard transcriptionBoard = (TranscriptionBoard) in.readObject();
+      System.out.printf("번호: %d\n", transcriptionBoard.getNo());
+      System.out.printf("제목: %s\n", transcriptionBoard.getTitle());
+      System.out.printf("도서명: %s\n", transcriptionBoard.getBookTitle());
+      System.out.printf("지은이: %s\n", transcriptionBoard.getAuthor());
+      System.out.printf("출판사: %s\n", transcriptionBoard.getPublisher());
+      System.out.printf("필사 내용: %s\n", transcriptionBoard.getContent());
+      System.out.printf("사진:%s\n", transcriptionBoard.getPhoto());
+      System.out.printf("등록일:%s\n", transcriptionBoard.getDate());
+    } catch (Exception e) {
+      System.out.println("명령 실행 중 오류 발생!");
     }
-    return -1;
   }
 }

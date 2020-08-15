@@ -4,14 +4,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 import june.project.book.domain.BookBasket;
-import june.project.util.Prompt;
 
 public class BookBasketListCommand implements Command {
 
   ObjectOutputStream out;
   ObjectInputStream in;
 
-  public BookBasketListCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+  public BookBasketListCommand(ObjectOutputStream out, ObjectInputStream in) {
     this.out = out;
     this.in = in;
   }

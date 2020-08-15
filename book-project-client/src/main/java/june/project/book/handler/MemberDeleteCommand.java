@@ -1,38 +1,42 @@
 package june.project.book.handler;
 
-import java.util.List;
-import june.project.book.domain.Member;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import june.project.util.Prompt;
 
 public class MemberDeleteCommand implements Command {
-  List<Member> memberList;
+
+  ObjectOutputStream out;
+  ObjectInputStream in;
 
   public Prompt prompt;
 
-  public MemberDeleteCommand(Prompt prompt, List<Member> list) {
+  public MemberDeleteCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    this.memberList = list;
   }
 
   @Override
   public void execute() {
-    int index = indexOfMember(prompt.inputInt("번호? "));
 
-    if (index == -1) {
-      System.out.println("해당 번호의 회원이 없습니다.");
-      return;
-    }
+    try {
+      int no = prompt.inputInt("번호? ");
 
-    this.memberList.remove(index);
-    System.out.println("회원을 삭제하였습니다.");
-  }
+      out.writeUTF("/member/delete");
+      out.writeInt(no);
+      out.flush();
 
-  private int indexOfMember(int no) {
-    for (int i = 0; i < this.memberList.size(); i++) {
-      if (this.memberList.get(i).getNo() == no) {
-        return i;
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
       }
+
+      System.out.println("회원을 삭제하였습니다.");
+
+    } catch (Exception e) {
+      System.out.println("명령 실행 중 오류 발생!");
     }
-    return -1;
   }
 }

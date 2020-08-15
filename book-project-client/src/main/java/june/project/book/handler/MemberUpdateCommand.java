@@ -1,63 +1,78 @@
 package june.project.book.handler;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
-import java.util.List;
 import june.project.book.domain.Member;
 import june.project.util.Prompt;
 
 public class MemberUpdateCommand implements Command {
-  List<Member> memberList;
+
+  ObjectOutputStream out;
+  ObjectInputStream in;
 
   public Prompt prompt;
 
-  public MemberUpdateCommand(Prompt prompt, List<Member> list) {
+  public MemberUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
+    this.out = out;
+    this.in = in;
     this.prompt = prompt;
-    this.memberList = list;
   }
 
   @Override
   public void execute() {
-    int index = indexOfMember(prompt.inputInt("번호? "));
 
-    if (index == -1) {
-      System.out.println("해당 번호의 회원이 없습니다.");
-      return;
-    }
+    try {
+      int no = prompt.inputInt("번호? ");
 
-    Member oldMember = this.memberList.get(index);
-    Member newMember = new Member();
+      out.writeUTF("/member/detail");
+      out.writeInt(no);
+      out.flush();
 
-    newMember.setNo(oldMember.getNo());
-
-    newMember.setName(
-        prompt.inputString(String.format("이름(%s)? ", oldMember.getName()), oldMember.getName()));
-
-    newMember.setEmail(
-        prompt.inputString(String.format("이메일(%s)? ", oldMember.getEmail()), oldMember.getEmail()));
-
-    newMember.setPassword(prompt.inputString(String.format("비밀번호(%s)? ", oldMember.getPassword()),
-        oldMember.getPassword()));
-
-    newMember.setPhoto(
-        prompt.inputString(String.format("사진(%s)? ", oldMember.getPhoto()), oldMember.getPhoto()));
-
-    newMember.setRegisteredDate(new Date(System.currentTimeMillis()));
-
-    if (oldMember.equals(newMember)) {
-      System.out.println("회원을 변경을 취소했습니다.");
-      return;
-    }
-
-    this.memberList.set(index, newMember);
-    System.out.println("회원을 변경했습니다.");
-  }
-
-  private int indexOfMember(int no) {
-    for (int i = 0; i < this.memberList.size(); i++) {
-      if (this.memberList.get(i).getNo() == no) {
-        return i;
+      String response = in.readUTF();
+      if (response.equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
       }
+
+      Member oldMember = (Member) in.readObject();
+      Member newMember = new Member();
+
+      newMember.setNo(oldMember.getNo());
+
+      newMember.setName(
+          prompt.inputString(String.format("이름(%s)? ", oldMember.getName()), oldMember.getName()));
+
+      newMember.setEmail(prompt.inputString(String.format("이메일(%s)? ", oldMember.getEmail()),
+          oldMember.getEmail()));
+
+      newMember.setPassword(prompt.inputString(String.format("비밀번호(%s)? ", oldMember.getPassword()),
+          oldMember.getPassword()));
+
+      newMember.setPhoto(prompt.inputString(String.format("사진(%s)? ", oldMember.getPhoto()),
+          oldMember.getPhoto()));
+
+      newMember.setRegisteredDate(new Date(System.currentTimeMillis()));
+
+      if (oldMember.equals(newMember)) {
+        System.out.println("회원을 변경을 취소했습니다.");
+        return;
+      }
+
+      out.writeUTF("/member/update");
+      out.writeObject(newMember);
+      out.flush();
+
+      response = in.readUTF();
+      if (response.equals("FAIL")) {
+        System.out.println(in.readUTF());
+        return;
+      }
+
+      System.out.println("회원을 변경했습니다.");
+
+    } catch (Exception e) {
+      System.out.println("통신 오류 발생!");
     }
-    return -1;
   }
 }
