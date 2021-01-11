@@ -3,7 +3,7 @@ package june.project.book.domain;
 import java.io.Serializable;
 import java.sql.Date;
 
-public class TranscriptionBoard implements Serializable {
+public class Bookmark implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -16,19 +16,19 @@ public class TranscriptionBoard implements Serializable {
   private String photo;
   private Date date;
 
-  public static TranscriptionBoard valueOf(String csv) {
+  public static Bookmark valueOf(String csv) {
     String[] data = csv.split(",");
 
-    TranscriptionBoard transcription = new TranscriptionBoard();
-    transcription.setNo(Integer.parseInt(data[0]));
-    transcription.setTitle(data[1]);
-    transcription.setBookTitle(data[2]);
-    transcription.setAuthor(data[3]);
-    transcription.setPublisher(data[4]);
-    transcription.setContent(data[5]);
-    transcription.setPhoto(data[6]);
-    transcription.setDate(Date.valueOf(data[7]));
-    return transcription;
+    Bookmark bookmark = new Bookmark();
+    bookmark.setNo(Integer.parseInt(data[0]));
+    bookmark.setTitle(data[1]);
+    bookmark.setBookTitle(data[2]);
+    bookmark.setAuthor(data[3]);
+    bookmark.setPublisher(data[4]);
+    bookmark.setContent(data[5]);
+    bookmark.setPhoto(data[6]);
+    bookmark.setDate(Date.valueOf(data[7]));
+    return bookmark;
   }
 
   public String toCsvString() {
@@ -125,7 +125,7 @@ public class TranscriptionBoard implements Serializable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    TranscriptionBoard other = (TranscriptionBoard) obj;
+    Bookmark other = (Bookmark) obj;
     if (author == null) {
       if (other.author != null)
         return false;

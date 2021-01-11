@@ -4,14 +4,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import june.project.util.Prompt;
 
-public class TranscriptionBoardDeleteCommand implements Command {
+public class BookmarkDeleteCommand implements Command {
 
   ObjectOutputStream out;
   ObjectInputStream in;
   public Prompt prompt;
 
-  public TranscriptionBoardDeleteCommand(ObjectOutputStream out, ObjectInputStream in,
-      Prompt prompt) {
+  public BookmarkDeleteCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
     this.out = out;
     this.in = in;
     this.prompt = prompt;
@@ -23,7 +22,7 @@ public class TranscriptionBoardDeleteCommand implements Command {
     try {
       int no = prompt.inputInt("번호? ");
 
-      out.writeUTF("/transcription/delete");
+      out.writeUTF("/bookmark/delete");
       out.writeInt(no);
       out.flush();
 
@@ -32,7 +31,7 @@ public class TranscriptionBoardDeleteCommand implements Command {
         System.out.println(in.readUTF());
         return;
       }
-      System.out.println("필사 게시판의 정보를 삭제했습니다.");
+      System.out.println("북마크 정보를 삭제했습니다.");
 
     } catch (Exception e) {
 
