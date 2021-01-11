@@ -20,17 +20,17 @@ import june.project.book.handler.BookBoardDeleteCommand;
 import june.project.book.handler.BookBoardDetailCommand;
 import june.project.book.handler.BookBoardListCommand;
 import june.project.book.handler.BookBoardUpdateCommand;
+import june.project.book.handler.BookmarkAddCommand;
+import june.project.book.handler.BookmarkDeleteCommand;
+import june.project.book.handler.BookmarkDetailCommand;
+import june.project.book.handler.BookmarkListCommand;
+import june.project.book.handler.BookmarkUpdateCommand;
 import june.project.book.handler.Command;
 import june.project.book.handler.MemberAddCommand;
 import june.project.book.handler.MemberDeleteCommand;
 import june.project.book.handler.MemberDetailCommand;
 import june.project.book.handler.MemberListCommand;
 import june.project.book.handler.MemberUpdateCommand;
-import june.project.book.handler.BookmarkAddCommand;
-import june.project.book.handler.BookmarkDeleteCommand;
-import june.project.book.handler.BookmarkDetailCommand;
-import june.project.book.handler.BookmarkListCommand;
-import june.project.book.handler.BookmarkUpdateCommand;
 import june.project.util.Prompt;
 
 public class ClientApp {
@@ -91,11 +91,11 @@ public class ClientApp {
     commandMap.put("/basket/update", new BookBasketUpdateCommand(out, in, prompt));
     commandMap.put("/basket/delete", new BookBasketDeleteCommand(out, in, prompt));
 
-    commandMap.put("/transcription/add", new BookmarkAddCommand(out, in, prompt));
-    commandMap.put("/transcription/list", new BookmarkListCommand(out, in));
-    commandMap.put("/transcription/detail", new BookmarkDetailCommand(out, in, prompt));
-    commandMap.put("/transcription/update", new BookmarkUpdateCommand(out, in, prompt));
-    commandMap.put("/transcription/delete", new BookmarkDeleteCommand(out, in, prompt));
+    commandMap.put("/bookmark/add", new BookmarkAddCommand(out, in, prompt));
+    commandMap.put("/bookmark/list", new BookmarkListCommand(out, in));
+    commandMap.put("/bookmark/detail", new BookmarkDetailCommand(out, in, prompt));
+    commandMap.put("/bookmark/update", new BookmarkUpdateCommand(out, in, prompt));
+    commandMap.put("/bookmark/delete", new BookmarkDeleteCommand(out, in, prompt));
 
     commandMap.put("/book/add", new BookBoardAddCommand(out, in, prompt));
     commandMap.put("/book/list", new BookBoardListCommand(out, in));
