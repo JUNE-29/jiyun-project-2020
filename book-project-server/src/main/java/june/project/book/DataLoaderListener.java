@@ -15,13 +15,13 @@ import java.util.Map;
 import june.project.book.context.ApplicationContextListener;
 import june.project.book.domain.BookBasket;
 import june.project.book.domain.BookBoard;
+import june.project.book.domain.Bookmark;
 import june.project.book.domain.Member;
-import june.project.book.domain.TranscriptionBoard;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
   List<BookBoard> bookBoardList = new ArrayList<>();
-  List<TranscriptionBoard> transcriptionBoardList = new ArrayList<>();
+  List<Bookmark> bookmark = new ArrayList<>();
   List<BookBasket> bookBasketList = new ArrayList<>();
   List<Member> memberList = new LinkedList<>();
 
@@ -31,11 +31,11 @@ public class DataLoaderListener implements ApplicationContextListener {
     loadMemberData();
     loadBookBoardData();
     loadBookBasketData();
-    loadTranscriptionData();
+    loadBookmarkData();
 
     context.put("memberList", memberList);
     context.put("bookBasketList", bookBasketList);
-    context.put("transcriptionBoardList", transcriptionBoardList);
+    context.put("bookmarkList", bookmark);
     context.put("bookBoardList", bookBoardList);
   }
 
@@ -45,7 +45,7 @@ public class DataLoaderListener implements ApplicationContextListener {
     saveMemberData();
     saveBookBoardData();
     saveBookBasketData();
-    saveTranscriptionData();
+    saveBookmarkData();
   }
 
 
@@ -135,26 +135,26 @@ public class DataLoaderListener implements ApplicationContextListener {
 
 
   @SuppressWarnings("unchecked")
-  private void loadTranscriptionData() {
-    File file = new File("./transcription.ser2");
+  private void loadBookmarkData() {
+    File file = new File("./bookmark.ser2");
 
     try (ObjectInputStream in =
         new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-      transcriptionBoardList = (List<TranscriptionBoard>) in.readObject();
+      bookmark = (List<Bookmark>) in.readObject();
 
-      System.out.printf("총 %d 개의 필사게시판의 데이터를 로딩했습니다.\n", transcriptionBoardList.size());
+      System.out.printf("총 %d 개의 북마크 데이터를 로딩했습니다.\n", bookmark.size());
     } catch (Exception e) {
       System.out.println("파일 읽기 중 오류 발생! -" + e.getMessage());
     }
   }
 
-  private void saveTranscriptionData() {
-    File file = new File("./transcription.ser2");
+  private void saveBookmarkData() {
+    File file = new File("./bookmark.ser2");
     try (ObjectOutputStream out =
         new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
-      out.writeObject(transcriptionBoardList);
+      out.writeObject(bookmark);
 
-      System.out.printf("총 %d 개의 필사게시판의 데이터를 저장했습니다.\n", transcriptionBoardList.size());
+      System.out.printf("총 %d 개의 북마크 데이터를 저장했습니다.\n", bookmark.size());
     } catch (IOException e) {
       System.out.println("파일 쓰기 중 오류 발생! -" + e.getMessage());
     }
