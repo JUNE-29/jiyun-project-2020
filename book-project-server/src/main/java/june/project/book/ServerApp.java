@@ -15,6 +15,27 @@ import june.project.book.domain.BookBasket;
 import june.project.book.domain.BookBoard;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.Member;
+import june.project.book.servlet.BookAddServlet;
+import june.project.book.servlet.BookBasketAddServlet;
+import june.project.book.servlet.BookBasketDeleteServlet;
+import june.project.book.servlet.BookBasketDetailServlet;
+import june.project.book.servlet.BookBasketListServlet;
+import june.project.book.servlet.BookBasketUpdateServlet;
+import june.project.book.servlet.BookDeleteServlet;
+import june.project.book.servlet.BookDetailServlet;
+import june.project.book.servlet.BookListServlet;
+import june.project.book.servlet.BookUpdateServlet;
+import june.project.book.servlet.BookmarkAddServlet;
+import june.project.book.servlet.BookmarkDeleteServlet;
+import june.project.book.servlet.BookmarkDetailServlet;
+import june.project.book.servlet.BookmarkListServlet;
+import june.project.book.servlet.BookmarkUpdateServlet;
+import june.project.book.servlet.MemberAddServlet;
+import june.project.book.servlet.MemberDeleteServlet;
+import june.project.book.servlet.MemberDetailServlet;
+import june.project.book.servlet.MemberListServlet;
+import june.project.book.servlet.MemberUpdateServlet;
+import june.project.book.servlet.Servlet;
 
 public class ServerApp {
 
@@ -22,6 +43,8 @@ public class ServerApp {
   Set<ApplicationContextListener> listeners = new HashSet<>();
 
   Map<String, Object> context = new HashMap<>();
+
+  Map<String, Servlet> servletMap = new HashMap<>();
 
   List<BookBoard> bookBoard;
   List<Bookmark> bookmarks;
@@ -62,6 +85,30 @@ public class ServerApp {
     bookBasketList = (List<BookBasket>) context.get("bookBasketList");
     memberList = (List<Member>) context.get("memberList");
 
+    servletMap.put("/book/list", new BookListServlet(bookBoard));
+    servletMap.put("/book/add", new BookAddServlet(bookBoard));
+    servletMap.put("/book/detail", new BookDetailServlet(bookBoard));
+    servletMap.put("/book/update", new BookUpdateServlet(bookBoard));
+    servletMap.put("/book/delete", new BookDeleteServlet(bookBoard));
+
+    servletMap.put("/bookmark/list", new BookmarkListServlet(bookmarks));
+    servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarks));
+    servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarks));
+    servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarks));
+    servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarks));
+
+    servletMap.put("/basket/list", new BookBasketListServlet(bookBasketList));
+    servletMap.put("/basket/add", new BookBasketAddServlet(bookBasketList));
+    servletMap.put("/basket/detail", new BookBasketDetailServlet(bookBasketList));
+    servletMap.put("/basket/update", new BookBasketUpdateServlet(bookBasketList));
+    servletMap.put("/basket/delete", new BookBasketDeleteServlet(bookBasketList));
+
+    servletMap.put("/member/list", new MemberListServlet(memberList));
+    servletMap.put("/member/add", new MemberAddServlet(memberList));
+    servletMap.put("/member/detail", new MemberDetailServlet(memberList));
+    servletMap.put("/member/update", new MemberUpdateServlet(memberList));
+    servletMap.put("/member/delete", new MemberDeleteServlet(memberList));
+
     try (
         // 서버쪽 연결 준비
         // => 클라이언트의 연결을 9999번 포트에서 기다린다.
@@ -82,6 +129,7 @@ public class ServerApp {
 
         System.out.println("------------------요청처리 끝--------------------");
       }
+
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생!");
     }
@@ -111,69 +159,25 @@ public class ServerApp {
           case "/sever/stop":
             quit(out);
             return 9;
-          case "/book/list":
-            listBook(out);
-            break;
-          case "/book/add":
-            addBook(in, out);
-            break;
-          case "/book/detail":
-            detailBook(in, out);
-            break;
-          case "/book/update":
-            updateBook(in, out);
-            break;
-          case "/book/delete":
-            deleteBook(in, out);
-            break;
-          case "/bookmark/list":
-            listBookmark(out);
-            break;
-          case "/bookmark/add":
-            addBookmark(in, out);
-            break;
-          case "/bookmark/detail":
-            detailBookmark(in, out);
-            break;
-          case "/bookmark/update":
-            updateBookmark(in, out);
-            break;
-          case "/bookmark/delete":
-            deleteBookmark(in, out);
-            break;
-          case "/basket/list":
-            listBookBasket(out);
-            break;
-          case "/basket/add":
-            addBookBasket(in, out);
-            break;
-          case "/basket/detail":
-            detailBookBasket(in, out);
-            break;
-          case "/basket/update":
-            updateBookBasket(in, out);
-            break;
-          case "/basket/delete":
-            deleteBookBasket(in, out);
-            break;
-          case "/member/list":
-            listMember(out);
-            break;
-          case "/member/add":
-            addMember(in, out);
-            break;
-          case "/member/detail":
-            detailMember(in, out);
-            break;
-          case "/member/update":
-            updateMember(in, out);
-            break;
-          case "/member/delete":
-            deleteMember(in, out);
-            break;
-          default:
-            notFound(out);
         }
+
+        Servlet servlet = servletMap.get(request);
+
+        if (servlet != null) {
+          try {
+            servlet.service(in, out);
+
+          } catch (Exception e) {
+            out.writeUTF("FAIL");
+            out.writeUTF(e.getMessage());
+
+            System.out.println("클라이언트 요청 처리 중 오류 발생:");
+            e.printStackTrace();
+          }
+        } else {
+          notFound(out);
+        }
+
         out.flush();
         System.out.println("클라이언트로 메시지를 전송하였음!");
       }
@@ -193,433 +197,6 @@ public class ServerApp {
   private void notFound(ObjectOutputStream out) throws IOException {
     out.writeUTF("FAIL");
     out.writeUTF("요청한 명령을 처리할 수 없습니다.");
-  }
-
-  private void listBook(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(bookBoard);
-  }
-
-  private void addBook(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      BookBoard book = (BookBoard) in.readObject();
-
-      int i = 0;
-      for (; i < bookBoard.size(); i++) {
-        if (bookBoard.get(i).getNo() == book.getNo()) {
-          break;
-        }
-      }
-
-      if (i == bookBoard.size()) {
-        bookBoard.add(book);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 게시물이 있습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailBook(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      BookBoard book = null;
-      for (BookBoard b : bookBoard) {
-        if (b.getNo() == no) {
-          book = b;
-          break;
-        }
-      }
-
-      if (book != null) {
-        out.writeUTF("OK");
-        out.writeObject(book);
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateBook(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      BookBoard book = (BookBoard) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < bookBoard.size(); i++) {
-        if (bookBoard.get(i).getNo() == book.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        bookBoard.set(index, book);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void deleteBook(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < bookBoard.size(); i++) {
-        if (bookBoard.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        bookBoard.remove(index);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listBookmark(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(bookmarks);
-  }
-
-  private void addBookmark(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Bookmark bookmark = (Bookmark) in.readObject();
-
-      int i = 0;
-      for (; i < bookmarks.size(); i++) {
-        if (bookmarks.get(i).getNo() == bookmark.getNo()) {
-          break;
-        }
-      }
-
-      if (i == bookmarks.size()) {
-        bookmarks.add(bookmark);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 게시물이 있습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailBookmark(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-
-      int no = in.readInt();
-
-      Bookmark bookmark = null;
-      for (Bookmark bm : bookmarks) {
-        if (bm.getNo() == no) {
-          bookmark = bm;
-          break;
-        }
-      }
-
-      if (bookmark != null) {
-        out.writeUTF("OK");
-        out.writeObject(bookmark);
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateBookmark(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-
-      Bookmark bookmark = (Bookmark) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < bookmarks.size(); i++) {
-        if (bookmarks.get(i).getNo() == bookmark.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        bookmarks.set(index, bookmark);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void deleteBookmark(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < bookmarks.size(); i++) {
-        if (bookmarks.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        bookmarks.remove(index);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listBookBasket(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(bookBasketList);
-  }
-
-  private void addBookBasket(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      BookBasket bookBasket = (BookBasket) in.readObject();
-
-      int i = 0;
-      for (; i < bookBasketList.size(); i++) {
-        if (bookBasketList.get(i).getNo() == bookBasket.getNo()) {
-          break;
-        }
-      }
-
-      if (i == bookBasketList.size()) {
-        bookBasketList.add(bookBasket);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 게시물이 있습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailBookBasket(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      BookBasket bookBasket = null;
-      for (BookBasket bb : bookBasketList) {
-        if (bb.getNo() == no) {
-          bookBasket = bb;
-        }
-      }
-
-      if (bookBasket != null) {
-        out.writeUTF("OK");
-        out.writeObject(bookBasket);
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateBookBasket(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-
-      BookBasket bookBasket = (BookBasket) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < bookBasketList.size(); i++) {
-        if (bookBasketList.get(i).getNo() == bookBasket.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        bookBasketList.set(index, bookBasket);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void deleteBookBasket(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < bookBasketList.size(); i++) {
-        if (bookBasketList.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        bookBasketList.remove(index);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void listMember(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
-    out.reset();
-    out.writeObject(memberList);
-  }
-
-  private void addMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Member member = (Member) in.readObject();
-
-      int i = 0;
-      for (; i < memberList.size(); i++) {
-        if (memberList.get(i).getNo() == member.getNo()) {
-          break;
-        }
-      }
-      if (i == memberList.size()) {
-        memberList.add(member);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("같은 번호의 게시물이 있습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void detailMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      Member member = null;
-      for (Member m : memberList) {
-        if (m.getNo() == no) {
-          member = m;
-          break;
-        }
-      }
-
-      if (member != null) {
-        out.writeUTF("OK");
-        out.writeObject(member);
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void updateMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      Member member = (Member) in.readObject();
-
-      int index = -1;
-      for (int i = 0; i < memberList.size(); i++) {
-        if (memberList.get(i).getNo() == member.getNo()) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        memberList.set(index, member);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
-  }
-
-  private void deleteMember(ObjectInputStream in, ObjectOutputStream out) throws IOException {
-    try {
-      int no = in.readInt();
-
-      int index = -1;
-      for (int i = 0; i < memberList.size(); i++) {
-        if (memberList.get(i).getNo() == no) {
-          index = i;
-          break;
-        }
-      }
-
-      if (index != -1) {
-        memberList.remove(index);
-        out.writeUTF("OK");
-      } else {
-        out.writeUTF("FAIL");
-        out.writeUTF("해당 번호의 게시물이 없습니다.");
-      }
-    } catch (Exception e) {
-      out.writeUTF("FAIL");
-      out.writeUTF(e.getMessage());
-    }
   }
 
   public static void main(String[] args) {
