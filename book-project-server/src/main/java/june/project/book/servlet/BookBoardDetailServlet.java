@@ -2,15 +2,15 @@ package june.project.book.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import june.project.book.dao.BookBoardObjectFileDao;
 import june.project.book.domain.BookBoard;
 
-public class BookDetailServlet implements Servlet {
+public class BookBoardDetailServlet implements Servlet {
 
-  List<BookBoard> bookBoard;
+  BookBoardObjectFileDao bookBoardDao;
 
-  public BookDetailServlet(List<BookBoard> bookBoard) {
-    this.bookBoard = bookBoard;
+  public BookBoardDetailServlet(BookBoardObjectFileDao bookBoardDao) {
+    this.bookBoardDao = bookBoardDao;
   }
 
   @Override
@@ -18,17 +18,11 @@ public class BookDetailServlet implements Servlet {
 
     int no = in.readInt();
 
-    BookBoard book = null;
-    for (BookBoard b : bookBoard) {
-      if (b.getNo() == no) {
-        book = b;
-        break;
-      }
-    }
+    BookBoard bookBoard = bookBoardDao.findByNo(no);
 
-    if (book != null) {
+    if (bookBoard != null) {
       out.writeUTF("OK");
-      out.writeObject(book);
+      out.writeObject(bookBoard);
     } else {
       out.writeUTF("FAIL");
       out.writeUTF("해당 번호의 게시물이 없습니다.");

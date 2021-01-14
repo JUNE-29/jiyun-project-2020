@@ -2,15 +2,15 @@ package june.project.book.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
+import june.project.book.dao.BookmarkObjectFileDao;
 import june.project.book.domain.Bookmark;
 
 public class BookmarkUpdateServlet implements Servlet {
 
-  List<Bookmark> bookmarks;
+  BookmarkObjectFileDao bookmarkDao;
 
-  public BookmarkUpdateServlet(List<Bookmark> bookmarks) {
-    this.bookmarks = bookmarks;
+  public BookmarkUpdateServlet(BookmarkObjectFileDao bookmarkDao) {
+    this.bookmarkDao = bookmarkDao;
   }
 
   @Override
@@ -18,17 +18,9 @@ public class BookmarkUpdateServlet implements Servlet {
 
     Bookmark bookmark = (Bookmark) in.readObject();
 
-    int index = -1;
-    for (int i = 0; i < bookmarks.size(); i++) {
-      if (bookmarks.get(i).getNo() == bookmark.getNo()) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index != -1) {
-      bookmarks.set(index, bookmark);
+    if (bookmarkDao.update(bookmark) > 0) {
       out.writeUTF("OK");
+
     } else {
       out.writeUTF("FAIL");
       out.writeUTF("해당 번호의 게시물이 없습니다.");

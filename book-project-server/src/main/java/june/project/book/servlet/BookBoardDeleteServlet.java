@@ -2,26 +2,23 @@ package june.project.book.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import june.project.book.dao.MemberObjectFileDao;
-import june.project.book.domain.Member;
+import june.project.book.dao.BookBoardObjectFileDao;
 
-public class MemberDetailServlet implements Servlet {
+public class BookBoardDeleteServlet implements Servlet {
 
-  MemberObjectFileDao memberDao;
+  BookBoardObjectFileDao bookBoardDao;
 
-  public MemberDetailServlet(MemberObjectFileDao memberDao) {
-    this.memberDao = memberDao;
+  public BookBoardDeleteServlet(BookBoardObjectFileDao bookBoardDao) {
+    this.bookBoardDao = bookBoardDao;
   }
 
   @Override
   public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
 
     int no = in.readInt();
-    Member member = memberDao.findByNo(no);
 
-    if (member != null) {
+    if (bookBoardDao.delete(no) > 0) {
       out.writeUTF("OK");
-      out.writeObject(member);
 
     } else {
       out.writeUTF("FAIL");

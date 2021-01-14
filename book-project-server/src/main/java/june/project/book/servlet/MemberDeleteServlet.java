@@ -2,15 +2,14 @@ package june.project.book.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-import june.project.book.domain.Member;
+import june.project.book.dao.MemberObjectFileDao;
 
 public class MemberDeleteServlet implements Servlet {
 
-  List<Member> memberList;
+  MemberObjectFileDao memberDao;
 
-  public MemberDeleteServlet(List<Member> memberList) {
-    this.memberList = memberList;
+  public MemberDeleteServlet(MemberObjectFileDao memberDao) {
+    this.memberDao = memberDao;
   }
 
   @Override
@@ -18,17 +17,9 @@ public class MemberDeleteServlet implements Servlet {
 
     int no = in.readInt();
 
-    int index = -1;
-    for (int i = 0; i < memberList.size(); i++) {
-      if (memberList.get(i).getNo() == no) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index != -1) {
-      memberList.remove(index);
+    if (memberDao.delete(no) > 0) {
       out.writeUTF("OK");
+
     } else {
       out.writeUTF("FAIL");
       out.writeUTF("해당 번호의 게시물이 없습니다.");
