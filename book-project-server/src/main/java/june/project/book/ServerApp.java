@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.dao.BookBasketObjectFileDao;
-import june.project.book.dao.BookBoardObjectFileDao;
-import june.project.book.dao.BookmarkObjectFileDao;
-import june.project.book.dao.MemberObjectFileDao;
+import june.project.book.dao.json.BookBasketJsonFileDao;
+import june.project.book.dao.json.BookBoardJsonFileDao;
+import june.project.book.dao.json.BookmarkJsonFileDao;
+import june.project.book.dao.json.MemberJsonFileDao;
 import june.project.book.domain.BookBasket;
 import june.project.book.domain.BookBoard;
 import june.project.book.domain.Bookmark;
@@ -83,10 +83,10 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    BookBoardObjectFileDao bookBoardDao = (BookBoardObjectFileDao) context.get("bookBoardDao");
-    BookmarkObjectFileDao bookmarkDao = (BookmarkObjectFileDao) context.get("bookmarkDao");
-    BookBasketObjectFileDao bookBaskeDao = (BookBasketObjectFileDao) context.get("bookBasketDao");
-    MemberObjectFileDao memberDao = (MemberObjectFileDao) context.get("memberList");
+    BookBoardJsonFileDao bookBoardDao = (BookBoardJsonFileDao) context.get("bookBoardDao");
+    BookmarkJsonFileDao bookmarkDao = (BookmarkJsonFileDao) context.get("bookmarkDao");
+    BookBasketJsonFileDao bookBaskeDao = (BookBasketJsonFileDao) context.get("bookBasketDao");
+    MemberJsonFileDao memberDao = (MemberJsonFileDao) context.get("memberList");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
     servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
@@ -182,7 +182,7 @@ public class ServerApp {
         }
 
         out.flush();
-        System.out.println("클라이언트로 메시지를 전송하였음!");
+        System.out.println("클라이언트에게 응답하였음!");
       }
 
     } catch (Exception e) {

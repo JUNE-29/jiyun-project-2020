@@ -2,13 +2,13 @@ package june.project.book.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import june.project.book.dao.BookBoardObjectFileDao;
+import june.project.book.dao.json.BookBoardJsonFileDao;
 
 public class BookBoardListServlet implements Servlet {
 
-  BookBoardObjectFileDao bookBoardDao;
+  BookBoardJsonFileDao bookBoardDao;
 
-  public BookBoardListServlet(BookBoardObjectFileDao bookBoardDao) {
+  public BookBoardListServlet(BookBoardJsonFileDao bookBoardDao) {
     this.bookBoardDao = bookBoardDao;
   }
 
