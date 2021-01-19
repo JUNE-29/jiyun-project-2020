@@ -1,9 +1,10 @@
 package june.project.book.dao.json;
 
 import java.util.List;
+import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
 
-public class BookBoardJsonFileDao extends AbstractJsonFileDao<BookBoard> {
+public class BookBoardJsonFileDao extends AbstractJsonFileDao<BookBoard> implements BookBoardDao {
 
 
   public BookBoardJsonFileDao(String filename) {
@@ -11,6 +12,7 @@ public class BookBoardJsonFileDao extends AbstractJsonFileDao<BookBoard> {
   }
 
   // 서블릿 객체들이 데이터를 다룰 때 사용할 메서드를 정의한다.
+  @Override
   public int insert(BookBoard BookBoard) throws Exception {
 
     if (indexOf(BookBoard.getNo()) > -1) {
@@ -22,10 +24,12 @@ public class BookBoardJsonFileDao extends AbstractJsonFileDao<BookBoard> {
     return 1;
   }
 
+  @Override
   public List<BookBoard> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public BookBoard findByNo(int no) throws Exception {
     int index = indexOf(no);
     if (index == -1) {
@@ -34,6 +38,7 @@ public class BookBoardJsonFileDao extends AbstractJsonFileDao<BookBoard> {
     return list.get(index);
   }
 
+  @Override
   public int update(BookBoard bookBoard) throws Exception {
     int index = indexOf(bookBoard.getNo());
 
@@ -46,6 +51,7 @@ public class BookBoardJsonFileDao extends AbstractJsonFileDao<BookBoard> {
     return 1;
   }
 
+  @Override
   public int delete(int no) throws Exception {
 
     int index = indexOf(no);

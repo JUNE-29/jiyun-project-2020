@@ -1,20 +1,22 @@
 package june.project.book.dao.json;
 
 import java.util.List;
+import june.project.book.dao.BookBasketDao;
 import june.project.book.domain.BookBasket;
 
-public class BookBasketJsonFileDao extends AbstractJsonFileDao<BookBasket> {
-
+public class BookBasketJsonFileDao extends AbstractJsonFileDao<BookBasket>
+    implements BookBasketDao {
 
   public BookBasketJsonFileDao(String filename) {
     super(filename);
   }
 
-
+  @Override
   public List<BookBasket> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public int insert(BookBasket bookBasket) throws Exception {
 
     if (indexOf(bookBasket.getNo()) > -1) {
@@ -26,6 +28,7 @@ public class BookBasketJsonFileDao extends AbstractJsonFileDao<BookBasket> {
     return 1;
   }
 
+  @Override
   public BookBasket findByNo(int no) throws Exception {
 
     int index = indexOf(no);
@@ -37,6 +40,7 @@ public class BookBasketJsonFileDao extends AbstractJsonFileDao<BookBasket> {
     return list.get(index);
   }
 
+  @Override
   public int update(BookBasket bookBasket) throws Exception {
 
     int index = indexOf(bookBasket.getNo());
@@ -51,6 +55,7 @@ public class BookBasketJsonFileDao extends AbstractJsonFileDao<BookBasket> {
   }
 
 
+  @Override
   public int delete(int no) throws Exception {
 
     int index = indexOf(no);

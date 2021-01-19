@@ -56,6 +56,7 @@ public abstract class AbstractJsonFileDao<T> {
       System.out.printf("총 %d 개의 객체를 로딩했습니다.\n", list.size());
     } catch (Exception e) {
       System.out.println("파일 읽기 중 오류 발생! -" + e.getMessage());
+      e.printStackTrace();
     }
   }
 

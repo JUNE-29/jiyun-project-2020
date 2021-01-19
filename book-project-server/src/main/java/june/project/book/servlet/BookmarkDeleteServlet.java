@@ -2,13 +2,13 @@ package june.project.book.servlet;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import june.project.book.dao.json.BookmarkJsonFileDao;
+import june.project.book.dao.BookmarkDao;
 
 public class BookmarkDeleteServlet implements Servlet {
 
-  BookmarkJsonFileDao bookmarkDao;
+  BookmarkDao bookmarkDao;
 
-  public BookmarkDeleteServlet(BookmarkJsonFileDao bookmarkDao) {
+  public BookmarkDeleteServlet(BookmarkDao bookmarkDao) {
     this.bookmarkDao = bookmarkDao;
   }
 

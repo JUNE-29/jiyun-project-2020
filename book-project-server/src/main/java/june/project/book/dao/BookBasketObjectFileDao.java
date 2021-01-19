@@ -3,7 +3,8 @@ package june.project.book.dao;
 import java.util.List;
 import june.project.book.domain.BookBasket;
 
-public class BookBasketObjectFileDao extends AbstractObjectFileDao<BookBasket> {
+public class BookBasketObjectFileDao extends AbstractObjectFileDao<BookBasket>
+    implements BookBasketDao {
 
 
   public BookBasketObjectFileDao(String filename) {
@@ -11,10 +12,12 @@ public class BookBasketObjectFileDao extends AbstractObjectFileDao<BookBasket> {
   }
 
 
+  @Override
   public List<BookBasket> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public int insert(BookBasket bookBasket) throws Exception {
 
     if (indexOf(bookBasket.getNo()) > -1) {
@@ -26,6 +29,7 @@ public class BookBasketObjectFileDao extends AbstractObjectFileDao<BookBasket> {
     return 1;
   }
 
+  @Override
   public BookBasket findByNo(int no) throws Exception {
 
     int index = indexOf(no);
@@ -37,6 +41,7 @@ public class BookBasketObjectFileDao extends AbstractObjectFileDao<BookBasket> {
     return list.get(index);
   }
 
+  @Override
   public int update(BookBasket bookBasket) throws Exception {
 
     int index = indexOf(bookBasket.getNo());
@@ -51,6 +56,7 @@ public class BookBasketObjectFileDao extends AbstractObjectFileDao<BookBasket> {
   }
 
 
+  @Override
   public int delete(int no) throws Exception {
 
     int index = indexOf(no);

@@ -3,17 +3,19 @@ package june.project.book.dao;
 import java.util.List;
 import june.project.book.domain.Bookmark;
 
-public class BookmarkObjectFileDao extends AbstractObjectFileDao<Bookmark> {
+public class BookmarkObjectFileDao extends AbstractObjectFileDao<Bookmark> implements BookmarkDao {
 
 
   public BookmarkObjectFileDao(String filename) {
     super(filename);
   }
 
+  @Override
   public List<Bookmark> findAll() throws Exception {
     return list;
   }
 
+  @Override
   public int insert(Bookmark bookmark) throws Exception {
 
     if (indexOf(bookmark.getNo()) > -1) {
@@ -25,6 +27,7 @@ public class BookmarkObjectFileDao extends AbstractObjectFileDao<Bookmark> {
     return 1;
   }
 
+  @Override
   public Bookmark findByNo(int no) throws Exception {
 
     int index = indexOf(no);
@@ -35,6 +38,7 @@ public class BookmarkObjectFileDao extends AbstractObjectFileDao<Bookmark> {
     return list.get(index);
   }
 
+  @Override
   public int update(Bookmark bookmark) throws Exception {
 
     int index = indexOf(bookmark.getNo());
@@ -48,6 +52,7 @@ public class BookmarkObjectFileDao extends AbstractObjectFileDao<Bookmark> {
     return 1;
   }
 
+  @Override
   public int delete(int no) throws Exception {
     int index = indexOf(no);
 

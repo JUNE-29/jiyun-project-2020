@@ -7,18 +7,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.dao.json.BookBasketJsonFileDao;
-import june.project.book.dao.json.BookBoardJsonFileDao;
-import june.project.book.dao.json.BookmarkJsonFileDao;
-import june.project.book.dao.json.MemberJsonFileDao;
-import june.project.book.domain.BookBasket;
-import june.project.book.domain.BookBoard;
-import june.project.book.domain.Bookmark;
-import june.project.book.domain.Member;
+import june.project.book.dao.BookBasketDao;
+import june.project.book.dao.BookBoardDao;
+import june.project.book.dao.BookmarkDao;
+import june.project.book.dao.MemberDao;
 import june.project.book.servlet.BookBasketAddServlet;
 import june.project.book.servlet.BookBasketDeleteServlet;
 import june.project.book.servlet.BookBasketDetailServlet;
@@ -50,11 +45,6 @@ public class ServerApp {
 
   Map<String, Servlet> servletMap = new HashMap<>();
 
-  List<BookBoard> bookBoard;
-  List<Bookmark> bookmarks;
-  List<BookBasket> bookBasketList;
-  List<Member> memberList;
-
   // 옵저버를 등록하는 메서드이다.
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
@@ -83,10 +73,10 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    BookBoardJsonFileDao bookBoardDao = (BookBoardJsonFileDao) context.get("bookBoardDao");
-    BookmarkJsonFileDao bookmarkDao = (BookmarkJsonFileDao) context.get("bookmarkDao");
-    BookBasketJsonFileDao bookBaskeDao = (BookBasketJsonFileDao) context.get("bookBasketDao");
-    MemberJsonFileDao memberDao = (MemberJsonFileDao) context.get("memberList");
+    BookBoardDao bookBoardDao = (BookBoardDao) context.get("bookBoardDao");
+    BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
+    BookBasketDao bookBaskeDao = (BookBasketDao) context.get("bookBasketDao");
+    MemberDao memberDao = (MemberDao) context.get("memberDao");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
     servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));

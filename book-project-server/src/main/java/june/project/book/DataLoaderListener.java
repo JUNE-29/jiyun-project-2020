@@ -13,19 +13,12 @@ public class DataLoaderListener implements ApplicationContextListener {
   public void contextInitialized(Map<String, Object> context) {
     System.out.println("데이터를 로딩합니다.");
 
-
-    // 애플리케이션의 데이터를 처리할 객체를 준비한다.
-    BookBoardJsonFileDao bookBoardDao = new BookBoardJsonFileDao("./bookBoard.json");
-    BookmarkJsonFileDao bookmarkDao = new BookmarkJsonFileDao("./bookmark.json");
-    BookBasketJsonFileDao bookBasketDao = new BookBasketJsonFileDao("./bookBasket.json");
-    MemberJsonFileDao memberDao = new MemberJsonFileDao("./member.json");
-
     // 호출한 쪽에서 DAO 객체를 사용할 수 있도록 Map 객체에 담아둔다.
     // 객체 주소를 공유하는 것이다.
-    context.put("bookBoardDao", bookBoardDao);
-    context.put("bookmarkDao", bookmarkDao);
-    context.put("bookBasketDao", bookBasketDao);
-    context.put("memberList", memberDao);
+    context.put("bookBoardDao", new BookBoardJsonFileDao("./bookBoard.json"));
+    context.put("bookmarkDao", new BookmarkJsonFileDao("./bookmark.json"));
+    context.put("bookBasketDao", new BookBasketJsonFileDao("./bookBasket.json"));
+    context.put("memberDao", new MemberJsonFileDao("./member.json"));
   }
 
   @Override
