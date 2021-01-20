@@ -1,19 +1,16 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
 import june.project.util.Prompt;
 
 public class BookBoardDetailCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
-  public Prompt prompt;
+  Prompt prompt;
+  BookBoardDao bookBoardDao;
 
-  public BookBoardDetailCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public BookBoardDetailCommand(BookBoardDao bookBoardDao, Prompt prompt) {
+    this.bookBoardDao = bookBoardDao;
     this.prompt = prompt;
   }
 
@@ -22,17 +19,8 @@ public class BookBoardDetailCommand implements Command {
 
     try {
       int no = prompt.inputInt("번호? ");
-      out.writeUTF("/book/detail");
-      out.writeInt(no);
-      out.flush();
 
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      BookBoard review = (BookBoard) in.readObject();
+      BookBoard review = bookBoardDao.findByNo(no);
       System.out.printf("번호: %d\n", review.getNo());
       System.out.printf("도서명: %s\n", review.getBookTitle());
       System.out.printf("지은이: %s\n", review.getAuthor());
@@ -46,7 +34,7 @@ public class BookBoardDetailCommand implements Command {
       System.out.printf("조회수: %s\n", review.getViewCount());
 
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("조회 실패!");
     }
   }
 }

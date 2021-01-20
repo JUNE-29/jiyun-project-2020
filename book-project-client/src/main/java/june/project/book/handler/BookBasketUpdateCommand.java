@@ -1,40 +1,33 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import june.project.book.dao.BookBasketDao;
 import june.project.book.domain.BookBasket;
 import june.project.util.Prompt;
 
 public class BookBasketUpdateCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  BookBasketDao bookBasketDao;
   Prompt prompt;
 
-  public BookBasketUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public BookBasketUpdateCommand(BookBasketDao bookBasketDao, Prompt prompt) {
+    this.bookBasketDao = bookBasketDao;
     this.prompt = prompt;
   }
 
   @Override
   public void execute() {
 
-
     try {
       int no = prompt.inputInt("번호? ");
 
-      out.writeUTF("/basket/detail");
-      out.writeInt(no);
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
+      BookBasket oldBasket = null;
+      try {
+        oldBasket = bookBasketDao.findByNo(no);
+      } catch (Exception e) {
+        System.out.println("해당 번호의 게시글이 없습니다!");
         return;
       }
 
-      BookBasket oldBasket = (BookBasket) in.readObject();
       BookBasket newBasket = new BookBasket();
 
       newBasket.setNo(oldBasket.getNo());
@@ -65,20 +58,11 @@ public class BookBasketUpdateCommand implements Command {
         return;
       }
 
-      out.writeUTF("/basket/update");
-      out.writeObject(newBasket);
-      out.flush();
-
-      response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      bookBasketDao.update(newBasket);
       System.out.println("즐겨찾는 도서를 변경했습니다.");
 
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("변경 실패!");
     }
   }
 }

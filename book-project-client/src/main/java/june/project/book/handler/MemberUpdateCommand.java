@@ -1,21 +1,17 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
 import june.project.util.Prompt;
 
 public class MemberUpdateCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  MemberDao memberDao;
+  Prompt prompt;
 
-  public Prompt prompt;
-
-  public MemberUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public MemberUpdateCommand(MemberDao memberDao, Prompt prompt) {
+    this.memberDao = memberDao;
     this.prompt = prompt;
   }
 
@@ -25,17 +21,17 @@ public class MemberUpdateCommand implements Command {
     try {
       int no = prompt.inputInt("번호? ");
 
-      out.writeUTF("/member/detail");
-      out.writeInt(no);
-      out.flush();
+      Member oldMember = null;
 
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
+      try {
+
+        oldMember = memberDao.findByNo(no);
+
+      } catch (Exception e) {
+        System.out.println("해당 번호의 게시글이 없습니다!");
         return;
       }
 
-      Member oldMember = (Member) in.readObject();
       Member newMember = new Member();
 
       newMember.setNo(oldMember.getNo());
@@ -59,20 +55,11 @@ public class MemberUpdateCommand implements Command {
         return;
       }
 
-      out.writeUTF("/member/update");
-      out.writeObject(newMember);
-      out.flush();
-
-      response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      memberDao.update(newMember);
       System.out.println("회원을 변경했습니다.");
 
     } catch (Exception e) {
-      System.out.println("통신 오류 발생!");
+      System.out.println("변경 실패!");
     }
   }
 }

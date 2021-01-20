@@ -1,21 +1,17 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
 import june.project.util.Prompt;
 
 public class MemberAddCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  MemberDao memberDao;
+  Prompt prompt;
 
-  public Prompt prompt;
-
-  public MemberAddCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public MemberAddCommand(MemberDao memberDao, Prompt prompt) {
+    this.memberDao = memberDao;
     this.prompt = prompt;
   }
 
@@ -32,18 +28,12 @@ public class MemberAddCommand implements Command {
     member.setRegisteredDate(new Date(System.currentTimeMillis()));
 
     try {
-      out.writeUTF("/member/add");
-      out.writeObject(member);
-      out.flush();
 
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
+      memberDao.insert(member);
       System.out.println("저장하였습니다.");
+
     } catch (Exception e) {
-      System.out.println("통신 오류 발생!");
+      System.out.println("저장 실패!");
     }
   }
 }

@@ -1,20 +1,17 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
 import june.project.util.Prompt;
 
 public class BookmarkAddCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  BookmarkDao bookmarkDao;
   public Prompt prompt;
 
-  public BookmarkAddCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public BookmarkAddCommand(BookmarkDao bookmarkDao, Prompt prompt) {
+    this.bookmarkDao = bookmarkDao;
     this.prompt = prompt;
   }
 
@@ -32,20 +29,12 @@ public class BookmarkAddCommand implements Command {
     bookmark.setDate(new Date(System.currentTimeMillis()));
 
     try {
-      out.writeUTF("/bookmark/add");
-      out.writeObject(bookmark);
-      out.flush();
 
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF()); // 서버의 메시지(왜 실패했는지)를 읽는다.
-        return;
-      }
-
+      bookmarkDao.insert(bookmark);
       System.out.println("저장하였습니다.");
 
     } catch (Exception e) {
-      System.out.println("통신 오류 발생!");
+      System.out.println("저장 실패!");
     }
   }
 }

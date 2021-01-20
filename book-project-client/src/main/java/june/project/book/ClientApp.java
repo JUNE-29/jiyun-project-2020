@@ -10,6 +10,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import june.project.book.dao.proxy.BookBasketDaoProxy;
+import june.project.book.dao.proxy.BookBoardDaoProxy;
+import june.project.book.dao.proxy.BookmarkDaoProxy;
+import june.project.book.dao.proxy.MemberDaoProxy;
 import june.project.book.handler.BookBasketAddCommand;
 import june.project.book.handler.BookBasketDeleteCommand;
 import june.project.book.handler.BookBasketDetailCommand;
@@ -83,31 +87,37 @@ public class ClientApp {
     Deque<String> commandStack = new ArrayDeque<>();
     Queue<String> commandQueue = new LinkedList<>();
 
+    // Dao 프록시 객체 준비
+    BookBoardDaoProxy bookBoardDao = new BookBoardDaoProxy(in, out);
+    BookBasketDaoProxy bookBasketDao = new BookBasketDaoProxy(in, out);
+    BookmarkDaoProxy bookmarkDao = new BookmarkDaoProxy(in, out);
+    MemberDaoProxy memberDao = new MemberDaoProxy(in, out);
 
     HashMap<String, Command> commandMap = new HashMap<>();
-    commandMap.put("/basket/add", new BookBasketAddCommand(out, in, prompt));
-    commandMap.put("/basket/list", new BookBasketListCommand(out, in));
-    commandMap.put("/basket/detail", new BookBasketDetailCommand(out, in, prompt));
-    commandMap.put("/basket/update", new BookBasketUpdateCommand(out, in, prompt));
-    commandMap.put("/basket/delete", new BookBasketDeleteCommand(out, in, prompt));
 
-    commandMap.put("/bookmark/add", new BookmarkAddCommand(out, in, prompt));
-    commandMap.put("/bookmark/list", new BookmarkListCommand(out, in));
-    commandMap.put("/bookmark/detail", new BookmarkDetailCommand(out, in, prompt));
-    commandMap.put("/bookmark/update", new BookmarkUpdateCommand(out, in, prompt));
-    commandMap.put("/bookmark/delete", new BookmarkDeleteCommand(out, in, prompt));
+    commandMap.put("/basket/add", new BookBasketAddCommand(bookBasketDao, prompt));
+    commandMap.put("/basket/list", new BookBasketListCommand(bookBasketDao));
+    commandMap.put("/basket/detail", new BookBasketDetailCommand(bookBasketDao, prompt));
+    commandMap.put("/basket/update", new BookBasketUpdateCommand(bookBasketDao, prompt));
+    commandMap.put("/basket/delete", new BookBasketDeleteCommand(bookBasketDao, prompt));
 
-    commandMap.put("/book/add", new BookBoardAddCommand(out, in, prompt));
-    commandMap.put("/book/list", new BookBoardListCommand(out, in));
-    commandMap.put("/book/detail", new BookBoardDetailCommand(out, in, prompt));
-    commandMap.put("/book/update", new BookBoardUpdateCommand(out, in, prompt));
-    commandMap.put("/book/delete", new BookBoardDeleteCommand(out, in, prompt));
+    commandMap.put("/bookmark/add", new BookmarkAddCommand(bookmarkDao, prompt));
+    commandMap.put("/bookmark/list", new BookmarkListCommand(bookmarkDao));
+    commandMap.put("/bookmark/detail", new BookmarkDetailCommand(bookmarkDao, prompt));
+    commandMap.put("/bookmark/update", new BookmarkUpdateCommand(bookmarkDao, prompt));
+    commandMap.put("/bookmark/delete", new BookmarkDeleteCommand(bookmarkDao, prompt));
 
-    commandMap.put("/member/add", new MemberAddCommand(out, in, prompt));
-    commandMap.put("/member/list", new MemberListCommand(out, in));
-    commandMap.put("/member/detail", new MemberDetailCommand(out, in, prompt));
-    commandMap.put("/member/update", new MemberUpdateCommand(out, in, prompt));
-    commandMap.put("/member/delete", new MemberDeleteCommand(out, in, prompt));
+    commandMap.put("/book/add", new BookBoardAddCommand(bookBoardDao, prompt));
+    commandMap.put("/book/list", new BookBoardListCommand(bookBoardDao));
+    commandMap.put("/book/detail", new BookBoardDetailCommand(bookBoardDao, prompt));
+    commandMap.put("/book/update", new BookBoardUpdateCommand(bookBoardDao, prompt));
+    commandMap.put("/book/delete", new BookBoardDeleteCommand(bookBoardDao, prompt));
+
+    commandMap.put("/member/add", new MemberAddCommand(memberDao, prompt));
+    commandMap.put("/member/list", new MemberListCommand(memberDao));
+    commandMap.put("/member/detail", new MemberDetailCommand(memberDao, prompt));
+    commandMap.put("/member/update", new MemberUpdateCommand(memberDao, prompt));
+    commandMap.put("/member/delete", new MemberDeleteCommand(memberDao, prompt));
 
     try {
       while (true) {

@@ -1,20 +1,17 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
 import june.project.util.Prompt;
 
 public class BookBoardAddCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
-  public Prompt prompt;
+  Prompt prompt;
+  BookBoardDao bookBoardDao;
 
-  public BookBoardAddCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public BookBoardAddCommand(BookBoardDao bookBoardDao, Prompt prompt) {
+    this.bookBoardDao = bookBoardDao;
     this.prompt = prompt;
   }
 
@@ -36,20 +33,11 @@ public class BookBoardAddCommand implements Command {
     bookBoard.setViewCount(0);
 
     try {
-      out.writeUTF("/book/add");
-      out.writeObject(bookBoard);
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF()); // 서버의 메시지(왜 실패했는지)를 읽는다.
-        return;
-      }
-
+      bookBoardDao.insert(bookBoard);
       System.out.println("저장하였습니다.");
 
     } catch (Exception e) {
-      System.out.println("통신 오류 발생!");
+      System.out.println("저장 실패!");
     }
   }
 }

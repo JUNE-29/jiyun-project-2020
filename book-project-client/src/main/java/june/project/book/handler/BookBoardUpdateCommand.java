@@ -1,20 +1,17 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
 import june.project.util.Prompt;
 
 public class BookBoardUpdateCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
-  public Prompt prompt;
+  Prompt prompt;
+  BookBoardDao bookBoardDao;
 
-  public BookBoardUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public BookBoardUpdateCommand(BookBoardDao bookBoardDao, Prompt prompt) {
+    this.bookBoardDao = bookBoardDao;
     this.prompt = prompt;
   }
 
@@ -22,18 +19,18 @@ public class BookBoardUpdateCommand implements Command {
   public void execute() {
 
     try {
-      int no = prompt.inputInt("번호? ");
-      out.writeUTF("/book/detail");
-      out.writeInt(no);
-      out.flush();
 
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
+      int no = prompt.inputInt("번호? ");
+      BookBoard oldBook = null;
+
+      try {
+        oldBook = bookBoardDao.findByNo(no);
+
+      } catch (Exception e) {
+        System.out.println("해당 번호의 게시글이 없습니다!");
         return;
       }
 
-      BookBoard oldBook = (BookBoard) in.readObject();
       BookBoard newBook = new BookBoard();
 
       newBook.setNo(oldBook.getNo());
@@ -79,16 +76,7 @@ public class BookBoardUpdateCommand implements Command {
         return;
       }
 
-      out.writeUTF("/book/update");
-      out.writeObject(newBook);
-      out.flush();
-
-      response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      bookBoardDao.update(newBook);
       System.out.println("읽은 도서 정보를 변경했습니다.");
 
     } catch (Exception e) {

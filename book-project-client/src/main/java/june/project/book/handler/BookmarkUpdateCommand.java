@@ -1,20 +1,17 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Date;
+import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
 import june.project.util.Prompt;
 
 public class BookmarkUpdateCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  BookmarkDao bookmarkDao;
   public Prompt prompt;
 
-  public BookmarkUpdateCommand(ObjectOutputStream out, ObjectInputStream in, Prompt prompt) {
-    this.out = out;
-    this.in = in;
+  public BookmarkUpdateCommand(BookmarkDao bookmarkDao, Prompt prompt) {
+    this.bookmarkDao = bookmarkDao;
     this.prompt = prompt;
   }
 
@@ -24,17 +21,16 @@ public class BookmarkUpdateCommand implements Command {
     try {
       int no = prompt.inputInt("번호? ");
 
-      out.writeUTF("/bookmark/detail");
-      out.writeInt(no);
-      out.flush();
+      Bookmark oldBookmark = null;
 
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
+      try {
+        oldBookmark = bookmarkDao.findByNo(no);
+
+      } catch (Exception e) {
+        System.out.println("해당 번호의 게시글이 없습니다!");
         return;
       }
 
-      Bookmark oldBookmark = (Bookmark) in.readObject();
       Bookmark newBookmark = new Bookmark();
 
       newBookmark.setNo(oldBookmark.getNo());
@@ -65,20 +61,11 @@ public class BookmarkUpdateCommand implements Command {
         return;
       }
 
-      out.writeUTF("/bookmark/update");
-      out.writeObject(newBookmark);
-      out.flush();
-
-      response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
+      bookmarkDao.update(newBookmark);
       System.out.println("북마크 정보 변경했습니다.");
 
     } catch (Exception e) {
-      System.out.println("명령 실행 중 오류 발생!");
+      System.out.println("변경 실패!");
     }
   }
 }

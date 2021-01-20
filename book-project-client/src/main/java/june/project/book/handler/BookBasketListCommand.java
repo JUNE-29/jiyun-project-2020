@@ -1,42 +1,28 @@
 package june.project.book.handler;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
+import june.project.book.dao.BookBasketDao;
 import june.project.book.domain.BookBasket;
 
 public class BookBasketListCommand implements Command {
 
-  ObjectOutputStream out;
-  ObjectInputStream in;
+  BookBasketDao bookBasketDao;
 
-  public BookBasketListCommand(ObjectOutputStream out, ObjectInputStream in) {
-    this.out = out;
-    this.in = in;
+  public BookBasketListCommand(BookBasketDao bookBasketDao) {
+    this.bookBasketDao = bookBasketDao;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void execute() {
 
     try {
-      out.writeUTF("/basket/list");
-      out.flush();
-
-      String response = in.readUTF();
-      if (response.equals("FAIL")) {
-        System.out.println(in.readUTF());
-        return;
-      }
-
-      List<BookBasket> bookBasket = (List<BookBasket>) in.readObject();
+      List<BookBasket> bookBasket = bookBasketDao.findAll();
       for (BookBasket basket : bookBasket) {
         System.out.printf("%d, %s, %s\n", //
             basket.getNo(), basket.getBookTitle(), basket.getCategories());
       }
     } catch (Exception e) {
-
+      System.out.println("목록 조회 실패!");
     }
-
   }
 }
