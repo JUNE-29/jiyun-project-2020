@@ -1,8 +1,5 @@
 package june.project.book.dao.proxy;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.List;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
@@ -12,21 +9,16 @@ import june.project.book.domain.Bookmark;
 
 public class BookmarkDaoProxy implements BookmarkDao {
 
-  String host;
-  int port;
+  DaoProxyHelper daoProxyHelper;
 
-  public BookmarkDaoProxy(String host, int port) {
-    this.host = host;
-    this.port = port;
+  public BookmarkDaoProxy(DaoProxyHelper daoProxyHelper) {
+    this.daoProxyHelper = daoProxyHelper;
   }
-
 
   @Override
   public int insert(Bookmark bookmark) throws Exception {
 
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (int) daoProxyHelper.request((in, out) -> {
 
       out.writeUTF("/bookmark/add");
       out.writeObject(bookmark);
@@ -36,19 +28,16 @@ public class BookmarkDaoProxy implements BookmarkDao {
       if (response.equals("FAIL")) {
         throw new Exception(in.readUTF());
       }
-
       return 1;
-    }
+
+    });
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public List<Bookmark> findAll() throws Exception {
 
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-
+    return (List<Bookmark>) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/bookmark/list");
       out.flush();
 
@@ -57,15 +46,13 @@ public class BookmarkDaoProxy implements BookmarkDao {
         throw new Exception(in.readUTF());
       }
       return (List<Bookmark>) in.readObject();
-    }
+    });
   }
 
   @Override
   public Bookmark findByNo(int no) throws Exception {
 
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (Bookmark) daoProxyHelper.request((in, out) -> {
 
       out.writeUTF("/bookmark/detail");
       out.writeInt(no);
@@ -76,16 +63,13 @@ public class BookmarkDaoProxy implements BookmarkDao {
         throw new Exception(in.readUTF());
       }
       return (Bookmark) in.readObject();
-    }
+    });
   }
 
   @Override
   public int update(Bookmark bookmark) throws Exception {
 
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-
+    return (int) daoProxyHelper.request((in, out) -> {
       out.writeUTF("/bookmark/update");
       out.writeObject(bookmark);
 
@@ -94,15 +78,14 @@ public class BookmarkDaoProxy implements BookmarkDao {
         throw new Exception(in.readUTF());
       }
       return 1;
-    }
+
+    });
   }
 
   @Override
   public int delete(int no) throws Exception {
 
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+    return (int) daoProxyHelper.request((in, out) -> {
 
       out.writeUTF("/bookmark/delete");
       out.writeInt(no);
@@ -113,6 +96,6 @@ public class BookmarkDaoProxy implements BookmarkDao {
         throw new Exception(in.readUTF());
       }
       return 1;
-    }
+    });
   }
 }

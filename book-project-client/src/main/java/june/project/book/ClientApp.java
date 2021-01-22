@@ -13,6 +13,7 @@ import java.util.Scanner;
 import june.project.book.dao.proxy.BookBasketDaoProxy;
 import june.project.book.dao.proxy.BookBoardDaoProxy;
 import june.project.book.dao.proxy.BookmarkDaoProxy;
+import june.project.book.dao.proxy.DaoProxyHelper;
 import june.project.book.dao.proxy.MemberDaoProxy;
 import june.project.book.handler.BookBasketAddCommand;
 import june.project.book.handler.BookBasketDeleteCommand;
@@ -66,11 +67,14 @@ public class ClientApp {
       return;
     }
 
+    // Dao 프록시의 서버 연결을 도와줄 도우미 객체 준비
+    DaoProxyHelper daoProxyHelper = new DaoProxyHelper(host, port);
+
     // Dao 프록시 객체 준비
-    BookBoardDaoProxy bookBoardDao = new BookBoardDaoProxy(host, port);
-    BookBasketDaoProxy bookBasketDao = new BookBasketDaoProxy(host, port);
-    BookmarkDaoProxy bookmarkDao = new BookmarkDaoProxy(host, port);
-    MemberDaoProxy memberDao = new MemberDaoProxy(host, port);
+    BookBoardDaoProxy bookBoardDao = new BookBoardDaoProxy(daoProxyHelper);
+    BookBasketDaoProxy bookBasketDao = new BookBasketDaoProxy(daoProxyHelper);
+    BookmarkDaoProxy bookmarkDao = new BookmarkDaoProxy(daoProxyHelper);
+    MemberDaoProxy memberDao = new MemberDaoProxy(daoProxyHelper);
 
     commandMap.put("/basket/add", new BookBasketAddCommand(bookBasketDao, prompt));
     commandMap.put("/basket/list", new BookBasketListCommand(bookBasketDao));
