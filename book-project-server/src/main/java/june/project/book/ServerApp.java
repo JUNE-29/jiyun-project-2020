@@ -115,12 +115,14 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었음!");
 
-        // 클라이언트의 요청처리
-        if (processRequest(socket) == 9) {
-          break;
-        }
-
-        System.out.println("------------------요청처리 끝--------------------");
+        // 클라이언트의 요청을 처리하는 부분만
+        // main 스레드에서 분리하여 별도의 스레드로 실행한다.
+        // 따라서 스레드의 응답 지연에 다른 스레드가 영향을 받지 않는다.
+        // 스레드를 만든다.
+        new Thread(() -> {
+          processRequest(socket);
+          System.out.println("------------------요청처리 끝--------------------");
+        }).start();
       }
 
     } catch (Exception e) {
