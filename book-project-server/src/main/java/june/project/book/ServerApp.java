@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import june.project.book.context.ApplicationContextListener;
 import june.project.book.dao.BookBasketDao;
 import june.project.book.dao.BookBoardDao;
@@ -44,6 +46,9 @@ public class ServerApp {
   Map<String, Object> context = new HashMap<>();
 
   Map<String, Servlet> servletMap = new HashMap<>();
+
+  // 스레드풀
+  ExecutorService executorService = Executors.newCachedThreadPool();
 
   // 옵저버를 등록하는 메서드이다.
   public void addApplicationContextListener(ApplicationContextListener listener) {
@@ -115,14 +120,15 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었음!");
 
-        // 클라이언트의 요청을 처리하는 부분만
-        // main 스레드에서 분리하여 별도의 스레드로 실행한다.
-        // 따라서 스레드의 응답 지연에 다른 스레드가 영향을 받지 않는다.
-        // 스레드를 만든다.
-        new Thread(() -> {
+        // 스레드풀을 사용할 때는 직접 스레드를 만들지 않는다.
+        // 단지 스레드풀에 "스레드가 실행할 코드(Runnable 구현체)"를 제출한다.
+        // => ExcutorService.submit(new Runnable() { public void run() {..});
+        // => 스레드풀에 스레드가 없으면 새로 만들어 Runnable 구현체를 실행한다.
+        // => 스레드풀에 스레드가 있으면 그 스레드를 이용하여 Runnable 구현체를 실행한다.
+        executorService.submit(() -> {
           processRequest(socket);
           System.out.println("------------------요청처리 끝--------------------");
-        }).start();
+        });
       }
 
     } catch (Exception e) {
@@ -130,6 +136,11 @@ public class ServerApp {
     }
 
     notifyApplicationDestroyed();
+
+    // 스레드풀을 다 사용했으면 종료
+    executorService.shutdown();
+    // => 스레드풀을 당장 종료시키는 것이 아니다.
+    // => 스레드풀에 소속된 스레드들의 작업이 모두 끝나면 종료하는 뜻
 
   } // service()
 
