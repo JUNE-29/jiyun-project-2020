@@ -10,16 +10,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import june.project.book.dao.proxy.BookBasketDaoProxy;
 import june.project.book.dao.proxy.BookBoardDaoProxy;
 import june.project.book.dao.proxy.BookmarkDaoProxy;
 import june.project.book.dao.proxy.DaoProxyHelper;
 import june.project.book.dao.proxy.MemberDaoProxy;
-import june.project.book.handler.BookBasketAddCommand;
-import june.project.book.handler.BookBasketDeleteCommand;
-import june.project.book.handler.BookBasketDetailCommand;
-import june.project.book.handler.BookBasketListCommand;
-import june.project.book.handler.BookBasketUpdateCommand;
 import june.project.book.handler.BookBoardAddCommand;
 import june.project.book.handler.BookBoardDeleteCommand;
 import june.project.book.handler.BookBoardDetailCommand;
@@ -72,15 +66,8 @@ public class ClientApp {
 
     // Dao 프록시 객체 준비
     BookBoardDaoProxy bookBoardDao = new BookBoardDaoProxy(daoProxyHelper);
-    BookBasketDaoProxy bookBasketDao = new BookBasketDaoProxy(daoProxyHelper);
     BookmarkDaoProxy bookmarkDao = new BookmarkDaoProxy(daoProxyHelper);
     MemberDaoProxy memberDao = new MemberDaoProxy(daoProxyHelper);
-
-    commandMap.put("/basket/add", new BookBasketAddCommand(bookBasketDao, prompt));
-    commandMap.put("/basket/list", new BookBasketListCommand(bookBasketDao));
-    commandMap.put("/basket/detail", new BookBasketDetailCommand(bookBasketDao, prompt));
-    commandMap.put("/basket/update", new BookBasketUpdateCommand(bookBasketDao, prompt));
-    commandMap.put("/basket/delete", new BookBasketDeleteCommand(bookBasketDao, prompt));
 
     commandMap.put("/bookmark/add", new BookmarkAddCommand(bookmarkDao, prompt));
     commandMap.put("/bookmark/list", new BookmarkListCommand(bookmarkDao));
