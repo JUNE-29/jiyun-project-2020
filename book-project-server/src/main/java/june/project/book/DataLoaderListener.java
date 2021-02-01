@@ -2,7 +2,6 @@ package june.project.book;
 
 import java.util.Map;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.dao.json.BookBasketJsonFileDao;
 import june.project.book.dao.json.BookBoardJsonFileDao;
 import june.project.book.dao.json.BookmarkJsonFileDao;
 import june.project.book.dao.json.MemberJsonFileDao;
@@ -17,7 +16,6 @@ public class DataLoaderListener implements ApplicationContextListener {
     // 객체 주소를 공유하는 것이다.
     context.put("bookBoardDao", new BookBoardJsonFileDao("./bookBoard.json"));
     context.put("bookmarkDao", new BookmarkJsonFileDao("./bookmark.json"));
-    context.put("bookBasketDao", new BookBasketJsonFileDao("./bookBasket.json"));
     context.put("memberDao", new MemberJsonFileDao("./member.json"));
   }
 

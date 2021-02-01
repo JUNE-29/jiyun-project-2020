@@ -12,15 +12,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.dao.BookBasketDao;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
-import june.project.book.servlet.BookBasketAddServlet;
-import june.project.book.servlet.BookBasketDeleteServlet;
-import june.project.book.servlet.BookBasketDetailServlet;
-import june.project.book.servlet.BookBasketListServlet;
-import june.project.book.servlet.BookBasketUpdateServlet;
 import june.project.book.servlet.BookBoardAddServlet;
 import june.project.book.servlet.BookBoardDeleteServlet;
 import june.project.book.servlet.BookBoardDetailServlet;
@@ -80,7 +74,6 @@ public class ServerApp {
 
     BookBoardDao bookBoardDao = (BookBoardDao) context.get("bookBoardDao");
     BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
-    BookBasketDao bookBaskeDao = (BookBasketDao) context.get("bookBasketDao");
     MemberDao memberDao = (MemberDao) context.get("memberDao");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
@@ -94,12 +87,6 @@ public class ServerApp {
     servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
     servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
     servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
-
-    servletMap.put("/basket/list", new BookBasketListServlet(bookBaskeDao));
-    servletMap.put("/basket/add", new BookBasketAddServlet(bookBaskeDao));
-    servletMap.put("/basket/detail", new BookBasketDetailServlet(bookBaskeDao));
-    servletMap.put("/basket/update", new BookBasketUpdateServlet(bookBaskeDao));
-    servletMap.put("/basket/delete", new BookBasketDeleteServlet(bookBaskeDao));
 
     servletMap.put("/member/list", new MemberListServlet(memberDao));
     servletMap.put("/member/add", new MemberAddServlet(memberDao));
