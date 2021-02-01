@@ -15,7 +15,7 @@ public class BookBoard implements Serializable {
   private String publishedDate;
   private String content;
   private String photo;
-  private float score;
+  private int score;
   private String bookStatus;
   private Date date;
   private int viewCount;
@@ -33,7 +33,7 @@ public class BookBoard implements Serializable {
     bookBoard.setContent(data[6]);
     bookBoard.setPhoto(data[7]);
     bookBoard.setBookStatus(data[8]);
-    bookBoard.setScore(Float.parseFloat(data[9]));
+    bookBoard.setScore(Integer.parseInt(data[9]));
     bookBoard.setDate(Date.valueOf(data[10]));
     bookBoard.setViewCount(Integer.parseInt(data[11]));
 
@@ -41,12 +41,11 @@ public class BookBoard implements Serializable {
   }
 
   public String toStringCsv() {
-    return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%s,%1.1f,%s,%d", //
+    return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%d", //
         this.getNo(), this.getBookTitle(), this.getAuthor(), this.getPublisher(),
         this.getCategories(), this.getPublishedDate(), this.getContent(), this.getPhoto(),
         this.getBookStatus(), this.getScore(), this.getDate(), this.getViewCount());
   }
-
 
   @Override
   public int hashCode() {
@@ -62,7 +61,7 @@ public class BookBoard implements Serializable {
     result = prime * result + ((photo == null) ? 0 : photo.hashCode());
     result = prime * result + ((publishedDate == null) ? 0 : publishedDate.hashCode());
     result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
-    result = prime * result + Float.floatToIntBits(score);
+    result = prime * result + score;
     result = prime * result + viewCount;
     return result;
   }
@@ -123,7 +122,7 @@ public class BookBoard implements Serializable {
         return false;
     } else if (!publisher.equals(other.publisher))
       return false;
-    if (Float.floatToIntBits(score) != Float.floatToIntBits(other.score))
+    if (score != other.score)
       return false;
     if (viewCount != other.viewCount)
       return false;
@@ -194,11 +193,11 @@ public class BookBoard implements Serializable {
     this.photo = photo;
   }
 
-  public float getScore() {
+  public int getScore() {
     return score;
   }
 
-  public void setScore(float score) {
+  public void setScore(int score) {
     this.score = score;
   }
 
