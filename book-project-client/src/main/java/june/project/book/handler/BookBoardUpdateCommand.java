@@ -62,7 +62,7 @@ public class BookBoardUpdateCommand implements Command {
           prompt.inputString(String.format("이미지(%s)? ", oldBook.getPhoto()), oldBook.getPhoto()));
 
       newBook.setScore(//
-          prompt.inputFloat(String.format("평가(%1.1f점)? ", oldBook.getScore()), oldBook.getScore()));
+          prompt.inputInt(String.format("평가(%1.1f점)? ", oldBook.getScore()), oldBook.getScore()));
 
       newBook.setBookStatus(//
           prompt.inputString(String.format("진행 상태(%s)? ", oldBook.getBookStatus()),

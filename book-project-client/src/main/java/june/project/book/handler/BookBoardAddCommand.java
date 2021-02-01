@@ -28,7 +28,7 @@ public class BookBoardAddCommand implements Command {
     bookBoard.setContent(prompt.inputString("내용? "));
     bookBoard.setPhoto(prompt.inputString("이미지? "));
     bookBoard.setBookStatus(prompt.inputString("진행 상태? "));
-    bookBoard.setScore(prompt.inputFloat("책에 대한 점수(5.0점만점)? "));
+    bookBoard.setScore(prompt.inputInt("책에 대한 점수(5.0점만점)? "));
     bookBoard.setDate(new Date(System.currentTimeMillis()));
     bookBoard.setViewCount(0);
 
