@@ -62,14 +62,14 @@ public class BookBoardUpdateCommand implements Command {
           prompt.inputString(String.format("이미지(%s)? ", oldBook.getPhoto()), oldBook.getPhoto()));
 
       newBook.setScore(//
-          prompt.inputInt(String.format("평가(%1.1f점)? ", oldBook.getScore()), oldBook.getScore()));
+          prompt.inputInt(String.format("평가(%d점)? ", oldBook.getScore()), oldBook.getScore()));
 
       newBook.setBookStatus(//
-          prompt.inputString(String.format("진행 상태(%s)? ", oldBook.getBookStatus()),
+          prompt.inputInt(
+              String.format("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정)(%d)? ", oldBook.getBookStatus()),
               oldBook.getBookStatus()));
 
       newBook.setDate(new Date(System.currentTimeMillis()));
-      newBook.setViewCount(oldBook.getViewCount());
 
       if (oldBook.equals(newBook)) {
         System.out.println("읽은 도서 정보의 변경을 취소했습니다.");

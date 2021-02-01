@@ -19,8 +19,8 @@ public class BookBoardListCommand implements Command {
 
       List<BookBoard> bookBoard = bookBoardDao.findAll();
       for (BookBoard book : bookBoard) {
-        System.out.printf("%d, %s, %1.1f점, %s, %d, %s\n", //
-            book.getNo(), book.getBookTitle(), book.getScore(), book.getDate(), book.getViewCount(),
+        System.out.printf("%d, %s, %d점, %s, %d\n", //
+            book.getNo(), book.getBookTitle(), book.getScore(), book.getDate(),
             book.getBookStatus());
       }
     } catch (Exception e) {

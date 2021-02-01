@@ -27,10 +27,9 @@ public class BookBoardAddCommand implements Command {
     bookBoard.setPublishedDate(prompt.inputString("출판 연도? "));
     bookBoard.setContent(prompt.inputString("내용? "));
     bookBoard.setPhoto(prompt.inputString("이미지? "));
-    bookBoard.setBookStatus(prompt.inputString("진행 상태? "));
-    bookBoard.setScore(prompt.inputInt("책에 대한 점수(5.0점만점)? "));
+    bookBoard.setBookStatus(prompt.inputInt("진행 상태? (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정)"));
+    bookBoard.setScore(prompt.inputInt("책에 대한 점수(5점만점)? "));
     bookBoard.setDate(new Date(System.currentTimeMillis()));
-    bookBoard.setViewCount(0);
 
     try {
       bookBoardDao.insert(bookBoard);

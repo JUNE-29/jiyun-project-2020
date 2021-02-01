@@ -28,10 +28,9 @@ public class BookBoardDetailCommand implements Command {
       System.out.printf("카테고리: %s\n", review.getCategories());
       System.out.printf("내용: %s\n", review.getContent());
       System.out.printf("이미지: %s\n", review.getPhoto());
-      System.out.printf("평가: %1.1f점\n", review.getScore());
-      System.out.printf("진행 상태: %s\n", review.getBookStatus());
+      System.out.printf("평가: %d점\n", review.getScore());
+      System.out.printf("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정): %d\n", review.getBookStatus());
       System.out.printf("등록일: %s\n", review.getDate());
-      System.out.printf("조회수: %s\n", review.getViewCount());
 
     } catch (Exception e) {
       System.out.println("조회 실패!");

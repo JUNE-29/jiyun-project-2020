@@ -16,9 +16,8 @@ public class BookBoard implements Serializable {
   private String content;
   private String photo;
   private int score;
-  private String bookStatus;
+  private int bookStatus;
   private Date date;
-  private int viewCount;
 
   public static BookBoard valueOf(String csv) {
     String[] data = csv.split(",");
@@ -32,19 +31,18 @@ public class BookBoard implements Serializable {
     bookBoard.setPublishedDate(data[5]);
     bookBoard.setContent(data[6]);
     bookBoard.setPhoto(data[7]);
-    bookBoard.setBookStatus(data[8]);
+    bookBoard.setBookStatus(Integer.parseInt(data[8]));
     bookBoard.setScore(Integer.parseInt(data[9]));
     bookBoard.setDate(Date.valueOf(data[10]));
-    bookBoard.setViewCount(Integer.parseInt(data[11]));
 
     return bookBoard;
   }
 
   public String toStringCsv() {
-    return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%d", //
+    return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d,%d,%s", //
         this.getNo(), this.getBookTitle(), this.getAuthor(), this.getPublisher(),
         this.getCategories(), this.getPublishedDate(), this.getContent(), this.getPhoto(),
-        this.getBookStatus(), this.getScore(), this.getDate(), this.getViewCount());
+        this.getBookStatus(), this.getScore(), this.getDate());
   }
 
   @Override
@@ -52,7 +50,7 @@ public class BookBoard implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((author == null) ? 0 : author.hashCode());
-    result = prime * result + ((bookStatus == null) ? 0 : bookStatus.hashCode());
+    result = prime * result + bookStatus;
     result = prime * result + ((bookTitle == null) ? 0 : bookTitle.hashCode());
     result = prime * result + ((categories == null) ? 0 : categories.hashCode());
     result = prime * result + ((content == null) ? 0 : content.hashCode());
@@ -62,7 +60,6 @@ public class BookBoard implements Serializable {
     result = prime * result + ((publishedDate == null) ? 0 : publishedDate.hashCode());
     result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
     result = prime * result + score;
-    result = prime * result + viewCount;
     return result;
   }
 
@@ -80,10 +77,7 @@ public class BookBoard implements Serializable {
         return false;
     } else if (!author.equals(other.author))
       return false;
-    if (bookStatus == null) {
-      if (other.bookStatus != null)
-        return false;
-    } else if (!bookStatus.equals(other.bookStatus))
+    if (bookStatus != other.bookStatus)
       return false;
     if (bookTitle == null) {
       if (other.bookTitle != null)
@@ -123,8 +117,6 @@ public class BookBoard implements Serializable {
     } else if (!publisher.equals(other.publisher))
       return false;
     if (score != other.score)
-      return false;
-    if (viewCount != other.viewCount)
       return false;
     return true;
   }
@@ -201,11 +193,11 @@ public class BookBoard implements Serializable {
     this.score = score;
   }
 
-  public String getBookStatus() {
+  public int getBookStatus() {
     return bookStatus;
   }
 
-  public void setBookStatus(String bookStatus) {
+  public void setBookStatus(int bookStatus) {
     this.bookStatus = bookStatus;
   }
 
@@ -215,14 +207,6 @@ public class BookBoard implements Serializable {
 
   public void setDate(Date date) {
     this.date = date;
-  }
-
-  public int getViewCount() {
-    return viewCount;
-  }
-
-  public void setViewCount(int viewCount) {
-    this.viewCount = viewCount;
   }
 
 }
