@@ -1,7 +1,6 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,14 +10,16 @@ import june.project.book.domain.BookBoard;
 
 public class BookBoardDaoImpl implements BookBoardDao {
 
+  Connection con;
+
+  public BookBoardDaoImpl(Connection con) {
+    this.con = con;
+  }
+
   @Override
   public int insert(BookBoard bookBoard) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("insert into book_board(titl, auth, pub, cate, pub_dt, conts,"
           + " photo, score, book_st) values('" //
@@ -34,12 +35,8 @@ public class BookBoardDaoImpl implements BookBoardDao {
 
   @Override
   public List<BookBoard> findAll() throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement(); //
+    try (Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select board_id, titl, score, cdt, book_st from book_board")) {
       ArrayList<BookBoard> list = new ArrayList<>();
@@ -61,12 +58,8 @@ public class BookBoardDaoImpl implements BookBoardDao {
 
   @Override
   public BookBoard findByNo(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement(); //
+    try (Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select board_id, titl, auth, pub, cate, pub_dt, conts, photo, score, book_st, cdt "
                 + " from book_board " + " where board_id= " + no)) {
@@ -87,6 +80,7 @@ public class BookBoardDaoImpl implements BookBoardDao {
         bookBoard.setDate(rs.getDate("cdt"));
 
         return bookBoard;
+
       } else {
         return null;
       }
@@ -95,12 +89,8 @@ public class BookBoardDaoImpl implements BookBoardDao {
 
   @Override
   public int update(BookBoard bookBoard) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update book_board set" //
           + " titl = '" + bookBoard.getBookTitle() //
@@ -120,12 +110,8 @@ public class BookBoardDaoImpl implements BookBoardDao {
 
   @Override
   public int delete(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from book_board where board_id=" + no);
 

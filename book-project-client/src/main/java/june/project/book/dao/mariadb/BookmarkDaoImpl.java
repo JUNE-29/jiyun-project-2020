@@ -1,7 +1,6 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,14 +10,16 @@ import june.project.book.domain.Bookmark;
 
 public class BookmarkDaoImpl implements BookmarkDao {
 
+  Connection con;
+
+  public BookmarkDaoImpl(Connection con) {
+    this.con = con;
+  }
+
   @Override
   public int insert(Bookmark bookmark) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt
           .executeUpdate("insert into bookmark(titl, book_titl, auth, pub, conts, photo) values('" //
@@ -32,12 +33,8 @@ public class BookmarkDaoImpl implements BookmarkDao {
 
   @Override
   public List<Bookmark> findAll() throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement(); //
+    try (Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select bookmark_id, titl, book_titl, auth, cdt from bookmark")) {
       ArrayList<Bookmark> list = new ArrayList<>();
@@ -59,12 +56,8 @@ public class BookmarkDaoImpl implements BookmarkDao {
 
   @Override
   public Bookmark findByNo(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement(); //
+    try (Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select bookmark_id, titl, book_titl, auth, pub, conts, photo, cdt" + " from bookmark"
                 + " where bookmark_id=" + no)) {
@@ -82,6 +75,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
         bookmark.setDate(rs.getDate("cdt"));
 
         return bookmark;
+
       } else {
         return null;
       }
@@ -90,12 +84,8 @@ public class BookmarkDaoImpl implements BookmarkDao {
 
   @Override
   public int update(Bookmark bookmark) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update bookmark set " + "titl = '" + bookmark.getTitle() //
           + "', book_titl = '" + bookmark.getBookTitle() //
@@ -111,12 +101,8 @@ public class BookmarkDaoImpl implements BookmarkDao {
 
   @Override
   public int delete(int no) throws Exception {
-    Class.forName("org.mariadb.jdbc.Driver");
 
-    try (
-        Connection con =
-            DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-        Statement stmt = con.createStatement()) {
+    try (Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from bookmark where bookmark_id=" + no);
 
