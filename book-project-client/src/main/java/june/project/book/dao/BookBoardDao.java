@@ -5,7 +5,7 @@ import june.project.book.domain.BookBoard;
 
 public interface BookBoardDao {
 
-  public int insert(BookBoard BookBoard) throws Exception;
+  public int insert(BookBoard bookBoard) throws Exception;
 
   public List<BookBoard> findAll() throws Exception;
 
