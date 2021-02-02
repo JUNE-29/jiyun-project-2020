@@ -1,6 +1,5 @@
 package june.project.book.handler;
 
-import java.sql.Date;
 import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
 import june.project.util.Prompt;
@@ -48,18 +47,12 @@ public class MemberUpdateCommand implements Command {
       newMember.setPhoto(prompt.inputString(String.format("사진(%s)? ", oldMember.getPhoto()),
           oldMember.getPhoto()));
 
-      newMember.setRegisteredDate(new Date(System.currentTimeMillis()));
-
-      if (oldMember.equals(newMember)) {
-        System.out.println("회원을 변경을 취소했습니다.");
-        return;
-      }
-
       memberDao.update(newMember);
       System.out.println("회원을 변경했습니다.");
 
     } catch (Exception e) {
       System.out.println("변경 실패!");
+      e.printStackTrace();
     }
   }
 }

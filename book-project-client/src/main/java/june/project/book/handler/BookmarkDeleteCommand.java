@@ -19,8 +19,13 @@ public class BookmarkDeleteCommand implements Command {
     try {
 
       int no = prompt.inputInt("번호? ");
-      bookmarkDao.delete(no);
-      System.out.println("북마크 정보를 삭제했습니다.");
+
+      if (bookmarkDao.delete(no) > 0) {
+        System.out.println("북마크 정보를 삭제했습니다.");
+
+      } else {
+        System.out.println("해당 번호의 게시글이 없습니다.");
+      }
 
     } catch (Exception e) {
 

@@ -1,6 +1,5 @@
 package june.project.book.handler;
 
-import java.sql.Date;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
 import june.project.util.Prompt;
@@ -66,21 +65,15 @@ public class BookBoardUpdateCommand implements Command {
 
       newBook.setBookStatus(//
           prompt.inputInt(
-              String.format("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정)(%d)? ", oldBook.getBookStatus()),
+              String.format("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정) (%d) ? ", oldBook.getBookStatus()),
               oldBook.getBookStatus()));
-
-      newBook.setDate(new Date(System.currentTimeMillis()));
-
-      if (oldBook.equals(newBook)) {
-        System.out.println("읽은 도서 정보의 변경을 취소했습니다.");
-        return;
-      }
 
       bookBoardDao.update(newBook);
       System.out.println("읽은 도서 정보를 변경했습니다.");
 
     } catch (Exception e) {
       System.out.println("명령 실행 중 오류 발생!");
+      e.printStackTrace();
     }
   }
 }

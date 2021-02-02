@@ -33,14 +33,14 @@ create table book_board (
 create table book_member (
   member_id int not null auto_increment primary key comment '회원 데이터 식별 번호',
   name varchar(30) not null comment '이름',
-  email varchar(50) not null comment '이메일',
+  email varchar(255) not null comment '이메일',
   pwd varchar(255) not null comment '암호',
   cdt datetime default now() comment '등록일', 
   photo varchar(255) comment '사진'
 ) comment '회원';
 
-create unique index UIX_lms_member_email
-  on lms_member ( -- 회원
+create unique index UIX_book_member_email
+  on book_member ( -- 회원
     email asc    -- 이메일
   );
   

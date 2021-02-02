@@ -1,8 +1,5 @@
 package june.project.book;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -10,10 +7,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import june.project.book.dao.proxy.BookBoardDaoProxy;
-import june.project.book.dao.proxy.BookmarkDaoProxy;
-import june.project.book.dao.proxy.DaoProxyHelper;
-import june.project.book.dao.proxy.MemberDaoProxy;
+import june.project.book.dao.BookBoardDao;
+import june.project.book.dao.BookmarkDao;
+import june.project.book.dao.MemberDao;
+import june.project.book.dao.mariadb.BookBoardDaoImpl;
+import june.project.book.dao.mariadb.BookmarkDaoImpl;
+import june.project.book.dao.mariadb.MemberDaoImpl;
 import june.project.book.handler.BookBoardAddCommand;
 import june.project.book.handler.BookBoardDeleteCommand;
 import june.project.book.handler.BookBoardDetailCommand;
@@ -40,9 +39,6 @@ public class ClientApp {
   Deque<String> commandStack;
   Queue<String> commandQueue;
 
-  String host;
-  int port;
-
   HashMap<String, Command> commandMap = new HashMap<>();
 
   public ClientApp() {
@@ -50,24 +46,10 @@ public class ClientApp {
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
 
-    try {
-      // 사용자로부터 접속할 서버의 주소와 포트 번호를 입력 받는다.
-      host = prompt.inputString("서버? ");
-      port = prompt.inputInt("포트? ");
-
-    } catch (Exception e) {
-      System.out.println("서버 주소 또는 포트 번호가 유효하지 않습니다!");
-      keyboard.close();
-      return;
-    }
-
-    // Dao 프록시의 서버 연결을 도와줄 도우미 객체 준비
-    DaoProxyHelper daoProxyHelper = new DaoProxyHelper(host, port);
-
     // Dao 프록시 객체 준비
-    BookBoardDaoProxy bookBoardDao = new BookBoardDaoProxy(daoProxyHelper);
-    BookmarkDaoProxy bookmarkDao = new BookmarkDaoProxy(daoProxyHelper);
-    MemberDaoProxy memberDao = new MemberDaoProxy(daoProxyHelper);
+    BookBoardDao bookBoardDao = new BookBoardDaoImpl();
+    BookmarkDao bookmarkDao = new BookmarkDaoImpl();
+    MemberDao memberDao = new MemberDaoImpl();
 
     commandMap.put("/bookmark/add", new BookmarkAddCommand(bookmarkDao, prompt));
     commandMap.put("/bookmark/list", new BookmarkListCommand(bookmarkDao));
@@ -86,24 +68,6 @@ public class ClientApp {
     commandMap.put("/member/detail", new MemberDetailCommand(memberDao, prompt));
     commandMap.put("/member/update", new MemberUpdateCommand(memberDao, prompt));
     commandMap.put("/member/delete", new MemberDeleteCommand(memberDao, prompt));
-
-    commandMap.put("/server/stop", () -> {
-      try {
-        try (Socket socket = new Socket(host, port);
-
-            // 소켓을 통해 데이터를 읽고 쓰는 도구를 준비한다.
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-
-          out.writeUTF("/server/stop");
-          out.flush();
-          System.out.println("서버: " + in.readUTF());
-          System.out.println("안녕!");
-        }
-      } catch (Exception e) {
-        //
-      }
-    });
   }
 
   public void service() {

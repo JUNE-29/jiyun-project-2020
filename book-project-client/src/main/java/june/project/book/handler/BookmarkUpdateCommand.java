@@ -1,6 +1,5 @@
 package june.project.book.handler;
 
-import java.sql.Date;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
 import june.project.util.Prompt;
@@ -54,18 +53,12 @@ public class BookmarkUpdateCommand implements Command {
           prompt.inputString(String.format("이미지(%s)? ", oldBookmark.getPhoto()),
               oldBookmark.getPhoto()));
 
-      newBookmark.setDate(new Date(System.currentTimeMillis()));
-
-      if (oldBookmark.equals(newBookmark)) {
-        System.out.println("북마크 정보 변경을 취소했습니다.");
-        return;
-      }
-
       bookmarkDao.update(newBookmark);
       System.out.println("북마크 정보 변경했습니다.");
 
     } catch (Exception e) {
       System.out.println("변경 실패!");
+      e.printStackTrace();
     }
   }
 }
