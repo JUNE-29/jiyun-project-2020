@@ -1,13 +1,14 @@
 package june.project.book;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -136,14 +137,18 @@ public class ServerApp {
 
     try (Socket socket = clientSocket;
         // 클라이언트의 메시지를 수신하고 클라이언트로 전송할 입출력 도구 준비
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());) {
+        Scanner in = new Scanner(socket.getInputStream());
+        PrintStream out = new PrintStream(socket.getOutputStream())) {
 
-      System.out.println("통신을 위한 입출력 스트림을 준비하였음!");
+      String request = in.nextLine();
+      System.out.printf("=> %s \n", request);
+      
+      // 클라이언트에게 응답한다.
+      out.println("[JUNE] 안녕하세요!");
+      out.println("[JUNE] 반갑습니다!");
+      out.println("!end!");
 
-      String request = in.readUTF(); // 요청 메시지를 읽는다.
-      System.out.println("클라이언트가 보낸 메시지를 수신하였음!");
-
+      /*
       if (request.equalsIgnoreCase("/server/stop")) {
         quit(out);
         return 9;
@@ -165,6 +170,7 @@ public class ServerApp {
       } else {
         notFound(out);
       }
+      */
 
       out.flush();
       System.out.println("클라이언트에게 응답하였음!");

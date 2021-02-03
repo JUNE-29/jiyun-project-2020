@@ -1,7 +1,8 @@
 package june.project.book;
 
+import java.io.PrintStream;
+import java.net.Socket;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -9,28 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import june.project.book.dao.BookBoardDao;
-import june.project.book.dao.BookmarkDao;
-import june.project.book.dao.MemberDao;
-import june.project.book.dao.mariadb.BookBoardDaoImpl;
-import june.project.book.dao.mariadb.BookmarkDaoImpl;
-import june.project.book.dao.mariadb.MemberDaoImpl;
-import june.project.book.handler.BookBoardAddCommand;
-import june.project.book.handler.BookBoardDeleteCommand;
-import june.project.book.handler.BookBoardDetailCommand;
-import june.project.book.handler.BookBoardListCommand;
-import june.project.book.handler.BookBoardUpdateCommand;
-import june.project.book.handler.BookmarkAddCommand;
-import june.project.book.handler.BookmarkDeleteCommand;
-import june.project.book.handler.BookmarkDetailCommand;
-import june.project.book.handler.BookmarkListCommand;
-import june.project.book.handler.BookmarkUpdateCommand;
 import june.project.book.handler.Command;
-import june.project.book.handler.MemberAddCommand;
-import june.project.book.handler.MemberDeleteCommand;
-import june.project.book.handler.MemberDetailCommand;
-import june.project.book.handler.MemberListCommand;
-import june.project.book.handler.MemberUpdateCommand;
 import june.project.util.Prompt;
 
 public class ClientApp {
@@ -46,36 +26,8 @@ public class ClientApp {
   HashMap<String, Command> commandMap = new HashMap<>();
 
   public ClientApp() throws Exception {
-
     commandStack = new ArrayDeque<>();
     commandQueue = new LinkedList<>();
-
-    // DB 연결 객체 준비
-    Class.forName("org.mariadb.jdbc.Driver");
-    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb", "study", "1111");
-
-    // Dao 프록시 객체 준비
-    BookBoardDao bookBoardDao = new BookBoardDaoImpl(con);
-    BookmarkDao bookmarkDao = new BookmarkDaoImpl(con);
-    MemberDao memberDao = new MemberDaoImpl(con);
-
-    commandMap.put("/bookmark/add", new BookmarkAddCommand(bookmarkDao, prompt));
-    commandMap.put("/bookmark/list", new BookmarkListCommand(bookmarkDao));
-    commandMap.put("/bookmark/detail", new BookmarkDetailCommand(bookmarkDao, prompt));
-    commandMap.put("/bookmark/update", new BookmarkUpdateCommand(bookmarkDao, prompt));
-    commandMap.put("/bookmark/delete", new BookmarkDeleteCommand(bookmarkDao, prompt));
-
-    commandMap.put("/book/add", new BookBoardAddCommand(bookBoardDao, prompt));
-    commandMap.put("/book/list", new BookBoardListCommand(bookBoardDao));
-    commandMap.put("/book/detail", new BookBoardDetailCommand(bookBoardDao, prompt));
-    commandMap.put("/book/update", new BookBoardUpdateCommand(bookBoardDao, prompt));
-    commandMap.put("/book/delete", new BookBoardDeleteCommand(bookBoardDao, prompt));
-
-    commandMap.put("/member/add", new MemberAddCommand(memberDao, prompt));
-    commandMap.put("/member/list", new MemberListCommand(memberDao));
-    commandMap.put("/member/detail", new MemberDetailCommand(memberDao, prompt));
-    commandMap.put("/member/update", new MemberUpdateCommand(memberDao, prompt));
-    commandMap.put("/member/delete", new MemberDeleteCommand(memberDao, prompt));
   }
 
   public void service() {
@@ -99,30 +51,78 @@ public class ClientApp {
         break;
       }
 
-      // 명령어를 받아서 넘긴다.
       commandStack.push(command);
       commandQueue.offer(command);
 
+      // 명령어를 받아서 넘긴다.
       processCommand(command);
 
     }
     keyboard.close();
-
-    try {
-      con.close();
-    } catch (Exception e) {
-
-    }
   }
 
   private void processCommand(String command) {
+    // 명령어 형식을 변경한다!
+    // [기존방식]
+    // => 예) /book/list
+    // [새로운 방식]
+    // => 예) bitcamp://서버주소:포트번호/book/list
+    //
+    String host = null;
+    int port = 9999;
+    String servletPath = null;
 
-    Command commandHandler = commandMap.get(command);
-    if (commandHandler == null) {
-      System.out.println("실행할 수 없는 명령입니다.");
+    try {
+      if (!command.startsWith("bitcamp://")) {
+        throw new Exception("명령어 형식이 옳지 않습니다!");
+      }
+
+      System.out.println(command);
+      // command 예) bitcamp://localhost:9999/book/list
+      String url = command.substring(10);
+      // => localhost:9999/book/list
+
+      System.out.println(url);
+
+      int index = url.indexOf('/');
+      String[] str = //
+          url.substring(0, index) // localhost:9999
+              .split(":"); // {"localhost","9999"}
+      // substring 호출되서 스트링으로 리턴된 것을 나눈다.
+
+      host = str[0];
+      if (str.length == 2) {
+        port = Integer.parseInt(str[1]);
+      }
+      System.out.printf("=> %s:%d\n", host, port); // => localhost:9999
+
+      servletPath = url.substring(index); // => /book/list
+      System.out.printf("=> %s\n", servletPath);
+
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
       return;
     }
-    commandHandler.execute();
+
+    try (Socket socket = new Socket(host, port);
+        PrintStream out = new PrintStream(socket.getOutputStream());
+        Scanner in = new Scanner(socket.getInputStream())) {
+
+      // 서버에 명령을 보낸다.
+      out.println(servletPath);
+      out.flush();
+
+      // 서버의 응답을 읽어서 출력한다.
+      while (true) {
+        String response = in.nextLine();
+        if (response.equals("!end!")) {
+          break;
+        }
+        System.out.println(response);
+      }
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
   }
 
 
