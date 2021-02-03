@@ -16,21 +16,9 @@ import june.project.book.context.ApplicationContextListener;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
-import june.project.book.servlet.BookBoardAddServlet;
-import june.project.book.servlet.BookBoardDeleteServlet;
-import june.project.book.servlet.BookBoardDetailServlet;
 import june.project.book.servlet.BookBoardListServlet;
-import june.project.book.servlet.BookBoardUpdateServlet;
-import june.project.book.servlet.BookmarkAddServlet;
-import june.project.book.servlet.BookmarkDeleteServlet;
-import june.project.book.servlet.BookmarkDetailServlet;
 import june.project.book.servlet.BookmarkListServlet;
-import june.project.book.servlet.BookmarkUpdateServlet;
-import june.project.book.servlet.MemberAddServlet;
-import june.project.book.servlet.MemberDeleteServlet;
-import june.project.book.servlet.MemberDetailServlet;
 import june.project.book.servlet.MemberListServlet;
-import june.project.book.servlet.MemberUpdateServlet;
 import june.project.book.servlet.Servlet;
 
 public class ServerApp {
@@ -78,22 +66,22 @@ public class ServerApp {
     MemberDao memberDao = (MemberDao) context.get("memberDao");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
-    servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
-    servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardDao));
-    servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardDao));
-    servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardDao));
+    // servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
+    // servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardDao));
+    // servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardDao));
+    // servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardDao));
 
     servletMap.put("/bookmark/list", new BookmarkListServlet(bookmarkDao));
-    servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkDao));
-    servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
-    servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
-    servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
+    // servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkDao));
+    // servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
+    // servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
+    // servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
 
     servletMap.put("/member/list", new MemberListServlet(memberDao));
-    servletMap.put("/member/add", new MemberAddServlet(memberDao));
-    servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
-    servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
-    servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
+    // servletMap.put("/member/add", new MemberAddServlet(memberDao));
+    // servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
+    // servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
+    // servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
 
     try (
         // 서버쪽 연결 준비
@@ -108,11 +96,6 @@ public class ServerApp {
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었음!");
 
-        // 스레드풀을 사용할 때는 직접 스레드를 만들지 않는다.
-        // 단지 스레드풀에 "스레드가 실행할 코드(Runnable 구현체)"를 제출한다.
-        // => ExcutorService.submit(new Runnable() { public void run() {..});
-        // => 스레드풀에 스레드가 없으면 새로 만들어 Runnable 구현체를 실행한다.
-        // => 스레드풀에 스레드가 있으면 그 스레드를 이용하여 Runnable 구현체를 실행한다.
         executorService.submit(() -> {
           processRequest(socket);
           System.out.println("------------------요청처리 끝--------------------");
@@ -142,17 +125,12 @@ public class ServerApp {
 
       String request = in.nextLine();
       System.out.printf("=> %s \n", request);
-      
-      // 클라이언트에게 응답한다.
-      out.println("[JUNE] 안녕하세요!");
-      out.println("[JUNE] 반갑습니다!");
-      out.println("!end!");
 
-      /*
-      if (request.equalsIgnoreCase("/server/stop")) {
-        quit(out);
-        return 9;
-      }
+
+      // if (request.equalsIgnoreCase("/server/stop")) {
+      // quit(out);
+      // return 9;
+      // }
 
       Servlet servlet = servletMap.get(request);
 
@@ -161,8 +139,8 @@ public class ServerApp {
           servlet.service(in, out);
 
         } catch (Exception e) {
-          out.writeUTF("FAIL");
-          out.writeUTF(e.getMessage());
+          out.println("요청 처리 중 오류 발생!");
+          out.println(e.getMessage());
 
           System.out.println("클라이언트 요청 처리 중 오류 발생:");
           e.printStackTrace();
@@ -170,8 +148,8 @@ public class ServerApp {
       } else {
         notFound(out);
       }
-      */
 
+      out.println("!end!");
       out.flush();
       System.out.println("클라이언트에게 응답하였음!");
 
@@ -189,9 +167,8 @@ public class ServerApp {
     out.flush();
   }
 
-  private void notFound(ObjectOutputStream out) throws IOException {
-    out.writeUTF("FAIL");
-    out.writeUTF("요청한 명령을 처리할 수 없습니다.");
+  private void notFound(PrintStream out) throws IOException {
+    out.println("요청한 명령을 처리할 수 없습니다.");
   }
 
   public static void main(String[] args) {
