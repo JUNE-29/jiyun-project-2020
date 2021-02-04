@@ -1,7 +1,7 @@
 package june.project.book.servlet;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.Scanner;
 import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
 
@@ -14,18 +14,26 @@ public class MemberDetailServlet implements Servlet {
   }
 
   @Override
-  public void service(ObjectInputStream in, ObjectOutputStream out) throws Exception {
+  public void service(Scanner in, PrintStream out) throws Exception {
 
-    int no = in.readInt();
+    out.println("번호? ");
+    out.println("!{}!");
+    out.flush();
+
+    int no = Integer.parseInt(in.nextLine());
+
     Member member = memberDao.findByNo(no);
 
     if (member != null) {
-      out.writeUTF("OK");
-      out.writeObject(member);
+      out.printf("번호: %d \n", member.getNo());
+      out.printf("이름: %s\n", member.getName());
+      out.printf("이메일: %s\n", member.getEmail());
+      out.printf("암호: %s\n", member.getPassword());
+      out.printf("사진: %s\n", member.getPhoto());
+      out.printf("가입일: %s \n", member.getRegisteredDate());
 
     } else {
-      out.writeUTF("FAIL");
-      out.writeUTF("해당 번호의 게시물이 없습니다.");
+      out.println("해당 번호의 회원이 없습니다.");
     }
   }
 }

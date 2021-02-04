@@ -19,7 +19,7 @@ public class BookmarkListServlet implements Servlet {
 
     List<Bookmark> bookmark = bookmarkDao.findAll();
     for (Bookmark bm : bookmark) {
-      System.out.printf("%d, %s, %s, %s, %s\n", bm.getNo(), bm.getTitle(), bm.getBookTitle(),
+      out.printf("%d, %s, %s, %s, %s\n", bm.getNo(), bm.getTitle(), bm.getBookTitle(),
           bm.getAuthor(), bm.getDate());
     }
   }

@@ -19,7 +19,7 @@ public class BookBoardListServlet implements Servlet {
 
     List<BookBoard> bookBoard = bookBoardDao.findAll();
     for (BookBoard book : bookBoard) {
-      System.out.printf("%d, %s, %d점, %s, %d\n", //
+      out.printf("%d, %s, %d점, %s, %d\n", //
           book.getNo(), book.getBookTitle(), book.getScore(), book.getDate(), book.getBookStatus());
     }
   }

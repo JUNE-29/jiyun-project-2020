@@ -2,15 +2,12 @@ package june.project.book;
 
 import java.io.PrintStream;
 import java.net.Socket;
-import java.sql.Connection;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import june.project.book.handler.Command;
 import june.project.util.Prompt;
 
 public class ClientApp {
@@ -20,10 +17,6 @@ public class ClientApp {
 
   Deque<String> commandStack;
   Queue<String> commandQueue;
-
-  Connection con;
-
-  HashMap<String, Command> commandMap = new HashMap<>();
 
   public ClientApp() throws Exception {
     commandStack = new ArrayDeque<>();
@@ -82,7 +75,7 @@ public class ClientApp {
       String url = command.substring(10);
       // => localhost:9999/book/list
 
-      System.out.println(url);
+      // System.out.println(url);
 
       int index = url.indexOf('/');
       String[] str = //
@@ -94,10 +87,10 @@ public class ClientApp {
       if (str.length == 2) {
         port = Integer.parseInt(str[1]);
       }
-      System.out.printf("=> %s:%d\n", host, port); // => localhost:9999
+      // System.out.printf("=> %s:%d\n", host, port); // => localhost:9999
 
       servletPath = url.substring(index); // => /book/list
-      System.out.printf("=> %s\n", servletPath);
+      // System.out.printf("=> %s\n", servletPath);
 
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -117,8 +110,13 @@ public class ClientApp {
         String response = in.nextLine();
         if (response.equals("!end!")) {
           break;
+        } else if (response.equals("!{}!")) {
+
+          String input = prompt.inputString("");
+          out.println(input);
+        } else {
+          System.out.println(response);
         }
-        System.out.println(response);
       }
     } catch (Exception e) {
       System.out.println(e.getMessage());

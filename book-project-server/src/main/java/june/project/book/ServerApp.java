@@ -16,9 +16,21 @@ import june.project.book.context.ApplicationContextListener;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
+import june.project.book.servlet.BookBoardAddServlet;
+import june.project.book.servlet.BookBoardDeleteServlet;
+import june.project.book.servlet.BookBoardDetailServlet;
 import june.project.book.servlet.BookBoardListServlet;
+import june.project.book.servlet.BookBoardUpdateServlet;
+import june.project.book.servlet.BookmarkAddServlet;
+import june.project.book.servlet.BookmarkDeleteServlet;
+import june.project.book.servlet.BookmarkDetailServlet;
 import june.project.book.servlet.BookmarkListServlet;
+import june.project.book.servlet.BookmarkUpdateServlet;
+import june.project.book.servlet.MemberAddServlet;
+import june.project.book.servlet.MemberDeleteServlet;
+import june.project.book.servlet.MemberDetailServlet;
 import june.project.book.servlet.MemberListServlet;
+import june.project.book.servlet.MemberUpdateServlet;
 import june.project.book.servlet.Servlet;
 
 public class ServerApp {
@@ -66,22 +78,22 @@ public class ServerApp {
     MemberDao memberDao = (MemberDao) context.get("memberDao");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
-    // servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
-    // servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardDao));
-    // servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardDao));
-    // servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardDao));
+    servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
+    servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardDao));
+    servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardDao));
+    servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardDao));
 
     servletMap.put("/bookmark/list", new BookmarkListServlet(bookmarkDao));
-    // servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkDao));
-    // servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
-    // servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
-    // servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
+    servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkDao));
+    servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
+    servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
+    servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
 
     servletMap.put("/member/list", new MemberListServlet(memberDao));
-    // servletMap.put("/member/add", new MemberAddServlet(memberDao));
-    // servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
-    // servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
-    // servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
+    servletMap.put("/member/add", new MemberAddServlet(memberDao));
+    servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
+    servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
+    servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
 
     try (
         // 서버쪽 연결 준비
