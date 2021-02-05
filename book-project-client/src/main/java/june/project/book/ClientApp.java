@@ -50,6 +50,12 @@ public class ClientApp {
       // 명령어를 받아서 넘긴다.
       processCommand(command);
 
+      if (command.endsWith("/server/stop")) {
+        // 서버는 다음 클라이언트 요청이 들어 올 때 처리할 것이다.
+        // 이를 즉시 처리하도록 하기 위해
+        // 임의 요청을 한 번 더 보낸다.
+        processCommand(command);
+      }
     }
     keyboard.close();
   }
@@ -70,7 +76,7 @@ public class ClientApp {
         throw new Exception("명령어 형식이 옳지 않습니다!");
       }
 
-      System.out.println(command);
+      // System.out.println(command);
       // command 예) bitcamp://localhost:9999/book/list
       String url = command.substring(10);
       // => localhost:9999/book/list
@@ -110,10 +116,11 @@ public class ClientApp {
         String response = in.nextLine();
         if (response.equals("!end!")) {
           break;
-        } else if (response.equals("!{}!")) {
 
+        } else if (response.equals("!{}!")) {
           String input = prompt.inputString("");
           out.println(input);
+
         } else {
           System.out.println(response);
         }

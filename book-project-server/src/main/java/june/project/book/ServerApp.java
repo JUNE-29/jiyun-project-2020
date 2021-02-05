@@ -1,7 +1,6 @@
 package june.project.book;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -45,6 +44,9 @@ public class ServerApp {
 
   // 스레드풀
   ExecutorService executorService = Executors.newCachedThreadPool();
+
+  // 서버 멈춤 여부 설정 변수
+  boolean serverStop = false;
 
   // 옵저버를 등록하는 메서드이다.
   public void addApplicationContextListener(ApplicationContextListener listener) {
@@ -114,23 +116,48 @@ public class ServerApp {
           processRequest(socket);
           System.out.println("------------------요청처리 끝--------------------");
         });
+
+        // 현재 '서버 멈춤' 상태라면
+        // 다음 클라이언트 요청을 받지 않고 종료한다.
+        if (serverStop) {
+          break;
+        }
       }
 
     } catch (Exception e) {
       System.out.println("서버 준비 중 오류 발생!");
     }
 
-    notifyApplicationDestroyed();
-
     // 스레드풀을 다 사용했으면 종료
     executorService.shutdown();
     // => 스레드풀을 당장 종료시키는 것이 아니다.
     // => 스레드풀에 소속된 스레드들의 작업이 모두 끝나면 종료하는 뜻
 
+    // 모든 스레드가 끝날 때까지 DB커넥션을 종료하고 싶지 않다면
+    // 스레드가 끝났는지 검사하며 기다려야 한다.
+
+    while (true) {
+      if (executorService.isTerminated()) {
+        break;
+      }
+      try {
+        // 0.5초 마다 깨어나서 스레드 종료 여부를 검사한다.
+        Thread.sleep(500);
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    // 클라이언트 요청을 처리하는 스레드가 모두 종료된 후에 DB 커넥션을 닫도록 한다.
+    notifyApplicationDestroyed();
+
+    System.out.println("서버 종료!");
+
   } // service()
 
 
-  int processRequest(Socket clientSocket) {
+  void processRequest(Socket clientSocket) {
 
     try (Socket socket = clientSocket;
         // 클라이언트의 메시지를 수신하고 클라이언트로 전송할 입출력 도구 준비
@@ -138,13 +165,13 @@ public class ServerApp {
         PrintStream out = new PrintStream(socket.getOutputStream())) {
 
       String request = in.nextLine();
-      System.out.printf("=> %s \n", request);
+      System.out.printf("=> %s\n", request);
 
 
-      // if (request.equalsIgnoreCase("/server/stop")) {
-      // quit(out);
-      // return 9;
-      // }
+      if (request.equalsIgnoreCase("/server/stop")) {
+        quit(out);
+        return;
+      }
 
       Servlet servlet = servletMap.get(request);
 
@@ -167,17 +194,16 @@ public class ServerApp {
       out.flush();
       System.out.println("클라이언트에게 응답하였음!");
 
-      return 0;
-
     } catch (Exception e) {
       System.out.println("예외 발생: ");
       e.printStackTrace();
-      return -1;
     }
   } // prcessRequest()
 
-  private void quit(ObjectOutputStream out) throws IOException {
-    out.writeUTF("OK");
+  private void quit(PrintStream out) throws IOException {
+    serverStop = true;
+    out.println("OK");
+    out.println("!end!");
     out.flush();
   }
 
