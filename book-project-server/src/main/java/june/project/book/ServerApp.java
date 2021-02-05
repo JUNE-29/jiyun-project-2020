@@ -30,6 +30,7 @@ import june.project.book.servlet.MemberAddServlet;
 import june.project.book.servlet.MemberDeleteServlet;
 import june.project.book.servlet.MemberDetailServlet;
 import june.project.book.servlet.MemberListServlet;
+import june.project.book.servlet.MemberSearchServlet;
 import june.project.book.servlet.MemberUpdateServlet;
 import june.project.book.servlet.Servlet;
 
@@ -94,6 +95,7 @@ public class ServerApp {
     servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
     servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
     servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
+    servletMap.put("/member/search", new MemberSearchServlet(memberDao));
 
     try (
         // 서버쪽 연결 준비
