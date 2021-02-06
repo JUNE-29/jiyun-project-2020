@@ -15,6 +15,7 @@ import june.project.book.context.ApplicationContextListener;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
+import june.project.book.dao.PhotoBoardDao;
 import june.project.book.servlet.BookBoardAddServlet;
 import june.project.book.servlet.BookBoardDeleteServlet;
 import june.project.book.servlet.BookBoardDetailServlet;
@@ -31,6 +32,11 @@ import june.project.book.servlet.MemberDetailServlet;
 import june.project.book.servlet.MemberListServlet;
 import june.project.book.servlet.MemberSearchServlet;
 import june.project.book.servlet.MemberUpdateServlet;
+import june.project.book.servlet.PhotoBoardAddServlet;
+import june.project.book.servlet.PhotoBoardDeleteServlet;
+import june.project.book.servlet.PhotoBoardDetailServlet;
+import june.project.book.servlet.PhotoBoardListServlet;
+import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
 
 public class ServerApp {
@@ -79,6 +85,7 @@ public class ServerApp {
     BookBoardDao bookBoardDao = (BookBoardDao) context.get("bookBoardDao");
     BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
     MemberDao memberDao = (MemberDao) context.get("memberDao");
+    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
     servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
@@ -98,6 +105,12 @@ public class ServerApp {
     servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
     servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
     servletMap.put("/member/search", new MemberSearchServlet(memberDao));
+
+    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, bookmarkDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao));
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardDao));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao));
 
     try (
         // 서버쪽 연결 준비
