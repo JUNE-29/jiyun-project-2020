@@ -1,16 +1,21 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 import june.project.book.dao.PhotoBoardDao;
+import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoBoard;
+import june.project.book.domain.PhotoFile;
 
 public class PhotoBoardDetailServlet implements Servlet {
 
   PhotoBoardDao photoBoardDao;
+  PhotoFileDao photoFileDao;
 
-  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao) {
+  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
     this.photoBoardDao = photoBoardDao;
+    this.photoFileDao = photoFileDao;
   }
 
   @Override
@@ -30,6 +35,13 @@ public class PhotoBoardDetailServlet implements Servlet {
       out.printf("등록일: %s\n", photoBoard.getCreadtedDate());
       out.printf("조회수: %s\n", photoBoard.getViewCount());
       out.printf("책: %s\n", photoBoard.getBookmark().getBookTitle());
+      out.println("사진 파일: ");
+
+      List<PhotoFile> photoFiles = photoFileDao.findAll(photoBoard.getNo());
+      for (PhotoFile photoFile : photoFiles) {
+        out.printf("> %s\n", photoFile.getFilePath());
+      }
+
     } else {
       out.println("해당 번호의 사진 게시글이 없습니다.");
     }

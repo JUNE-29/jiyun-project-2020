@@ -16,6 +16,7 @@ import june.project.book.dao.BookBoardDao;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
 import june.project.book.dao.PhotoBoardDao;
+import june.project.book.dao.PhotoFileDao;
 import june.project.book.servlet.BookBoardAddServlet;
 import june.project.book.servlet.BookBoardDeleteServlet;
 import june.project.book.servlet.BookBoardDetailServlet;
@@ -86,6 +87,7 @@ public class ServerApp {
     BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
     MemberDao memberDao = (MemberDao) context.get("memberDao");
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
+    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
 
     servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
     servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
@@ -107,10 +109,11 @@ public class ServerApp {
     servletMap.put("/member/search", new MemberSearchServlet(memberDao));
 
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, bookmarkDao));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao));
-    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardDao));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/add",
+        new PhotoBoardAddServlet(photoBoardDao, bookmarkDao, photoFileDao));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao));
 
     try (
         // 서버쪽 연결 준비

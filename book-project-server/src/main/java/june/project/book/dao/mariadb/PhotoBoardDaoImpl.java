@@ -22,7 +22,19 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
     try (Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("insert into book_photo(titl,bookmark_id) values('" //
           + photoBoard.getTitle() + "', " + photoBoard.getBookmark().getNo() //
-          + ")");
+          + ")", //
+          Statement.RETURN_GENERATED_KEYS // insert 후 PK값 리턴 받기
+      );
+
+      // auto-increment PK값을 꺼내기 위한 준비
+      try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
+
+        // PK 컬럼의 값을 가져온다.
+        generatedKeySet.next();
+
+        // 가져온 PK 컬럼의 값을 PhotoBoard 객체에 거꾸로 담는다.
+        photoBoard.setNo(generatedKeySet.getInt(1));
+      }
 
       return result;
     }

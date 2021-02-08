@@ -8,6 +8,7 @@ import june.project.book.dao.mariadb.BookBoardDaoImpl;
 import june.project.book.dao.mariadb.BookmarkDaoImpl;
 import june.project.book.dao.mariadb.MemberDaoImpl;
 import june.project.book.dao.mariadb.PhotoBoardDaoImpl;
+import june.project.book.dao.mariadb.PhotoFileDaoImpl;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -24,6 +25,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("bookmarkDao", new BookmarkDaoImpl(con));
       context.put("memberDao", new MemberDaoImpl(con));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(con));
+      context.put("photoFileDao", new PhotoFileDaoImpl(con));
 
     } catch (Exception e) {
       e.printStackTrace();
