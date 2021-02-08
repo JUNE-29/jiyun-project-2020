@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
+import june.project.util.Prompt;
 
 public class BookBoardAddServlet implements Servlet {
 
@@ -19,50 +20,23 @@ public class BookBoardAddServlet implements Servlet {
 
     BookBoard bookBoard = new BookBoard();
 
-    out.println("도서명?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setBookTitle(in.nextLine());
+    bookBoard.setBookTitle(Prompt.getString(in, out, "도서명?"));
 
-    out.println("지은이?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setAuthor(in.nextLine());
+    bookBoard.setAuthor(Prompt.getString(in, out, "지은이?"));
 
-    out.println("출판사?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setPublisher(in.nextLine());
+    bookBoard.setPublisher(Prompt.getString(in, out, "출판사?"));
 
-    out.println("카테고리?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setCategories(in.nextLine());
+    bookBoard.setCategories(Prompt.getString(in, out, "카테고리?"));
 
-    out.println("출판 연도?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setPublishedDate(in.nextLine());
+    bookBoard.setPublishedDate(Prompt.getString(in, out, "출판 연도?"));
 
-    out.println("내용(메모)?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setContent(in.nextLine());
+    bookBoard.setContent(Prompt.getString(in, out, "내용(메모)?"));
 
-    out.println("이미지?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setPhoto(in.nextLine());
+    bookBoard.setPhoto(Prompt.getString(in, out, "이미지?"));
 
-    out.println("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정)?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setBookStatus(Integer.parseInt(in.nextLine()));
+    bookBoard.setBookStatus(Prompt.getInt(in, out, "진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정)?"));
 
-    out.println("책에 대한 점수(5점만점)?");
-    out.println("!{}!");
-    out.flush();
-    bookBoard.setScore(Integer.parseInt(in.nextLine()));
+    bookBoard.setScore(Prompt.getInt(in, out, "책에 대한 점수(5점만점)?"));
 
     if (bookBoardDao.insert(bookBoard) > 0) {
       out.println("저장하였습니다.");

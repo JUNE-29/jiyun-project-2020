@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
+import june.project.util.Prompt;
 
 public class BookmarkAddServlet implements Servlet {
 
@@ -18,35 +19,17 @@ public class BookmarkAddServlet implements Servlet {
 
     Bookmark bookmark = new Bookmark();
 
-    out.println("게시글 제목? ");
-    out.println("!{}!");
-    out.flush();
-    bookmark.setTitle(in.nextLine());
+    bookmark.setTitle(Prompt.getString(in, out, "게시글 제목? "));
 
-    out.println("도서명? ");
-    out.println("!{}!");
-    out.flush();
-    bookmark.setBookTitle(in.nextLine());
+    bookmark.setBookTitle(Prompt.getString(in, out, "도서명? "));
 
-    out.println("지은이? ");
-    out.println("!{}!");
-    out.flush();
-    bookmark.setAuthor(in.nextLine());
+    bookmark.setAuthor(Prompt.getString(in, out, "지은이? "));
 
-    out.println("출판사? ");
-    out.println("!{}!");
-    out.flush();
-    bookmark.setPublisher(in.nextLine());
+    bookmark.setPublisher(Prompt.getString(in, out, "출판사? "));
 
-    out.println("내용? ");
-    out.println("!{}!");
-    out.flush();
-    bookmark.setContent(in.nextLine());
+    bookmark.setContent(Prompt.getString(in, out, "내용? "));
 
-    out.println("이미지? ");
-    out.println("!{}!");
-    out.flush();
-    bookmark.setPhoto(in.nextLine());
+    bookmark.setPhoto(Prompt.getString(in, out, "이미지? "));
 
     if (bookmarkDao.insert(bookmark) > 0) {
       out.println("저장하였습니다.");

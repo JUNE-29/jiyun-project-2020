@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
+import june.project.util.Prompt;
 
 public class BookmarkUpdateServlet implements Servlet {
 
@@ -16,14 +17,9 @@ public class BookmarkUpdateServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "번호? ");
 
     Bookmark old = bookmarkDao.findByNo(no);
-
     if (old == null) {
       out.println("해당 번호의 게시글이 없습니다.");
       return;
@@ -33,35 +29,23 @@ public class BookmarkUpdateServlet implements Servlet {
 
     bookmark.setNo(no);
 
-    out.printf("제목(%s)? \n", old.getTitle());
-    out.println("!{}!");
-    out.flush();
-    bookmark.setTitle(in.nextLine());
+    bookmark.setTitle(Prompt.getString(in, out, //
+        String.format("제목(%s)? \n", old.getTitle()), old.getTitle()));
 
-    out.printf("도서명(%s)? \n", old.getBookTitle());
-    out.println("!{}!");
-    out.flush();
-    bookmark.setBookTitle(in.nextLine());
+    bookmark.setBookTitle(Prompt.getString(in, out, //
+        String.format("도서명(%s)? \n", old.getBookTitle()), old.getBookTitle()));
 
-    out.printf("지은이(%s)? \n", old.getAuthor());
-    out.println("!{}!");
-    out.flush();
-    bookmark.setAuthor(in.nextLine());
+    bookmark.setAuthor(Prompt.getString(in, out, //
+        String.format("지은이(%s)? \n", old.getAuthor()), old.getAuthor()));
 
-    out.printf("출판사(%s)? \n", old.getPublisher());
-    out.println("!{}!");
-    out.flush();
-    bookmark.setPublisher(in.nextLine());
+    bookmark.setPublisher(Prompt.getString(in, out, //
+        String.format("출판사(%s)? \n", old.getPublisher()), old.getPublisher()));
 
-    out.printf("내용(%s)? \n", old.getContent());
-    out.println("!{}!");
-    out.flush();
-    bookmark.setContent(in.nextLine());
+    bookmark.setContent(Prompt.getString(in, out, //
+        String.format("내용(%s)? \n", old.getContent()), old.getContent()));
 
-    out.printf("이미지(%s)? \n", old.getPhoto());
-    out.println("!{}!");
-    out.flush();
-    bookmark.setPhoto(in.nextLine());
+    bookmark.setPhoto(Prompt.getString(in, out, //
+        String.format("이미지(%s)? \n", old.getPhoto()), old.getPhoto()));
 
     if (bookmarkDao.update(bookmark) > 0) {
       out.println("변경했습니다.");

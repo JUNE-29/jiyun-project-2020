@@ -7,6 +7,7 @@ import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
+import june.project.util.Prompt;
 
 public class PhotoBoardDetailServlet implements Servlet {
 
@@ -21,11 +22,7 @@ public class PhotoBoardDetailServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("사진 게시글 번호? ");
-    out.println("!{}!");
-    out.flush();
-
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "사진 게시글 번호? ");
 
     PhotoBoard photoBoard = photoBoardDao.findByNo(no);
 

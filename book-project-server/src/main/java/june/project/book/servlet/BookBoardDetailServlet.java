@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
+import june.project.util.Prompt;
 
 public class BookBoardDetailServlet implements Servlet {
 
@@ -16,10 +17,7 @@ public class BookBoardDetailServlet implements Servlet {
   @Override
   public void service(Scanner in, PrintStream out) throws Exception {
 
-    out.println("번호? ");
-    out.println("!{}!");
-    out.flush();
-    int no = Integer.parseInt(in.nextLine());
+    int no = Prompt.getInt(in, out, "번호? ");
 
     BookBoard bookBoard = bookBoardDao.findByNo(no);
 

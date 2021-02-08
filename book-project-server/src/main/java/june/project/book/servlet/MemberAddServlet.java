@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
+import june.project.util.Prompt;
 
 public class MemberAddServlet implements Servlet {
 
@@ -18,25 +19,13 @@ public class MemberAddServlet implements Servlet {
 
     Member member = new Member();
 
-    out.println("이름? ");
-    out.println("!{}!");
-    out.flush();
-    member.setName(in.nextLine());
+    member.setName(Prompt.getString(in, out, "이름? "));
 
-    out.println("이메일? ");
-    out.println("!{}!");
-    out.flush();
-    member.setEmail(in.nextLine());
+    member.setEmail(Prompt.getString(in, out, "이메일? "));
 
-    out.println("비밀번호? ");
-    out.println("!{}!");
-    out.flush();
-    member.setPassword(in.nextLine());
+    member.setPassword(Prompt.getString(in, out, "비밀번호? "));
 
-    out.println("사진? ");
-    out.println("!{}!");
-    out.flush();
-    member.setPhoto(in.nextLine());
+    member.setPhoto(Prompt.getString(in, out, "사진? "));
 
     if (memberDao.insert(member) > 0) {
       out.println("등록했습니다.");
