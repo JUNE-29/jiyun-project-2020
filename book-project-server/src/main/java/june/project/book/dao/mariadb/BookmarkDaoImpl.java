@@ -1,30 +1,26 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
+import june.project.util.ConnectionFactory;
 
 public class BookmarkDaoImpl implements BookmarkDao {
 
-  String jdbcUrl;
-  String username;
-  String password;
+  ConnectionFactory conFactory;
 
-  public BookmarkDaoImpl(String jdbcUrl, String username, String password) {
-    this.jdbcUrl = jdbcUrl;
-    this.username = username;
-    this.password = password;
+  public BookmarkDaoImpl(ConnectionFactory conFactory) {
+    this.conFactory = conFactory;
   }
 
   @Override
   public List<Bookmark> findAll() throws Exception {
 
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select bookmark_id, titl, book_titl, auth, cdt from bookmark")) {
@@ -47,7 +43,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
 
   @Override
   public int insert(Bookmark bookmark) throws Exception {
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt
@@ -63,7 +59,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
   @Override
   public Bookmark findByNo(int no) throws Exception {
 
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select bookmark_id, titl, book_titl, auth, pub, conts, photo, cdt" + " from bookmark"
@@ -92,7 +88,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
   @Override
   public int update(Bookmark bookmark) throws Exception {
 
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update bookmark set " + "titl = '" + bookmark.getTitle() //
@@ -110,7 +106,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+    try (Connection con = conFactory.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from bookmark where bookmark_id=" + no);

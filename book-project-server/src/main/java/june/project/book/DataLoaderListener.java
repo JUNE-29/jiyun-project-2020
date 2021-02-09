@@ -7,6 +7,7 @@ import june.project.book.dao.mariadb.BookmarkDaoImpl;
 import june.project.book.dao.mariadb.MemberDaoImpl;
 import june.project.book.dao.mariadb.PhotoBoardDaoImpl;
 import june.project.book.dao.mariadb.PhotoFileDaoImpl;
+import june.project.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -14,16 +15,18 @@ public class DataLoaderListener implements ApplicationContextListener {
   public void contextInitialized(Map<String, Object> context) {
 
     try {
-
       String jdbcUrl = "jdbc:mariadb://localhost:3306/studydb";
       String username = "study";
       String password = "1111";
 
-      context.put("bookBoardDao", new BookBoardDaoImpl(jdbcUrl, username, password));
-      context.put("bookmarkDao", new BookmarkDaoImpl(jdbcUrl, username, password));
-      context.put("memberDao", new MemberDaoImpl(jdbcUrl, username, password));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(jdbcUrl, username, password));
-      context.put("photoFileDao", new PhotoFileDaoImpl(jdbcUrl, username, password));
+      // Connection 팩토리 준비
+      ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
+
+      context.put("bookBoardDao", new BookBoardDaoImpl(conFactory));
+      context.put("bookmarkDao", new BookmarkDaoImpl(conFactory));
+      context.put("memberDao", new MemberDaoImpl(conFactory));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
+      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
 
     } catch (Exception e) {
       e.printStackTrace();
