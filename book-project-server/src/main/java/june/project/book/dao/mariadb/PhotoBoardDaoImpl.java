@@ -1,6 +1,7 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -11,15 +12,20 @@ import june.project.book.domain.PhotoBoard;
 
 public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
-  Connection con;
+  String jdbcUrl;
+  String username;
+  String password;
 
-  public PhotoBoardDaoImpl(Connection con) {
-    this.con = con;
+  public PhotoBoardDaoImpl(String jdbcUrl, String username, String password) {
+    this.jdbcUrl = jdbcUrl;
+    this.username = username;
+    this.password = password;
   }
 
   @Override
   public int insert(PhotoBoard photoBoard) throws Exception {
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("insert into book_photo(titl,bookmark_id) values('" //
           + photoBoard.getTitle() + "', " + photoBoard.getBookmark().getNo() //
           + ")", //
@@ -43,7 +49,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public List<PhotoBoard> findAllByBookmarkNo(int bookmarkNo) throws Exception {
 
-    try (Statement stmt = con.createStatement();
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select photo_id, titl, cdt, vw_cnt, bookmark_id" //
             + " from book_photo" + " where bookmark_id=" + bookmarkNo //
             + " order by photo_id desc")) {
@@ -66,7 +73,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
   @Override
   public PhotoBoard findByNo(int no) throws Exception {
-    try (Statement stmt = con.createStatement(); //
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery("select" //
             + " p.photo_id," //
             + " p.titl," //
@@ -103,7 +111,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update book_photo set titl='" //
           + photoBoard.getTitle() //
@@ -116,7 +125,8 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Statement stmt = con.createStatement()) {
+    try (Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+        Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate(//
           "delete from book_photo" //
               + " where photo_id=" + no);

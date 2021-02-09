@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import june.project.book.DataLoaderListener;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoBoard;
@@ -37,8 +36,6 @@ public class PhotoBoardUpdateServlet implements Servlet {
         String.format("제목(%s)? \n", old.getTitle()), old.getTitle()));
     photoBoard.setNo(no);
 
-    DataLoaderListener.con.setAutoCommit(false);
-
     try {
 
       if (photoBoardDao.update(photoBoard) == 0) {
@@ -65,17 +62,12 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFile.setBoardNo(no);
           photoFileDao.insert(photoFile);
         }
-        DataLoaderListener.con.commit();
-        out.println("사진 게시글을 변경했습니다.");
-
       }
+      out.println("사진 게시글을 변경했습니다.");
+
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
       out.println(e.getMessage());
 
-    } finally {
-      DataLoaderListener.con.setAutoCommit(true);
-      // 원래대로 자동으로 커밋하려고 true로 바꾼다.
     }
   }
 

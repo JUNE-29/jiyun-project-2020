@@ -2,7 +2,6 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.DataLoaderListener;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
 import june.project.util.Prompt;
@@ -22,26 +21,18 @@ public class PhotoBoardDeleteServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    // 사진 게시글을 삭제하기 전에 먼저 자식 테이블에 있는
-    // 첨부 파일 데이터를 삭제한다.
     photoFileDao.deleteAll(no);
-
-    DataLoaderListener.con.setAutoCommit(false);
 
     try {
 
       if (photoBoardDao.delete(no) == 0) {
         throw new Exception("해당 번호의 사진 게시글이 없습니다.");
       }
-      DataLoaderListener.con.commit();
       out.println("사진 게시글을 삭제했습니다.");
 
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
       out.println(e.getMessage());
 
-    } finally {
-      DataLoaderListener.con.setAutoCommit(true);
     }
   }
 }

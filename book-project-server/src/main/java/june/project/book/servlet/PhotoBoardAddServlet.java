@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import june.project.book.DataLoaderListener;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
@@ -43,11 +42,6 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setBookmark(bookmark);
 
-    // 트랜잭션을 시작하기 위해 auto-commit을 수동으로 바꾼다.
-    DataLoaderListener.con.setAutoCommit(false);
-    // 이 이후부터 하는 데이터 변경 작업은 모두 임시 테이블에 보관된다.
-    // 오직 commit 명령을 DBMS에 보낼 때만 진짜 테이블에 적용된다.
-
     try {
 
       if (photoBoardDao.insert(photoBoard) == 0) {
@@ -60,15 +54,11 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFileDao.insert(photoFile);
       }
 
-      DataLoaderListener.con.commit();
       out.println("새 게시글을 등록했습니다.");
 
     } catch (Exception e) {
-      DataLoaderListener.con.rollback();
       out.println(e.getMessage());
 
-    } finally {
-      DataLoaderListener.con.setAutoCommit(true);
     }
   }
 
