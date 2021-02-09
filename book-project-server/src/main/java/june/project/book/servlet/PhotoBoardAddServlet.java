@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import june.project.book.DataLoaderListener;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
@@ -42,19 +43,34 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setBookmark(bookmark);
 
-    if (photoBoardDao.insert(photoBoard) > 0) {
+    // 트랜잭션을 시작하기 위해 auto-commit을 수동으로 바꾼다.
+    DataLoaderListener.con.setAutoCommit(false);
+    // 이 이후부터 하는 데이터 변경 작업은 모두 임시 테이블에 보관된다.
+    // 오직 commit 명령을 DBMS에 보낼 때만 진짜 테이블에 적용된다.
 
-      List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
-      for (PhotoFile photoFile : photoFiles) {
-        photoFile.setBoardNo(photoBoard.getNo());
-        photoFileDao.insert(photoFile);
+    try {
+
+      if (photoBoardDao.insert(photoBoard) > 0) {
+
+        List<PhotoFile> photoFiles = inputPhotoFiles(in, out);
+        for (PhotoFile photoFile : photoFiles) {
+          photoFile.setBoardNo(photoBoard.getNo());
+          photoFileDao.insert(photoFile);
+        }
+
+        DataLoaderListener.con.commit();
+        out.println("새 게시글을 등록했습니다.");
       }
-      out.println("새 게시글을 등록했습니다.");
 
-    } else {
-      out.println("게시글 등록에 실패했습니다.");
+    } catch (Exception e) {
+      DataLoaderListener.con.rollback();
+      out.println(e.getMessage());
+
+    } finally {
+      DataLoaderListener.con.setAutoCommit(true);
     }
   }
+
 
   private List<PhotoFile> inputPhotoFiles(Scanner in, PrintStream out) {
 
