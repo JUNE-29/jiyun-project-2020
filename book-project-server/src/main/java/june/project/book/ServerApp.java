@@ -39,6 +39,7 @@ import june.project.book.servlet.PhotoBoardDetailServlet;
 import june.project.book.servlet.PhotoBoardListServlet;
 import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
+import june.project.util.ConnectionFactory;
 
 public class ServerApp {
 
@@ -82,6 +83,9 @@ public class ServerApp {
   public void service() {
 
     notifyApplicationInitialized();
+
+    // ConnectionFactory 꺼낸다.
+    ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
 
     BookBoardDao bookBoardDao = (BookBoardDao) context.get("bookBoardDao");
     BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
@@ -130,6 +134,8 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
+          // 스레드에 보관된 Connection 객체를 제거한다.
+          conFactory.removeConnection();
           System.out.println("------------------요청처리 끝--------------------");
         });
 
