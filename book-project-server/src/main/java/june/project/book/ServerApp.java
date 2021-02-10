@@ -39,6 +39,7 @@ import june.project.book.servlet.PhotoBoardDetailServlet;
 import june.project.book.servlet.PhotoBoardListServlet;
 import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
+import june.project.sql.ConnectionProxy;
 import june.project.util.ConnectionFactory;
 
 public class ServerApp {
@@ -134,8 +135,17 @@ public class ServerApp {
 
         executorService.submit(() -> {
           processRequest(socket);
-          // 스레드에 보관된 Connection 객체를 제거한다.
-          conFactory.removeConnection();
+
+          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
+          if (con != null) {
+            try {
+              // 커넥션 객체를 진짜로 닫는다.
+              con.realClose(); // 제거된 Connection을 받아서 진짜로 닫는다.
+            } catch (Exception e) {
+
+            }
+          }
+
           System.out.println("------------------요청처리 끝--------------------");
         });
 
