@@ -1,6 +1,7 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,17 +11,20 @@ import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
+import june.project.util.ConnectionFactory;
 import june.project.util.Prompt;
 
 public class PhotoBoardAddServlet implements Servlet {
 
+  ConnectionFactory conFactory;
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   BookmarkDao bookmarkDao;
 
 
-  public PhotoBoardAddServlet(PhotoBoardDao photoBoardDao, BookmarkDao bookmarkDao,
-      PhotoFileDao photoFileDao) {
+  public PhotoBoardAddServlet(ConnectionFactory conFactory, PhotoBoardDao photoBoardDao,
+      BookmarkDao bookmarkDao, PhotoFileDao photoFileDao) {
+    this.conFactory = conFactory;
     this.photoBoardDao = photoBoardDao;
     this.bookmarkDao = bookmarkDao;
     this.photoFileDao = photoFileDao;
@@ -42,6 +46,15 @@ public class PhotoBoardAddServlet implements Servlet {
 
     photoBoard.setBookmark(bookmark);
 
+    // 트랜잭션 시작
+    Connection con = conFactory.getConnection();
+    // => ConnectionFactory는 스레드에 보관된 Connection객체를 찾을 것이다.
+    // => 있으면 스레드에 보관된 Connection 객체를 리턴해 줄 것이고
+    // => 없으면 새로 만들어 리턴해 줄 것이다.
+    // => 물론 새로 만든 Connection 객체는 스레드에도 보관될 것이다.
+
+    con.setAutoCommit(false);
+
     try {
 
       if (photoBoardDao.insert(photoBoard) == 0) {
@@ -53,12 +66,15 @@ public class PhotoBoardAddServlet implements Servlet {
         photoFile.setBoardNo(photoBoard.getNo());
         photoFileDao.insert(photoFile);
       }
-
+      con.commit();
       out.println("새 게시글을 등록했습니다.");
 
     } catch (Exception e) {
+      con.rollback();
       out.println(e.getMessage());
 
+    } finally {
+      con.setAutoCommit(true);
     }
   }
 
@@ -72,10 +88,7 @@ public class PhotoBoardAddServlet implements Servlet {
     ArrayList<PhotoFile> photoFiles = new ArrayList<>();
 
     while (true) {
-      out.println("사진 파일? ");
-      out.println("!{}!");
-      out.flush();
-      String filepath = in.nextLine();
+      String filepath = Prompt.getString(in, out, "사진 파일? ");
 
       if (filepath.length() == 0) {
         if (photoFiles.size() > 0) {

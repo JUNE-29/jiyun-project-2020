@@ -116,9 +116,11 @@ public class ServerApp {
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, bookmarkDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(photoBoardDao, bookmarkDao, photoFileDao));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardDao, photoFileDao));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardDao, photoFileDao));
+        new PhotoBoardAddServlet(conFactory, photoBoardDao, bookmarkDao, photoFileDao));
+    servletMap.put("/photoboard/update",
+        new PhotoBoardUpdateServlet(conFactory, photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/delete",
+        new PhotoBoardDeleteServlet(conFactory, photoBoardDao, photoFileDao));
 
     try (
         // 서버쪽 연결 준비
