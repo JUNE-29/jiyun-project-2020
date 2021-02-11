@@ -8,20 +8,20 @@ import java.util.List;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.PhotoBoard;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class PhotoBoardDaoImpl implements PhotoBoardDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public PhotoBoardDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public PhotoBoardDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(PhotoBoard photoBoard) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate("insert into book_photo(titl,bookmark_id) values('" //
           + photoBoard.getTitle() + "', " + photoBoard.getBookmark().getNo() //
@@ -46,7 +46,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public List<PhotoBoard> findAllByBookmarkNo(int bookmarkNo) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select photo_id, titl, cdt, vw_cnt, bookmark_id" //
             + " from book_photo" + " where bookmark_id=" + bookmarkNo //
@@ -71,7 +71,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public PhotoBoard findByNo(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery("select" //
             + " p.photo_id," //
@@ -109,7 +109,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int update(PhotoBoard photoBoard) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update book_photo set titl='" //
@@ -123,7 +123,7 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
       int result = stmt.executeUpdate(//
           "delete from book_photo" //

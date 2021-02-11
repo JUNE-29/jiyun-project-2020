@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoFile;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class PhotoFileDaoImpl implements PhotoFileDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public PhotoFileDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public PhotoFileDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(PhotoFile photoFile) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate( //
@@ -35,7 +35,7 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
   @Override
   public List<PhotoFile> findAll(int boardNo) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
 
         ResultSet rs = stmt.executeQuery("select photo_file_id, photo_id, file_path" //
@@ -72,7 +72,7 @@ public class PhotoFileDaoImpl implements PhotoFileDao {
   @Override
   public int deleteAll(int boardNo) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate( //

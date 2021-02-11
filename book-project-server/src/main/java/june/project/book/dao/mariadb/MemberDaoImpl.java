@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class MemberDaoImpl implements MemberDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public MemberDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public MemberDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public List<Member> findAll() throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select member_id, name, email, cdt from book_member")) {
@@ -43,7 +43,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int insert(Member member) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("insert into book_member(name, email, pwd, photo) values('" //
@@ -57,7 +57,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public Member findByNo(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select member_id, name, email, pwd, cdt, photo " + "from book_member"
@@ -82,7 +82,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int update(Member member) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update book_member set" //
@@ -99,7 +99,7 @@ public class MemberDaoImpl implements MemberDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from book_member where member_id=" + no);
@@ -109,7 +109,7 @@ public class MemberDaoImpl implements MemberDao {
 
   @Override
   public List<Member> findByKeyword(String keyword) throws Exception {
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("select member_id, name, email, cdt" //
             + " from book_member" //

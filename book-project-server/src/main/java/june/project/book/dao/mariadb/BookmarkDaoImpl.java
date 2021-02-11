@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class BookmarkDaoImpl implements BookmarkDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public BookmarkDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public BookmarkDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public List<Bookmark> findAll() throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select bookmark_id, titl, book_titl, auth, cdt from bookmark")) {
@@ -43,7 +43,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
 
   @Override
   public int insert(Bookmark bookmark) throws Exception {
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt
@@ -59,7 +59,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
   @Override
   public Bookmark findByNo(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select bookmark_id, titl, book_titl, auth, pub, conts, photo, cdt" + " from bookmark"
@@ -88,7 +88,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
   @Override
   public int update(Bookmark bookmark) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update bookmark set " + "titl = '" + bookmark.getTitle() //
@@ -106,7 +106,7 @@ public class BookmarkDaoImpl implements BookmarkDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from bookmark where bookmark_id=" + no);

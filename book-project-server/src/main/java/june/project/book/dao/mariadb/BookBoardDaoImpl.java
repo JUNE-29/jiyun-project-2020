@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class BookBoardDaoImpl implements BookBoardDao {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public BookBoardDaoImpl(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public BookBoardDaoImpl(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public int insert(BookBoard bookBoard) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("insert into book_board(titl, auth, pub, cate, pub_dt, conts,"
           + " photo, score, book_st) values('" //
@@ -37,7 +37,7 @@ public class BookBoardDaoImpl implements BookBoardDao {
   @Override
   public List<BookBoard> findAll() throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select board_id, titl, score, cdt, book_st from book_board")) {
@@ -60,7 +60,7 @@ public class BookBoardDaoImpl implements BookBoardDao {
 
   @Override
   public BookBoard findByNo(int no) throws Exception {
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement(); //
         ResultSet rs = stmt.executeQuery( //
             "select board_id, titl, auth, pub, cate, pub_dt, conts, photo, score, book_st, cdt "
@@ -91,7 +91,7 @@ public class BookBoardDaoImpl implements BookBoardDao {
 
   @Override
   public int update(BookBoard bookBoard) throws Exception {
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("update book_board set" //
@@ -113,7 +113,7 @@ public class BookBoardDaoImpl implements BookBoardDao {
   @Override
   public int delete(int no) throws Exception {
 
-    try (Connection con = conFactory.getConnection(); //
+    try (Connection con = dataSource.getConnection(); //
         Statement stmt = con.createStatement()) {
 
       int result = stmt.executeUpdate("delete from book_board where board_id=" + no);

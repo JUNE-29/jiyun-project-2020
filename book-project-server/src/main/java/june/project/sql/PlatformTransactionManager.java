@@ -1,31 +1,32 @@
 package june.project.sql;
 
 import java.sql.Connection;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class PlatformTransactionManager {
 
-  ConnectionFactory conFactory;
+  DataSource dataSource;
 
-  public PlatformTransactionManager(ConnectionFactory conFactory) {
-    this.conFactory = conFactory;
+  public PlatformTransactionManager(DataSource conFactory) {
+    this.dataSource = conFactory;
   }
 
   public void beginTransaction() throws Exception {
     // 현재 스레드에 보관된 커넥션을 가져온다.
-    Connection con = conFactory.getConnection();
+    Connection con = dataSource.getConnection();
 
+    // 커넥션을 수동 커밋 상태로 만든다.
     con.setAutoCommit(false);
   }
 
   public void commit() throws Exception {
-    Connection con = conFactory.getConnection();
+    Connection con = dataSource.getConnection();
     con.commit();
     con.setAutoCommit(true);
   }
 
   public void rollback() throws Exception {
-    Connection con = conFactory.getConnection();
+    Connection con = dataSource.getConnection();
     con.rollback();
     con.setAutoCommit(true);
   }

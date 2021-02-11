@@ -39,9 +39,8 @@ import june.project.book.servlet.PhotoBoardDetailServlet;
 import june.project.book.servlet.PhotoBoardListServlet;
 import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
-import june.project.sql.ConnectionProxy;
 import june.project.sql.PlatformTransactionManager;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class ServerApp {
 
@@ -87,7 +86,7 @@ public class ServerApp {
     notifyApplicationInitialized();
 
     // ConnectionFactory 꺼낸다.
-    ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
+    DataSource dataSource = (DataSource) context.get("dataSource");
 
     // 트랜잭션 관리자를 꺼내 변수에 저장한다.
     PlatformTransactionManager txManager =
@@ -135,24 +134,13 @@ public class ServerApp {
       System.out.println("클라이언트 연결 대기중....");
 
       while (true) {
-        // 서버에 대기하고 있는 클라이언트와 연결
-        // => 대기하고 있는 클라이언트와 연결될 때까지 리턴하지 않는다.
         Socket socket = serverSocket.accept();
         System.out.println("클라이언트와 연결되었음!");
 
         executorService.submit(() -> {
           processRequest(socket);
 
-          ConnectionProxy con = (ConnectionProxy) conFactory.removeConnection();
-          if (con != null) {
-            try {
-              // 커넥션 객체를 진짜로 닫는다.
-              con.realClose(); // 제거된 Connection을 받아서 진짜로 닫는다.
-            } catch (Exception e) {
-
-            }
-          }
-
+          dataSource.removeConnection();
           System.out.println("------------------요청처리 끝--------------------");
         });
 

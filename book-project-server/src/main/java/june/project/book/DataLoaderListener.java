@@ -8,7 +8,7 @@ import june.project.book.dao.mariadb.MemberDaoImpl;
 import june.project.book.dao.mariadb.PhotoBoardDaoImpl;
 import june.project.book.dao.mariadb.PhotoFileDaoImpl;
 import june.project.sql.PlatformTransactionManager;
-import june.project.util.ConnectionFactory;
+import june.project.util.DataSource;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -21,17 +21,17 @@ public class DataLoaderListener implements ApplicationContextListener {
       String password = "1111";
 
       // Connection 팩토리 준비
-      ConnectionFactory conFactory = new ConnectionFactory(jdbcUrl, username, password);
-      context.put("connectionFactory", conFactory);
+      DataSource dataSource = new DataSource(jdbcUrl, username, password);
+      context.put("dataSource", dataSource);
 
-      context.put("bookBoardDao", new BookBoardDaoImpl(conFactory));
-      context.put("bookmarkDao", new BookmarkDaoImpl(conFactory));
-      context.put("memberDao", new MemberDaoImpl(conFactory));
-      context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
-      context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
+      context.put("bookBoardDao", new BookBoardDaoImpl(dataSource));
+      context.put("bookmarkDao", new BookmarkDaoImpl(dataSource));
+      context.put("memberDao", new MemberDaoImpl(dataSource));
+      context.put("photoBoardDao", new PhotoBoardDaoImpl(dataSource));
+      context.put("photoFileDao", new PhotoFileDaoImpl(dataSource));
 
       // 트랜잭션 관리자 준비
-      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      PlatformTransactionManager txManager = new PlatformTransactionManager(dataSource);
       context.put("transactionManager", txManager);
 
     } catch (Exception e) {
