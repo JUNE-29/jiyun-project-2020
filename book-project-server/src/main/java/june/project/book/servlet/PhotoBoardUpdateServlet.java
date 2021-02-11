@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,18 +8,18 @@ import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
-import june.project.util.ConnectionFactory;
+import june.project.sql.PlatformTransactionManager;
 import june.project.util.Prompt;
 
 public class PhotoBoardUpdateServlet implements Servlet {
 
-  ConnectionFactory conFactory;
+  PlatformTransactionManager txManager;
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
 
-  public PhotoBoardUpdateServlet(ConnectionFactory conFactory, PhotoBoardDao photoBoardDao,
-      PhotoFileDao photoFileDao) {
-    this.conFactory = conFactory;
+  public PhotoBoardUpdateServlet(PlatformTransactionManager txManager, //
+      PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+    this.txManager = txManager;
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
   }
@@ -41,9 +40,7 @@ public class PhotoBoardUpdateServlet implements Servlet {
         String.format("제목(%s)? \n", old.getTitle()), old.getTitle()));
     photoBoard.setNo(no);
 
-    // 트랜잭션 시작
-    Connection con = conFactory.getConnection();
-    con.setAutoCommit(false);
+    txManager.beginTransaction();
 
     try {
 
@@ -72,15 +69,13 @@ public class PhotoBoardUpdateServlet implements Servlet {
           photoFileDao.insert(photoFile);
         }
       }
-      con.commit();
+      txManager.commit();
       out.println("사진 게시글을 변경했습니다.");
 
     } catch (Exception e) {
-      con.rollback();
+      txManager.rollback();
       out.println(e.getMessage());
 
-    } finally {
-      con.setAutoCommit(true);
     }
   }
 

@@ -7,6 +7,7 @@ import june.project.book.dao.mariadb.BookmarkDaoImpl;
 import june.project.book.dao.mariadb.MemberDaoImpl;
 import june.project.book.dao.mariadb.PhotoBoardDaoImpl;
 import june.project.book.dao.mariadb.PhotoFileDaoImpl;
+import june.project.sql.PlatformTransactionManager;
 import june.project.util.ConnectionFactory;
 
 public class DataLoaderListener implements ApplicationContextListener {
@@ -28,6 +29,10 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("memberDao", new MemberDaoImpl(conFactory));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(conFactory));
       context.put("photoFileDao", new PhotoFileDaoImpl(conFactory));
+
+      // 트랜잭션 관리자 준비
+      PlatformTransactionManager txManager = new PlatformTransactionManager(conFactory);
+      context.put("transactionManager", txManager);
 
     } catch (Exception e) {
       e.printStackTrace();

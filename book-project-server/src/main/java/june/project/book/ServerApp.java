@@ -40,6 +40,7 @@ import june.project.book.servlet.PhotoBoardListServlet;
 import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
 import june.project.sql.ConnectionProxy;
+import june.project.sql.PlatformTransactionManager;
 import june.project.util.ConnectionFactory;
 
 public class ServerApp {
@@ -88,6 +89,10 @@ public class ServerApp {
     // ConnectionFactory 꺼낸다.
     ConnectionFactory conFactory = (ConnectionFactory) context.get("connectionFactory");
 
+    // 트랜잭션 관리자를 꺼내 변수에 저장한다.
+    PlatformTransactionManager txManager =
+        (PlatformTransactionManager) context.get("transactionManager");
+
     BookBoardDao bookBoardDao = (BookBoardDao) context.get("bookBoardDao");
     BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
     MemberDao memberDao = (MemberDao) context.get("memberDao");
@@ -116,11 +121,11 @@ public class ServerApp {
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, bookmarkDao));
     servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(conFactory, photoBoardDao, bookmarkDao, photoFileDao));
+        new PhotoBoardAddServlet(txManager, photoBoardDao, bookmarkDao, photoFileDao));
     servletMap.put("/photoboard/update",
-        new PhotoBoardUpdateServlet(conFactory, photoBoardDao, photoFileDao));
+        new PhotoBoardUpdateServlet(txManager, photoBoardDao, photoFileDao));
     servletMap.put("/photoboard/delete",
-        new PhotoBoardDeleteServlet(conFactory, photoBoardDao, photoFileDao));
+        new PhotoBoardDeleteServlet(txManager, photoBoardDao, photoFileDao));
 
     try (
         // 서버쪽 연결 준비
