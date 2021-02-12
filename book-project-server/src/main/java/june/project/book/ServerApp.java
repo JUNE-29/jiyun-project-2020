@@ -27,6 +27,7 @@ import june.project.book.servlet.BookmarkDeleteServlet;
 import june.project.book.servlet.BookmarkDetailServlet;
 import june.project.book.servlet.BookmarkListServlet;
 import june.project.book.servlet.BookmarkUpdateServlet;
+import june.project.book.servlet.LoginServlet;
 import june.project.book.servlet.MemberAddServlet;
 import june.project.book.servlet.MemberDeleteServlet;
 import june.project.book.servlet.MemberDetailServlet;
@@ -126,10 +127,9 @@ public class ServerApp {
     servletMap.put("/photoboard/delete",
         new PhotoBoardDeleteServlet(txManager, photoBoardDao, photoFileDao));
 
-    try (
-        // 서버쪽 연결 준비
-        // => 클라이언트의 연결을 9999번 포트에서 기다린다.
-        ServerSocket serverSocket = new ServerSocket(9999);) {
+    servletMap.put("/auth/login", new LoginServlet(memberDao));
+
+    try (ServerSocket serverSocket = new ServerSocket(9999);) {
 
       System.out.println("클라이언트 연결 대기중....");
 
@@ -144,8 +144,6 @@ public class ServerApp {
           System.out.println("------------------요청처리 끝--------------------");
         });
 
-        // 현재 '서버 멈춤' 상태라면
-        // 다음 클라이언트 요청을 받지 않고 종료한다.
         if (serverStop) {
           break;
         }
@@ -155,13 +153,7 @@ public class ServerApp {
       System.out.println("서버 준비 중 오류 발생!");
     }
 
-    // 스레드풀을 다 사용했으면 종료
     executorService.shutdown();
-    // => 스레드풀을 당장 종료시키는 것이 아니다.
-    // => 스레드풀에 소속된 스레드들의 작업이 모두 끝나면 종료하는 뜻
-
-    // 모든 스레드가 끝날 때까지 DB커넥션을 종료하고 싶지 않다면
-    // 스레드가 끝났는지 검사하며 기다려야 한다.
 
     while (true) {
       if (executorService.isTerminated()) {
