@@ -1,6 +1,7 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -22,14 +23,15 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public int insert(PhotoBoard photoBoard) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate("insert into book_photo(titl,bookmark_id) values('" //
-          + photoBoard.getTitle() + "', " + photoBoard.getBookmark().getNo() //
-          + ")", //
-          Statement.RETURN_GENERATED_KEYS // insert 후 PK값 리턴 받기
-      );
+        PreparedStatement stmt = con.prepareStatement( //
+            "insert into book_photo(titl,bookmark_id) values(?,?)", //
+            Statement.RETURN_GENERATED_KEYS)) {
 
-      // auto-increment PK값을 꺼내기 위한 준비
+      stmt.setString(1, photoBoard.getTitle());
+      stmt.setInt(2, photoBoard.getBookmark().getNo());
+
+      int result = stmt.executeUpdate();
+
       try (ResultSet generatedKeySet = stmt.getGeneratedKeys()) {
 
         // PK 컬럼의 값을 가져온다.
@@ -47,24 +49,29 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public List<PhotoBoard> findAllByBookmarkNo(int bookmarkNo) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select photo_id, titl, cdt, vw_cnt, bookmark_id" //
-            + " from book_photo" + " where bookmark_id=" + bookmarkNo //
-            + " order by photo_id desc")) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select photo_id, titl, cdt, vw_cnt, bookmark_id" //
+                + " from book_photo" //
+                + " where bookmark_id=?" //
+                + " order by photo_id desc")) {
 
-      ArrayList<PhotoBoard> list = new ArrayList<>();
+      stmt.setInt(1, bookmarkNo);
 
-      while (rs.next()) {
-        PhotoBoard photoBoard = new PhotoBoard();
+      try (ResultSet rs = stmt.executeQuery()) {
+        ArrayList<PhotoBoard> list = new ArrayList<>();
 
-        photoBoard.setNo(rs.getInt("photo_id"));
-        photoBoard.setTitle(rs.getString("titl"));
-        photoBoard.setCreadtedDate(rs.getDate("cdt"));
-        photoBoard.setViewCount(rs.getInt("vw_cnt"));
+        while (rs.next()) {
+          PhotoBoard photoBoard = new PhotoBoard();
 
-        list.add(photoBoard);
+          photoBoard.setNo(rs.getInt("photo_id"));
+          photoBoard.setTitle(rs.getString("titl"));
+          photoBoard.setCreadtedDate(rs.getDate("cdt"));
+          photoBoard.setViewCount(rs.getInt("vw_cnt"));
+
+          list.add(photoBoard);
+        }
+        return list;
       }
-      return list;
     }
   }
 
@@ -72,36 +79,41 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public PhotoBoard findByNo(int no) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement(); //
-        ResultSet rs = stmt.executeQuery("select" //
-            + " p.photo_id," //
-            + " p.titl," //
-            + " p.cdt," //
-            + " p.vw_cnt," //
-            + " p.bookmark_id," //
-            + " b.book_titl bookmark_title" //
-            + " from book_photo p" //
-            + " inner join bookmark b on p.bookmark_id = b.bookmark_id" //
-            + " where photo_id =" + no)) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select" //
+                + " p.photo_id," //
+                + " p.titl," //
+                + " p.cdt," //
+                + " p.vw_cnt," //
+                + " p.bookmark_id," //
+                + " b.book_titl bookmark_title" //
+                + " from book_photo p" //
+                + " inner join bookmark b on p.bookmark_id = b.bookmark_id" //
+                + " where photo_id =?")) {
 
-      if (rs.next()) {
-        PhotoBoard photoBoard = new PhotoBoard();
-        photoBoard.setNo(rs.getInt("photo_id"));
-        photoBoard.setTitle(rs.getString("titl"));
-        photoBoard.setCreadtedDate(rs.getDate("cdt"));
-        photoBoard.setViewCount(rs.getInt("vw_cnt"));
+      stmt.setInt(1, no);
 
-        // 조인 결과 중에서 북마크 데이터를 Bookmark에 저장한다.
-        Bookmark bookmark = new Bookmark();
-        bookmark.setNo(rs.getInt("bookmark_id"));
-        bookmark.setBookTitle(rs.getString("bookmark_title"));
+      try (ResultSet rs = stmt.executeQuery()) {
 
-        photoBoard.setBookmark(bookmark);
+        if (rs.next()) {
+          PhotoBoard photoBoard = new PhotoBoard();
+          photoBoard.setNo(rs.getInt("photo_id"));
+          photoBoard.setTitle(rs.getString("titl"));
+          photoBoard.setCreadtedDate(rs.getDate("cdt"));
+          photoBoard.setViewCount(rs.getInt("vw_cnt"));
 
-        return photoBoard;
+          // 조인 결과 중에서 북마크 데이터를 Bookmark에 저장한다.
+          Bookmark bookmark = new Bookmark();
+          bookmark.setNo(rs.getInt("bookmark_id"));
+          bookmark.setBookTitle(rs.getString("bookmark_title"));
 
-      } else {
-        return null;
+          photoBoard.setBookmark(bookmark);
+
+          return photoBoard;
+
+        } else {
+          return null;
+        }
       }
     }
   }
@@ -110,13 +122,13 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public int update(PhotoBoard photoBoard) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "update book_photo set titl=? where photo_id=?")) {
 
-      int result = stmt.executeUpdate("update book_photo set titl='" //
-          + photoBoard.getTitle() //
-          + "' where photo_id=" + photoBoard.getNo());
+      stmt.setString(1, photoBoard.getTitle());
+      stmt.setInt(2, photoBoard.getNo());
 
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
@@ -124,12 +136,10 @@ public class PhotoBoardDaoImpl implements PhotoBoardDao {
   public int delete(int no) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
-      int result = stmt.executeUpdate(//
-          "delete from book_photo" //
-              + " where photo_id=" + no);
-
-      return result;
+        PreparedStatement stmt = con.prepareStatement( //
+            "delete from book_photo where photo_id=?")) {
+      stmt.setInt(1, no);
+      return stmt.executeUpdate();
     }
   }
 }

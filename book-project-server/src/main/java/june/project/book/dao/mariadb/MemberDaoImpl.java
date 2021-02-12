@@ -1,8 +1,8 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.MemberDao;
@@ -21,19 +21,19 @@ public class MemberDaoImpl implements MemberDao {
   public List<Member> findAll() throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement(); //
-        ResultSet rs = stmt.executeQuery( //
-            "select member_id, name, email, cdt from book_member")) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select member_id, name, email, cdt from book_member"); //
+        ResultSet rs = stmt.executeQuery()) {
+
       ArrayList<Member> list = new ArrayList<>();
 
       while (rs.next()) {
-        Member member = new Member();
 
+        Member member = new Member();
         member.setNo(rs.getInt("member_id"));
         member.setName(rs.getString("name"));
         member.setEmail(rs.getString("email"));
         member.setRegisteredDate(rs.getDate("cdt"));
-
         list.add(member);
       }
       return list;
@@ -44,13 +44,16 @@ public class MemberDaoImpl implements MemberDao {
   public int insert(Member member) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
+        PreparedStatement stmt = con.prepareStatement(//
+            "insert into book_member(name, email, pwd, photo) " //
+                + "values(?,?,password(?),?)")) {
 
-      int result = stmt.executeUpdate("insert into book_member(name, email, pwd, photo) values('" //
-          + member.getName() + "','" + member.getEmail() + "', password('" + member.getPassword()
-          + "'),'" + member.getPhoto() + "')");
+      stmt.setString(1, member.getName());
+      stmt.setString(2, member.getEmail());
+      stmt.setString(3, member.getPassword());
+      stmt.setString(4, member.getPhoto());
 
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
@@ -58,24 +61,29 @@ public class MemberDaoImpl implements MemberDao {
   public Member findByNo(int no) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement(); //
-        ResultSet rs = stmt.executeQuery( //
-            "select member_id, name, email, pwd, cdt, photo " + "from book_member"
-                + " where member_id=" + no)) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select member_id, name, email, pwd, photo, cdt" //
+                + " from book_member" //
+                + " where member_id=?")) {
 
-      while (rs.next()) {
-        Member member = new Member();
+      stmt.setInt(1, no);
 
-        member.setNo(rs.getInt("member_id"));
-        member.setName(rs.getString("name"));
-        member.setEmail(rs.getString("email"));
-        member.setPassword(rs.getString("pwd"));
-        member.setRegisteredDate(rs.getDate("cdt"));
-        member.setPhoto(rs.getString("photo"));
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
 
-        return member;
+          Member member = new Member();
+          member.setNo(rs.getInt("member_id"));
+          member.setName(rs.getString("name"));
+          member.setEmail(rs.getString("email"));
+          member.setPassword(rs.getString("pwd"));
+          member.setPhoto(rs.getString("photo"));
+          member.setRegisteredDate(rs.getDate("cdt"));
+          return member;
+
+        } else {
+          return null;
+        }
       }
-      return null;
     }
   }
 
@@ -83,16 +91,18 @@ public class MemberDaoImpl implements MemberDao {
   public int update(Member member) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "update book_member set" //
+                + " name=?, email=?, pwd=password(?), photo=?" //
+                + " where member_id=?")) {
 
-      int result = stmt.executeUpdate("update book_member set" //
-          + " name = '" + member.getName() //
-          + "', email = '" + member.getEmail() //
-          + "', pwd=password('" + member.getPassword() //
-          + "'), photo = '" + member.getPhoto() //
-          + "' where member_id=" + member.getNo());
+      stmt.setString(1, member.getName());
+      stmt.setString(2, member.getEmail());
+      stmt.setString(3, member.getPassword());
+      stmt.setString(4, member.getPhoto());
+      stmt.setInt(5, member.getNo());
 
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
@@ -100,35 +110,43 @@ public class MemberDaoImpl implements MemberDao {
   public int delete(int no) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "delete from book_member where member_id=?")) {
 
-      int result = stmt.executeUpdate("delete from book_member where member_id=" + no);
-      return result;
+      stmt.setInt(1, no);
+
+      return stmt.executeUpdate();
     }
   }
 
   @Override
   public List<Member> findByKeyword(String keyword) throws Exception {
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("select member_id, name, email, cdt" //
-            + " from book_member" //
-            + " where name like '%" + keyword //
-            + "%' or email like '%" + keyword + "%'")) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select member_id, name, email, cdt" //
+                + " from book_member" //
+                + " where name like ?" //
+                + " or email like ?" //
+        )) {
 
-      ArrayList<Member> list = new ArrayList<>();
+      String value = "%" + keyword + "%";
 
-      while (rs.next()) {
-        Member member = new Member();
+      stmt.setString(1, value);
+      stmt.setString(2, value);
 
-        member.setNo(rs.getInt("member_id"));
-        member.setName(rs.getString("name"));
-        member.setEmail(rs.getString("email"));
-        member.setRegisteredDate(rs.getDate("cdt"));
+      try (ResultSet rs = stmt.executeQuery()) {
+        ArrayList<Member> list = new ArrayList<>();
 
-        list.add(member);
+        while (rs.next()) {
+          Member member = new Member();
+          member.setNo(rs.getInt("member_id"));
+          member.setName(rs.getString("name"));
+          member.setEmail(rs.getString("email"));
+          member.setRegisteredDate(rs.getDate("cdt"));
+          list.add(member);
+        }
+        return list;
       }
-      return list;
     }
   }
 
@@ -136,25 +154,28 @@ public class MemberDaoImpl implements MemberDao {
   public Member findByEmailAndPassword(String email, String password) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement(); //
-        ResultSet rs = stmt.executeQuery( //
+        PreparedStatement stmt = con.prepareStatement( //
             "select member_id, name, email, pwd, photo" //
                 + " from book_member" //
-                + " where email='" + email //
-                + "' and pwd=password('" + password + "')")) {
+                + " where email=? and pwd=password(?)")) {
 
-      if (rs.next()) {
-        Member member = new Member();
-        member.setNo(rs.getInt("member_id"));
-        member.setName(rs.getString("name"));
-        member.setEmail(rs.getString("email"));
-        member.setPassword(rs.getString("pwd"));
-        member.setPhoto(rs.getString("photo"));
+      stmt.setString(1, email);
+      stmt.setString(2, password);
 
-        return member;
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
 
-      } else {
-        return null;
+          Member member = new Member();
+          member.setNo(rs.getInt("member_id"));
+          member.setName(rs.getString("name"));
+          member.setEmail(rs.getString("email"));
+          member.setPassword(rs.getString("pwd"));
+          member.setPhoto(rs.getString("photo"));
+          return member;
+
+        } else {
+          return null;
+        }
       }
     }
   }

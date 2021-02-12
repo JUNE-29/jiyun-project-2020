@@ -26,6 +26,7 @@ public class BookBoardDetailServlet implements Servlet {
       out.printf("도서명: %s\n", bookBoard.getBookTitle());
       out.printf("지은이: %s\n", bookBoard.getAuthor());
       out.printf("출판사: %s\n", bookBoard.getPublisher());
+      out.printf("출판 연도: %s\n", bookBoard.getPublishedDate());
       out.printf("카테고리: %s\n", bookBoard.getCategories());
       out.printf("내용: %s\n", bookBoard.getContent());
       out.printf("이미지: %s\n", bookBoard.getPhoto());

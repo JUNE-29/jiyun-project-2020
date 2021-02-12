@@ -1,8 +1,8 @@
 package june.project.book.dao.mariadb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import june.project.book.dao.BookBoardDao;
@@ -20,17 +20,22 @@ public class BookBoardDaoImpl implements BookBoardDao {
   @Override
   public int insert(BookBoard bookBoard) throws Exception {
 
-    try (Connection con = dataSource.getConnection(); Statement stmt = con.createStatement()) {
+    try (Connection con = dataSource.getConnection(); //
+        PreparedStatement stmt = con.prepareStatement( //
+            "insert into book_board(titl, auth, pub, cate, pub_dt, conts," //
+                + " photo, score, book_st) values(?,?,?,?,?,?,?,?,?)")) {
 
-      int result = stmt.executeUpdate("insert into book_board(titl, auth, pub, cate, pub_dt, conts,"
-          + " photo, score, book_st) values('" //
-          + bookBoard.getBookTitle() + "','" + bookBoard.getAuthor() + "','"
-          + bookBoard.getPublisher() + "','" + bookBoard.getCategories() + "','"
-          + bookBoard.getPublishedDate() + "','" + bookBoard.getContent() + "','"
-          + bookBoard.getPhoto() + "','" + bookBoard.getScore() + "','" + bookBoard.getBookStatus()
-          + "')");
+      stmt.setString(1, bookBoard.getBookTitle());
+      stmt.setString(2, bookBoard.getAuthor());
+      stmt.setString(3, bookBoard.getPublisher());
+      stmt.setString(4, bookBoard.getCategories());
+      stmt.setString(5, bookBoard.getPublishedDate());
+      stmt.setString(6, bookBoard.getContent());
+      stmt.setString(7, bookBoard.getPhoto());
+      stmt.setInt(8, bookBoard.getScore());
+      stmt.setInt(9, bookBoard.getBookStatus());
 
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
@@ -38,20 +43,21 @@ public class BookBoardDaoImpl implements BookBoardDao {
   public List<BookBoard> findAll() throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement(); //
-        ResultSet rs = stmt.executeQuery( //
-            "select board_id, titl, score, cdt, book_st from book_board")) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select board_id, titl, score, cdt, book_st" //
+                + " from book_board" //
+                + " order by board_id desc"); //
+        ResultSet rs = stmt.executeQuery()) {
       ArrayList<BookBoard> list = new ArrayList<>();
 
       while (rs.next()) { // 데이터를 가져왔다면 true 리턴
-        BookBoard bookBoard = new BookBoard(); // 새로운 BookBoard 메모리 준비
 
+        BookBoard bookBoard = new BookBoard(); // 새로운 BookBoard 메모리 준비
         bookBoard.setNo(rs.getInt("board_id"));
         bookBoard.setBookTitle(rs.getString("titl"));
         bookBoard.setScore(rs.getInt("score"));
         bookBoard.setDate(rs.getDate("cdt"));
         bookBoard.setBookStatus(rs.getInt("book_st"));
-
         list.add(bookBoard);
       }
       return list;
@@ -61,30 +67,36 @@ public class BookBoardDaoImpl implements BookBoardDao {
   @Override
   public BookBoard findByNo(int no) throws Exception {
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement(); //
-        ResultSet rs = stmt.executeQuery( //
-            "select board_id, titl, auth, pub, cate, pub_dt, conts, photo, score, book_st, cdt "
-                + " from book_board " + " where board_id= " + no)) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "select board_id, titl, auth, pub, cate, pub_dt, conts," //
+                + " photo, score, book_st, cdt" //
+                + " from book_board" //
+                + " where board_id=?" //
+        )) {
 
-      if (rs.next()) {
-        BookBoard bookBoard = new BookBoard();
+      stmt.setInt(1, no);
 
-        bookBoard.setNo(rs.getInt("board_id"));
-        bookBoard.setBookTitle(rs.getString("titl"));
-        bookBoard.setAuthor(rs.getString("auth"));
-        bookBoard.setPublisher(rs.getString("pub"));
-        bookBoard.setCategories(rs.getString("cate"));
-        bookBoard.setPublishedDate(rs.getString("pub_dt"));
-        bookBoard.setContent(rs.getString("conts"));
-        bookBoard.setPhoto(rs.getString("photo"));
-        bookBoard.setScore(rs.getInt("score"));
-        bookBoard.setBookStatus(rs.getInt("book_st"));
-        bookBoard.setDate(rs.getDate("cdt"));
+      try (ResultSet rs = stmt.executeQuery()) {
 
-        return bookBoard;
+        if (rs.next()) {
 
-      } else {
-        return null;
+          BookBoard bookBoard = new BookBoard();
+          bookBoard.setNo(rs.getInt("board_id"));
+          bookBoard.setBookTitle(rs.getString("titl"));
+          bookBoard.setAuthor(rs.getString("auth"));
+          bookBoard.setPublisher(rs.getString("pub"));
+          bookBoard.setCategories(rs.getString("cate"));
+          bookBoard.setPublishedDate(rs.getString("pub_dt"));
+          bookBoard.setContent(rs.getString("conts"));
+          bookBoard.setPhoto(rs.getString("photo"));
+          bookBoard.setScore(rs.getInt("score"));
+          bookBoard.setBookStatus(rs.getInt("book_st"));
+          bookBoard.setDate(rs.getDate("cdt"));
+          return bookBoard;
+
+        } else {
+          return null;
+        }
       }
     }
   }
@@ -92,21 +104,24 @@ public class BookBoardDaoImpl implements BookBoardDao {
   @Override
   public int update(BookBoard bookBoard) throws Exception {
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
+        PreparedStatement stmt = con.prepareStatement( //
+            "update book_board set" //
+                + " titl=?, auth=?, pub=?, cate=?, pub_dt=?, conts=?, photo=?," //
+                + " score=?, book_st=?" //
+                + " where board_id =?")) {
 
-      int result = stmt.executeUpdate("update book_board set" //
-          + " titl = '" + bookBoard.getBookTitle() //
-          + "', auth = '" + bookBoard.getAuthor() //
-          + "', pub = '" + bookBoard.getPublisher() //
-          + "', cate = '" + bookBoard.getCategories() //
-          + "', pub_dt = '" + bookBoard.getPublishedDate() //
-          + "', conts = '" + bookBoard.getContent() //
-          + "', photo = '" + bookBoard.getPhoto() //
-          + "', score = '" + bookBoard.getScore() //
-          + "', book_st= '" + bookBoard.getBookStatus() //
-          + "' where board_id =" + bookBoard.getNo());
+      stmt.setString(1, bookBoard.getBookTitle());
+      stmt.setString(2, bookBoard.getAuthor());
+      stmt.setString(3, bookBoard.getPublisher());
+      stmt.setString(4, bookBoard.getCategories());
+      stmt.setString(5, bookBoard.getPublishedDate());
+      stmt.setString(6, bookBoard.getContent());
+      stmt.setString(7, bookBoard.getPhoto());
+      stmt.setInt(8, bookBoard.getScore());
+      stmt.setInt(9, bookBoard.getBookStatus());
+      stmt.setInt(10, bookBoard.getNo());
 
-      return result;
+      return stmt.executeUpdate();
     }
   }
 
@@ -114,11 +129,10 @@ public class BookBoardDaoImpl implements BookBoardDao {
   public int delete(int no) throws Exception {
 
     try (Connection con = dataSource.getConnection(); //
-        Statement stmt = con.createStatement()) {
-
-      int result = stmt.executeUpdate("delete from book_board where board_id=" + no);
-
-      return result;
+        PreparedStatement stmt = con.prepareStatement( //
+            "delete from book_board where board_id=?")) {
+      stmt.setInt(1, no);
+      return stmt.executeUpdate();
     }
   }
 }
