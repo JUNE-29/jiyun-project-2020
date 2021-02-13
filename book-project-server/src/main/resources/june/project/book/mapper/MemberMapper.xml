@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="MemberMapper">
+
+  <resultMap type="Member" id="MemberMap">
+    <id column="member_id" property="no"/>
+  
+    <result column="name" property="name"/>
+    <result column="email" property="email"/>
+    <result column="pwd" property="password"/>
+    <result column="cdt" property="registeredDate"/>
+    <result column="photo" property="photo"/>
+  </resultMap>
+  
+  <insert id="insertMember" parameterType="Member">
+  insert into book_member(name, email, pwd, photo)
+  values(#{name}, #{email}, password(#{password}), #{photo})
+  </insert>
+  
+  <select id="selectMember" resultMap="MemberMap">
+  select 
+    member_id, 
+    name, 
+    email, 
+    cdt 
+  from book_member
+  </select>
+  
+  <select id="selectDetail" resultMap="MemberMap" parameterType="int">
+  select 
+    member_id, 
+    name, 
+    email, 
+    pwd, 
+    photo, 
+    cdt
+  from book_member
+  where member_id=#{no}
+  </select>
+  
+  <update id="updateMember" parameterType="Member">
+  update book_member set
+    name=#{name}, 
+    email=#{email}, 
+    pwd=password(#{password}), 
+    photo=#{photo}
+  where member_id=#{no}
+  </update>
+  
+  <delete id="deleteMember" parameterType="int">
+  delete from book_member where member_id=#{no}
+  </delete>
+  
+  <select id="selectByKeyword" resultMap="MemberMap" parameterType="string">
+  <bind name="keywordPattern" value="'%' + _parameter + '%'"/>
+  select 
+    member_id, 
+    name, 
+    email, 
+    cdt
+  from book_member
+  where name like #{keywordPattern}
+  or email like #{keywordPattern}
+  </select>
+  
+  <select id="findByEmailAndPassword" resultMap="MemberMap" parameterType="map">
+  select 
+    member_id, 
+    name, 
+    email, 
+    pwd, 
+    photo
+  from book_member
+  where 
+    email=#{email} 
+    and pwd=password(#{password})
+  </select>
+  
+</mapper>

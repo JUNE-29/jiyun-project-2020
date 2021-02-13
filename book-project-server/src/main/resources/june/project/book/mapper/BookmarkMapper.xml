@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="BookmarkMapper">
+   <resultMap type="Bookmark" id="BookmarkMap">
+    <id column="bookmark_id" property="no"/>
+  
+    <result column="titl" property="title"/>
+    <result column="book_titl" property="bookTitle"/>
+    <result column="auth" property="author"/>
+    <result column="pub" property="publisher"/>
+    <result column="conts" property="content"/>
+    <result column="photo" property="photo"/>
+    <result column="cdt" property="date"/>
+  </resultMap>
+  
+  <insert id="insertBookmark" parameterType="Bookmark">
+  insert into bookmark(titl, book_titl, auth, pub, conts, photo) 
+  values(#{title},#{bookTitle},#{author},#{publisher},#{content},#{photo})
+  </insert>
+  
+  <select id="selectBookmark" resultMap="BookmarkMap">
+  select 
+    bookmark_id, 
+    titl, 
+    book_titl, 
+    auth, 
+    cdt 
+  from bookmark
+  </select>
+  
+  <select id="selectDetail" resultMap="BookmarkMap" parameterType="int">
+  select 
+    bookmark_id, 
+    titl, 
+    book_titl, 
+    auth, 
+    pub, 
+    conts, 
+    photo, 
+    cdt
+  from bookmark
+  where bookmark_id=#{no}
+  </select>
+  
+  <update id="updateBookmark" parameterType="Bookmark">
+  update bookmark set
+    titl=#{title}, 
+    book_titl=#{bookTitle}, 
+    auth=#{author}, 
+    pub=#{publisher}, 
+    conts=#{content}, 
+    photo=#{photo}
+  where bookmark_id=#{no}
+  </update>
+  
+  <delete id="deleteBookmark" parameterType="int">
+  delete from bookmark where bookmark_id=#{no}
+  </delete>
+  </mapper>

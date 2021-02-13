@@ -49,7 +49,7 @@ public class BookBoardDaoImpl implements BookBoardDao {
   @Override
   public int delete(int no) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-      int count = sqlSession.delete("deleteBookBoard", no);
+      int count = sqlSession.delete("BookBoardMapper.deleteBookBoard", no);
       sqlSession.commit();
       return count;
     }

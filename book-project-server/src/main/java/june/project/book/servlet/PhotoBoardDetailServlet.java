@@ -1,10 +1,8 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
 import june.project.book.dao.PhotoBoardDao;
-import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
 import june.project.util.Prompt;
@@ -12,11 +10,9 @@ import june.project.util.Prompt;
 public class PhotoBoardDetailServlet implements Servlet {
 
   PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
 
-  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao) {
     this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
   }
 
   @Override
@@ -34,8 +30,7 @@ public class PhotoBoardDetailServlet implements Servlet {
       out.printf("책: %s\n", photoBoard.getBookmark().getBookTitle());
       out.println("사진 파일: ");
 
-      List<PhotoFile> photoFiles = photoFileDao.findAll(photoBoard.getNo());
-      for (PhotoFile photoFile : photoFiles) {
+      for (PhotoFile photoFile : photoBoard.getFiles()) {
         out.printf("> %s\n", photoFile.getFilePath());
       }
 

@@ -9,7 +9,7 @@
     <id column="board_id" property="no"/>
   
     <result column="titl" property="bookTitle"/>
-    <result column="auth" property="auth"/>
+    <result column="auth" property="author"/>
     <result column="pub" property="publisher"/>
     <result column="cate" property="categories"/>
     <result column="pub_dt" property="publishedDate"/>
@@ -22,7 +22,7 @@
 
   <insert id="insertBookBoard" parameterType="BookBoard">
   insert into book_board(titl, auth, pub, cate, pub_dt, conts, photo, score, book_st) 
-  values(#{bookTitle}, #{auth}, #{publisher}, ${categories}, #{publishedDate}, #{content}, #{photo}, %{score}, %{bookStatus})
+  values(#{bookTitle}, #{author}, #{publisher}, #{categories}, #{publishedDate}, #{content}, #{photo}, #{score}, #{bookStatus})
   </insert>
   
   <select id="selectBookBoard" resultMap="BookBoardMap">
@@ -56,7 +56,7 @@
   <update id="updateBookBoard" parameterType="BookBoard">
   update book_board set
     titl=#{bookTitle},
-    auth=#{auth},
+    auth=#{author},
     pub=#{publisher},
     cate=#{categories},
     pub_dt=#{publishedDate},

@@ -119,7 +119,7 @@ public class ServerApp {
     servletMap.put("/member/search", new MemberSearchServlet(memberDao));
 
     servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, bookmarkDao));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao, photoFileDao));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao));
     servletMap.put("/photoboard/add",
         new PhotoBoardAddServlet(txManager, photoBoardDao, bookmarkDao, photoFileDao));
     servletMap.put("/photoboard/update",
