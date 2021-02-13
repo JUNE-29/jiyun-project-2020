@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="BookBoardMapper">
+
+  <resultMap type="BookBoard" id="BookBoardMap">
+    <id column="board_id" property="no"/>
+  
+    <result column="titl" property="bookTitle"/>
+    <result column="auth" property="auth"/>
+    <result column="pub" property="publisher"/>
+    <result column="cate" property="categories"/>
+    <result column="pub_dt" property="publishedDate"/>
+    <result column="conts" property="content"/>
+    <result column="photo" property="photo"/>
+    <result column="score" property="score"/>
+    <result column="book_st" property="bookStatus"/>
+    <result column="cdt" property="date"/>
+  </resultMap>
+
+  <insert id="insertBookBoard" parameterType="BookBoard">
+  insert into book_board(titl, auth, pub, cate, pub_dt, conts, photo, score, book_st) 
+  values(#{bookTitle}, #{auth}, #{publisher}, ${categories}, #{publishedDate}, #{content}, #{photo}, %{score}, %{bookStatus})
+  </insert>
+  
+  <select id="selectBookBoard" resultMap="BookBoardMap">
+  select 
+  board_id, 
+  titl, 
+  score, 
+  cdt, 
+  book_st
+    from book_board
+    order by board_id desc
+  </select>
+  
+  <select id="selectDetail" resultMap="BookBoardMap" parameterType="int">
+  select 
+    board_id, 
+    titl, 
+    auth, 
+    pub, 
+    cate, 
+    pub_dt, 
+    conts,
+    photo, 
+    score, 
+    book_st, 
+    cdt
+  from book_board
+  where board_id=#{no}
+  </select>
+  
+  <update id="updateBookBoard" parameterType="BookBoard">
+  update book_board set
+    titl=#{bookTitle},
+    auth=#{auth},
+    pub=#{publisher},
+    cate=#{categories},
+    pub_dt=#{publishedDate},
+    conts=#{content},
+    photo=#{photo},
+    score=#{score},
+    book_st=#{bookStatus}
+  where board_id=#{no}
+  </update>
+  
+  <delete id="deleteBookBoard" parameterType="int">
+  delete from book_board
+  where board_id=#{no}
+  </delete>
+  
+</mapper>

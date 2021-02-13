@@ -1,6 +1,10 @@
 package june.project.book;
 
+import java.io.InputStream;
 import java.util.Map;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import june.project.book.context.ApplicationContextListener;
 import june.project.book.dao.mariadb.BookBoardDaoImpl;
 import june.project.book.dao.mariadb.BookmarkDaoImpl;
@@ -24,7 +28,12 @@ public class DataLoaderListener implements ApplicationContextListener {
       DataSource dataSource = new DataSource(jdbcUrl, username, password);
       context.put("dataSource", dataSource);
 
-      context.put("bookBoardDao", new BookBoardDaoImpl(dataSource));
+      // Mybatis 객체 준비
+      InputStream inputStream =
+          Resources.getResourceAsStream("june/project/book/conf/mybatis-config.xml");
+      SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+
+      context.put("bookBoardDao", new BookBoardDaoImpl(sqlSessionFactory));
       context.put("bookmarkDao", new BookmarkDaoImpl(dataSource));
       context.put("memberDao", new MemberDaoImpl(dataSource));
       context.put("photoBoardDao", new PhotoBoardDaoImpl(dataSource));

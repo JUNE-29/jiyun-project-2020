@@ -2,6 +2,7 @@ package june.project.book.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class PhotoBoard implements Serializable {
 
@@ -12,6 +13,7 @@ public class PhotoBoard implements Serializable {
   Date creadtedDate;
   int viewCount;
   Bookmark bookmark;
+  List<PhotoFile> files;
 
   @Override
   public String toString() {
