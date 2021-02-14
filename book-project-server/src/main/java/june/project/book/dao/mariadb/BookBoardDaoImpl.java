@@ -18,7 +18,6 @@ public class BookBoardDaoImpl implements BookBoardDao {
   public int insert(BookBoard bookBoard) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.insert("BookBoardMapper.insertBookBoard", bookBoard);
-      sqlSession.commit();
       return count;
     }
   }
@@ -41,7 +40,6 @@ public class BookBoardDaoImpl implements BookBoardDao {
   public int update(BookBoard bookBoard) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.update("BookBoardMapper.updateBookBoard", bookBoard);
-      sqlSession.commit();
       return count;
     }
   }

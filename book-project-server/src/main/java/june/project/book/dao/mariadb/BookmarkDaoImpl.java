@@ -18,7 +18,6 @@ public class BookmarkDaoImpl implements BookmarkDao {
   public int insert(Bookmark bookmark) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.insert("BookmarkMapper.insertBookmark", bookmark);
-      sqlSession.commit();
       return count;
     }
   }
@@ -41,7 +40,6 @@ public class BookmarkDaoImpl implements BookmarkDao {
   public int update(Bookmark bookmark) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.update("BookmarkMapper.updateBookmark", bookmark);
-      sqlSession.commit();
       return count;
     }
   }
@@ -50,7 +48,6 @@ public class BookmarkDaoImpl implements BookmarkDao {
   public int delete(int no) throws Exception {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.delete("BookmarkMapper.deleteBookmark", no);
-      sqlSession.commit();
       return count;
     }
   }

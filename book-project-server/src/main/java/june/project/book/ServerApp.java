@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.ibatis.session.SqlSessionFactory;
 import june.project.book.context.ApplicationContextListener;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.dao.BookmarkDao;
@@ -41,7 +42,7 @@ import june.project.book.servlet.PhotoBoardListServlet;
 import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
 import june.project.sql.PlatformTransactionManager;
-import june.project.util.DataSource;
+import june.project.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
 
@@ -86,8 +87,8 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    // ConnectionFactory 꺼낸다.
-    DataSource dataSource = (DataSource) context.get("dataSource");
+    // SqlSessionFactory 꺼낸다.
+    SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
 
     // 트랜잭션 관리자를 꺼내 변수에 저장한다.
     PlatformTransactionManager txManager =
@@ -140,7 +141,8 @@ public class ServerApp {
         executorService.submit(() -> {
           processRequest(socket);
 
-          dataSource.removeConnection();
+          // 스레드에 보관된 SqlSession 객체를 제거한다.
+          ((SqlSessionFactoryProxy) sqlSessionFactory).closeSession();
           System.out.println("------------------요청처리 끝--------------------");
         });
 
