@@ -27,6 +27,7 @@ import june.project.book.servlet.BookmarkAddServlet;
 import june.project.book.servlet.BookmarkDeleteServlet;
 import june.project.book.servlet.BookmarkDetailServlet;
 import june.project.book.servlet.BookmarkListServlet;
+import june.project.book.servlet.BookmarkSearchServlet;
 import june.project.book.servlet.BookmarkUpdateServlet;
 import june.project.book.servlet.LoginServlet;
 import june.project.book.servlet.MemberAddServlet;
@@ -111,6 +112,7 @@ public class ServerApp {
     servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
     servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
     servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
+    servletMap.put("/bookmark/search", new BookmarkSearchServlet(bookmarkDao));
 
     servletMap.put("/member/list", new MemberListServlet(memberDao));
     servletMap.put("/member/add", new MemberAddServlet(memberDao));

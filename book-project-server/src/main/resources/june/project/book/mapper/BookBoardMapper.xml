@@ -20,35 +20,34 @@
     <result column="cdt" property="date"/>
   </resultMap>
 
+  <sql id="select1">
+  select
+    board_id,
+    titl,
+    score,
+    cdt,
+    book_st
+  </sql>
+
   <insert id="insertBookBoard" parameterType="BookBoard">
   insert into book_board(titl, auth, pub, cate, pub_dt, conts, photo, score, book_st) 
   values(#{bookTitle}, #{author}, #{publisher}, #{categories}, #{publishedDate}, #{content}, #{photo}, #{score}, #{bookStatus})
   </insert>
   
   <select id="selectBookBoard" resultMap="BookBoardMap">
-  select 
-  board_id, 
-  titl, 
-  score, 
-  cdt, 
-  book_st
+  <include refid="select1"/>
     from book_board
     order by board_id desc
   </select>
   
   <select id="selectDetail" resultMap="BookBoardMap" parameterType="int">
-  select 
-    board_id, 
-    titl, 
+    <include refid="select1"/>,
     auth, 
     pub, 
     cate, 
     pub_dt, 
     conts,
-    photo, 
-    score, 
-    book_st, 
-    cdt
+    photo
   from book_board
   where board_id=#{no}
   </select>

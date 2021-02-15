@@ -31,32 +31,32 @@ public class BookBoardUpdateServlet implements Servlet {
     bookBoard.setNo(no);
 
     bookBoard.setBookTitle(Prompt.getString(in, out, //
-        String.format("도서명(%s)? \n", old.getBookTitle()), old.getBookTitle()));
+        String.format("도서명(%s)? ", old.getBookTitle()), old.getBookTitle()));
 
     bookBoard.setAuthor(Prompt.getString(in, out, //
-        String.format("지은이(%s)? \n", old.getAuthor()), old.getAuthor()));
+        String.format("지은이(%s)? ", old.getAuthor()), old.getAuthor()));
 
     bookBoard.setPublisher(Prompt.getString(in, out, //
-        String.format("출판사(%s)? \n", old.getPublisher()), old.getPublisher()));
+        String.format("출판사(%s)? ", old.getPublisher()), old.getPublisher()));
 
     bookBoard.setCategories(Prompt.getString(in, out, //
-        String.format("카테고리(%s)? \n", old.getCategories()), old.getCategories()));
+        String.format("카테고리(%s)? ", old.getCategories()), old.getCategories()));
 
     bookBoard.setPublishedDate(Prompt.getString(in, out, //
-        String.format("출판 연도(%s)? \n", old.getPublishedDate()), old.getPublishedDate()));
+        String.format("출판 연도(%s)? ", old.getPublishedDate()), old.getPublishedDate()));
 
     bookBoard.setContent(Prompt.getString(in, out, //
-        String.format("내용(%s)? \n", old.getContent()), old.getContent()));
+        String.format("내용(%s)? ", old.getContent()), old.getContent()));
 
     bookBoard.setPhoto(Prompt.getString(in, out, //
-        String.format("이미지(%s)? \n", old.getPhoto()), old.getPhoto()));
+        String.format("이미지(%s)? ", old.getPhoto()), old.getPhoto()));
 
     bookBoard.setBookStatus(Prompt.getInt(in, out, //
-        String.format("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정) (%d)? \n", old.getBookStatus()),
+        String.format("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정) (%d)? ", old.getBookStatus()),
         String.valueOf(old.getBookStatus())));
 
     bookBoard.setScore(Prompt.getInt(in, out, //
-        String.format("평가(%d점)? \n", old.getScore()), //
+        String.format("평가(%d점)? ", old.getScore()), //
         String.valueOf(old.getScore())));
 
     if (bookBoardDao.update(bookBoard) > 0) {

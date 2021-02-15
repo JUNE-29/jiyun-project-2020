@@ -16,43 +16,50 @@
     <result column="cdt" property="date"/>
   </resultMap>
   
-  <insert id="insertBookmark" parameterType="Bookmark">
-  insert into bookmark(titl, book_titl, auth, pub, conts, photo) 
-  values(#{title},#{bookTitle},#{author},#{publisher},#{content},#{photo})
-  </insert>
-  
-  <select id="selectBookmark" resultMap="BookmarkMap">
-  select 
+  <sql id="select1">
+    select 
     bookmark_id, 
     titl, 
     book_titl, 
     auth, 
     cdt 
+  </sql>
+  
+  <insert id="insertBookmark" parameterType="Bookmark">
+  insert into bookmark(titl, book_titl, auth, pub, conts, photo) 
+  values(#{title},#{bookTitle},#{author},#{publisher},#{content},#{photo})
+  </insert>
+  
+  <select id="selectBookmark" resultMap="BookmarkMap" parameterType="map">
+  <include refid="select1"/>
   from bookmark
+  <where>
+    <if test="title != null">titl like concat('%', #{title}, '%')</if>
+    <if test="bookTitle != null">book_titl like concat('%', #{bookTitle}, '%')</if>
+    <if test="author != null">auth like concat('%', #{author}, '%')</if>
+    <if test="date != null">cdt like concat('%', #{date}, '%')</if>
+  </where>
   </select>
   
   <select id="selectDetail" resultMap="BookmarkMap" parameterType="int">
-  select 
-    bookmark_id, 
-    titl, 
-    book_titl, 
-    auth, 
+   <include refid="select1"/>,
     pub, 
     conts, 
-    photo, 
-    cdt
+    photo
   from bookmark
   where bookmark_id=#{no}
   </select>
   
   <update id="updateBookmark" parameterType="Bookmark">
-  update bookmark set
-    titl=#{title}, 
-    book_titl=#{bookTitle}, 
-    auth=#{author}, 
-    pub=#{publisher}, 
-    conts=#{content}, 
-    photo=#{photo}
+  update bookmark
+  <set>
+    <if test="title != null and title != ''">titl=#{title},</if>
+    <if test="bookTitle != null and bookTitle != ''">book_titl=#{bookTitle},</if>
+    <if test="author != null and author != ''">auth=#{author},</if>
+    <if test="publisher != null and publisher != ''">pub=#{publisher},</if> 
+    <if test="content != null and content != ''">conts=#{content},</if>
+    <if test="photo != null and photo != ''">photo=#{photo}</if>
+  </set>
   where bookmark_id=#{no}
   </update>
   

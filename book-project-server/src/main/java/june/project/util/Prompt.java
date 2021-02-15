@@ -8,11 +8,21 @@ public class Prompt {
 
 
   public static int getInt(Scanner in, PrintStream out, String title) {
-    return Integer.parseInt(getString(in, out, title));
+    try {
+      return Integer.parseInt(getString(in, out, title));
+    } catch (Exception e) {
+      // 숫자가 아닌 값을 넣으면 0 리턴
+      return 0;
+    }
   }
 
   public static int getInt(Scanner in, PrintStream out, String title, String defaultValue) {
-    return Integer.parseInt(getString(in, out, title, defaultValue));
+    try {
+      return Integer.parseInt(getString(in, out, title, defaultValue));
+    } catch (Exception e) {
+      // 숫자가 아닌 값을 넣으면 0 리턴
+      return 0;
+    }
   }
 
   public static String getString(Scanner in, PrintStream out, String title) {
@@ -36,10 +46,20 @@ public class Prompt {
   }
 
   public static Date getDate(Scanner in, PrintStream out, String title) {
-    return Date.valueOf(getString(in, out, title));
+    try {
+      return Date.valueOf(getString(in, out, title));
+    } catch (Exception e) {
+      // 날짜가 맞지 않으면 0 리턴
+      return null;
+    }
   }
 
   public static Date getDate(Scanner in, PrintStream out, String title, String defaultValue) {
-    return Date.valueOf(getString(in, out, title, defaultValue));
+    try {
+      return Date.valueOf(getString(in, out, title, defaultValue));
+    } catch (Exception e) {
+      // 날짜가 맞지 않으면 0 리턴
+      return null;
+    }
   }
 }

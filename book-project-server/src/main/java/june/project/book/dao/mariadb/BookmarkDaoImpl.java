@@ -1,6 +1,7 @@
 package june.project.book.dao.mariadb;
 
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import june.project.book.dao.BookmarkDao;
@@ -49,6 +50,13 @@ public class BookmarkDaoImpl implements BookmarkDao {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       int count = sqlSession.delete("BookmarkMapper.deleteBookmark", no);
       return count;
+    }
+  }
+
+  @Override
+  public List<Bookmark> findByKeyword(Map<String, Object> params) throws Exception {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+      return sqlSession.selectList("BookmarkMapper.selectBookmark", params);
     }
   }
 }

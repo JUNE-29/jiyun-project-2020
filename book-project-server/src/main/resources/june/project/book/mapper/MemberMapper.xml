@@ -15,38 +15,40 @@
     <result column="photo" property="photo"/>
   </resultMap>
   
+  <sql id="select1">
+    select 
+    member_id, 
+    name, 
+    email, 
+    cdt 
+  </sql>
+  
   <insert id="insertMember" parameterType="Member">
   insert into book_member(name, email, pwd, photo)
   values(#{name}, #{email}, password(#{password}), #{photo})
   </insert>
   
   <select id="selectMember" resultMap="MemberMap">
-  select 
-    member_id, 
-    name, 
-    email, 
-    cdt 
+  <include refid="select1"/>
   from book_member
   </select>
   
   <select id="selectDetail" resultMap="MemberMap" parameterType="int">
-  select 
-    member_id, 
-    name, 
-    email, 
+   <include refid="select1"/>,
     pwd, 
-    photo, 
-    cdt
+    photo
   from book_member
   where member_id=#{no}
   </select>
   
   <update id="updateMember" parameterType="Member">
-  update book_member set
-    name=#{name}, 
-    email=#{email}, 
-    pwd=password(#{password}), 
-    photo=#{photo}
+  update book_member
+  <set>
+    <if test="name != null and name != ''">name=#{name},</if>
+    <if test="email != null and email != ''">email=#{email},</if>
+    <if test="password != null and password != ''">pwd=password(#{password}),</if> 
+    <if test="photo != null and photo != ''">photo=#{photo}</if>
+  </set>
   where member_id=#{no}
   </update>
   

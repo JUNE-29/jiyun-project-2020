@@ -1,6 +1,7 @@
 package june.project.book.dao;
 
 import java.util.List;
+import java.util.Map;
 import june.project.book.domain.Bookmark;
 
 public interface BookmarkDao {
@@ -15,4 +16,7 @@ public interface BookmarkDao {
 
   public int delete(int no) throws Exception;
 
+  default List<Bookmark> findByKeyword(Map<String, Object> params) throws Exception {
+    return null;
+  }
 }

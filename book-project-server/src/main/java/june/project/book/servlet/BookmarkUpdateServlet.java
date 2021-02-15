@@ -30,28 +30,28 @@ public class BookmarkUpdateServlet implements Servlet {
     bookmark.setNo(no);
 
     bookmark.setTitle(Prompt.getString(in, out, //
-        String.format("제목(%s)? \n", old.getTitle()), old.getTitle()));
+        String.format("제목(%s)?", old.getTitle())));
 
     bookmark.setBookTitle(Prompt.getString(in, out, //
-        String.format("도서명(%s)? \n", old.getBookTitle()), old.getBookTitle()));
+        String.format("도서명(%s)?", old.getBookTitle())));
 
     bookmark.setAuthor(Prompt.getString(in, out, //
-        String.format("지은이(%s)? \n", old.getAuthor()), old.getAuthor()));
+        String.format("지은이(%s)?", old.getAuthor())));
 
     bookmark.setPublisher(Prompt.getString(in, out, //
-        String.format("출판사(%s)? \n", old.getPublisher()), old.getPublisher()));
+        String.format("출판사(%s)?", old.getPublisher())));
 
     bookmark.setContent(Prompt.getString(in, out, //
-        String.format("내용(%s)? \n", old.getContent()), old.getContent()));
+        String.format("내용(%s)?", old.getContent())));
 
     bookmark.setPhoto(Prompt.getString(in, out, //
-        String.format("이미지(%s)? \n", old.getPhoto()), old.getPhoto()));
+        String.format("이미지(%s)?", old.getPhoto())));
 
     if (bookmarkDao.update(bookmark) > 0) {
       out.println("변경했습니다.");
 
     } else {
-      out.println("해당 번호의 게시물이 없습니다.");
+      out.println("변경에 실패했습니다.");
     }
   }
 }

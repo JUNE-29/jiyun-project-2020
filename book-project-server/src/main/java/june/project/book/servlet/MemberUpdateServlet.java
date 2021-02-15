@@ -30,22 +30,22 @@ public class MemberUpdateServlet implements Servlet {
     member.setNo(no);
 
     member.setName(Prompt.getString(in, out, //
-        String.format("이름(%s)? \n", old.getName()), old.getName()));
+        String.format("이름(%s)? ", old.getName())));
 
     member.setEmail(Prompt.getString(in, out, //
-        String.format("이메일(%s)? \n", old.getEmail()), old.getEmail()));
+        String.format("이메일(%s)? ", old.getEmail())));
 
     member.setPassword(Prompt.getString(in, out, //
-        String.format("비밀번호(%s)? \n", old.getPassword()), old.getPassword()));
+        String.format("비밀번호(%s)? ", old.getPassword())));
 
     member.setPhoto(Prompt.getString(in, out, //
-        String.format("사진(%s)? \n", old.getPhoto()), old.getPhoto()));
+        String.format("사진(%s)? ", old.getPhoto())));
 
     if (memberDao.update(member) > 0) {
       out.println("변경했습니다.");
 
     } else {
-      out.println("해당 번호의 회원이 없습니다.");
+      out.println("변경에 실패했습니다.");
     }
   }
 }
