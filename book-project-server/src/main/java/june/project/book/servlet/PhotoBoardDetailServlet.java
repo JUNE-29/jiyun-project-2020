@@ -2,17 +2,18 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.PhotoBoardDao;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
+import june.project.book.service.PhotoBoardService;
 import june.project.util.Prompt;
 
 public class PhotoBoardDetailServlet implements Servlet {
 
-  PhotoBoardDao photoBoardDao;
+  PhotoBoardService photoBoardService;
 
-  public PhotoBoardDetailServlet(PhotoBoardDao photoBoardDao) {
-    this.photoBoardDao = photoBoardDao;
+
+  public PhotoBoardDetailServlet(PhotoBoardService photoBoardService) {
+    this.photoBoardService = photoBoardService;
   }
 
   @Override
@@ -20,7 +21,7 @@ public class PhotoBoardDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "사진 게시글 번호? ");
 
-    PhotoBoard photoBoard = photoBoardDao.findByNo(no);
+    PhotoBoard photoBoard = photoBoardService.get(no);
 
     if (photoBoard != null) {
       out.printf("번호: %d\n", photoBoard.getNo());

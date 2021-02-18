@@ -2,15 +2,15 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.MemberDao;
+import june.project.book.service.MemberService;
 import june.project.util.Prompt;
 
 public class MemberDeleteServlet implements Servlet {
 
-  MemberDao memberDao;
+  MemberService memberService;
 
-  public MemberDeleteServlet(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public MemberDeleteServlet(MemberService memberService) {
+    this.memberService = memberService;
   }
 
   @Override
@@ -18,7 +18,7 @@ public class MemberDeleteServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    if (memberDao.delete(no) > 0) {
+    if (memberService.delete(no) > 0) {
       out.println("삭제했습니다.");
 
     } else {

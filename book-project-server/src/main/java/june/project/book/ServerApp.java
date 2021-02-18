@@ -13,11 +13,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.dao.BookBoardDao;
-import june.project.book.dao.BookmarkDao;
-import june.project.book.dao.MemberDao;
-import june.project.book.dao.PhotoBoardDao;
-import june.project.book.dao.PhotoFileDao;
+import june.project.book.service.BookBoardService;
+import june.project.book.service.BookmarkService;
+import june.project.book.service.MemberService;
+import june.project.book.service.PhotoBoardService;
 import june.project.book.servlet.BookBoardAddServlet;
 import june.project.book.servlet.BookBoardDeleteServlet;
 import june.project.book.servlet.BookBoardDetailServlet;
@@ -42,7 +41,6 @@ import june.project.book.servlet.PhotoBoardDetailServlet;
 import june.project.book.servlet.PhotoBoardListServlet;
 import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
-import june.project.sql.PlatformTransactionManager;
 import june.project.sql.SqlSessionFactoryProxy;
 
 public class ServerApp {
@@ -91,46 +89,39 @@ public class ServerApp {
     // SqlSessionFactory 꺼낸다.
     SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
 
-    // 트랜잭션 관리자를 꺼내 변수에 저장한다.
-    PlatformTransactionManager txManager =
-        (PlatformTransactionManager) context.get("transactionManager");
+    BookBoardService bookBoardService = (BookBoardService) context.get("bookBoardService");
+    BookmarkService bookmarkService = (BookmarkService) context.get("bookmarkService");
+    MemberService memberService = (MemberService) context.get("memberService");
+    PhotoBoardService photoBoardService = (PhotoBoardService) context.get("photoBoardService");
 
-    BookBoardDao bookBoardDao = (BookBoardDao) context.get("bookBoardDao");
-    BookmarkDao bookmarkDao = (BookmarkDao) context.get("bookmarkDao");
-    MemberDao memberDao = (MemberDao) context.get("memberDao");
-    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
-    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
+    servletMap.put("/book/list", new BookBoardListServlet(bookBoardService));
+    servletMap.put("/book/add", new BookBoardAddServlet(bookBoardService));
+    servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardService));
+    servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardService));
+    servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardService));
 
-    servletMap.put("/book/list", new BookBoardListServlet(bookBoardDao));
-    servletMap.put("/book/add", new BookBoardAddServlet(bookBoardDao));
-    servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardDao));
-    servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardDao));
-    servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardDao));
+    servletMap.put("/bookmark/list", new BookmarkListServlet(bookmarkService));
+    servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkService));
+    servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkService));
+    servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkService));
+    servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkService));
+    servletMap.put("/bookmark/search", new BookmarkSearchServlet(bookmarkService));
 
-    servletMap.put("/bookmark/list", new BookmarkListServlet(bookmarkDao));
-    servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkDao));
-    servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkDao));
-    servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkDao));
-    servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkDao));
-    servletMap.put("/bookmark/search", new BookmarkSearchServlet(bookmarkDao));
+    servletMap.put("/member/list", new MemberListServlet(memberService));
+    servletMap.put("/member/add", new MemberAddServlet(memberService));
+    servletMap.put("/member/detail", new MemberDetailServlet(memberService));
+    servletMap.put("/member/update", new MemberUpdateServlet(memberService));
+    servletMap.put("/member/delete", new MemberDeleteServlet(memberService));
+    servletMap.put("/member/search", new MemberSearchServlet(memberService));
 
-    servletMap.put("/member/list", new MemberListServlet(memberDao));
-    servletMap.put("/member/add", new MemberAddServlet(memberDao));
-    servletMap.put("/member/detail", new MemberDetailServlet(memberDao));
-    servletMap.put("/member/update", new MemberUpdateServlet(memberDao));
-    servletMap.put("/member/delete", new MemberDeleteServlet(memberDao));
-    servletMap.put("/member/search", new MemberSearchServlet(memberDao));
+    servletMap.put("/photoboard/list",
+        new PhotoBoardListServlet(photoBoardService, bookmarkService));
+    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardService));
+    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardService, bookmarkService));
+    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardService));
+    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardService));
 
-    servletMap.put("/photoboard/list", new PhotoBoardListServlet(photoBoardDao, bookmarkDao));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardDao));
-    servletMap.put("/photoboard/add",
-        new PhotoBoardAddServlet(txManager, photoBoardDao, bookmarkDao, photoFileDao));
-    servletMap.put("/photoboard/update",
-        new PhotoBoardUpdateServlet(txManager, photoBoardDao, photoFileDao));
-    servletMap.put("/photoboard/delete",
-        new PhotoBoardDeleteServlet(txManager, photoBoardDao, photoFileDao));
-
-    servletMap.put("/auth/login", new LoginServlet(memberDao));
+    servletMap.put("/auth/login", new LoginServlet(memberService));
 
     try (ServerSocket serverSocket = new ServerSocket(9999);) {
 

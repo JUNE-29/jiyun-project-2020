@@ -5,16 +5,16 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
+import june.project.book.service.BookmarkService;
 import june.project.util.Prompt;
 
 public class BookmarkSearchServlet implements Servlet {
 
-  BookmarkDao bookmarkDao;
+  BookmarkService bookmarkService;
 
-  public BookmarkSearchServlet(BookmarkDao bookmarkDao) {
-    this.bookmarkDao = bookmarkDao;
+  public BookmarkSearchServlet(BookmarkService bookmarkService) {
+    this.bookmarkService = bookmarkService;
   }
 
   @Override
@@ -46,7 +46,7 @@ public class BookmarkSearchServlet implements Servlet {
     out.println("[검색 결과]");
     out.println();
 
-    List<Bookmark> bookmarks = bookmarkDao.findByKeyword(params);
+    List<Bookmark> bookmarks = bookmarkService.findByKeyword(params);
     for (Bookmark b : bookmarks) {
       out.printf("%d, %s, %s, %s, %s\n", //
           b.getNo(), b.getTitle(), b.getBookTitle(), b.getAuthor(), b.getDate());

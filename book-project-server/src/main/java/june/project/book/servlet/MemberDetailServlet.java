@@ -2,16 +2,16 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
+import june.project.book.service.MemberService;
 import june.project.util.Prompt;
 
 public class MemberDetailServlet implements Servlet {
 
-  MemberDao memberDao;
+  MemberService memberService;
 
-  public MemberDetailServlet(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public MemberDetailServlet(MemberService memberService) {
+    this.memberService = memberService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class MemberDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Member member = memberDao.findByNo(no);
+    Member member = memberService.get(no);
 
     if (member != null) {
       out.printf("번호: %d \n", member.getNo());

@@ -2,16 +2,16 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
+import june.project.book.service.BookBoardService;
 import june.project.util.Prompt;
 
 public class BookBoardUpdateServlet implements Servlet {
 
-  BookBoardDao bookBoardDao;
+  BookBoardService bookBoardService;
 
-  public BookBoardUpdateServlet(BookBoardDao bookBoardDao) {
-    this.bookBoardDao = bookBoardDao;
+  public BookBoardUpdateServlet(BookBoardService bookBoardService) {
+    this.bookBoardService = bookBoardService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class BookBoardUpdateServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    BookBoard old = bookBoardDao.findByNo(no);
+    BookBoard old = bookBoardService.get(no);
 
     if (old == null) {
       out.println("해당 번호의 게시물이 없습니다.");
@@ -59,7 +59,7 @@ public class BookBoardUpdateServlet implements Servlet {
         String.format("평가(%d점)? ", old.getScore()), //
         String.valueOf(old.getScore())));
 
-    if (bookBoardDao.update(bookBoard) > 0) {
+    if (bookBoardService.update(bookBoard) > 0) {
       out.println("변경했습니다.");
 
     } else {

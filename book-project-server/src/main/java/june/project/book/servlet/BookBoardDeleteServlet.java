@@ -2,15 +2,15 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.BookBoardDao;
+import june.project.book.service.BookBoardService;
 import june.project.util.Prompt;
 
 public class BookBoardDeleteServlet implements Servlet {
 
-  BookBoardDao bookBoardDao;
+  BookBoardService bookBoardService;
 
-  public BookBoardDeleteServlet(BookBoardDao bookBoardDao) {
-    this.bookBoardDao = bookBoardDao;
+  public BookBoardDeleteServlet(BookBoardService bookBoardService) {
+    this.bookBoardService = bookBoardService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class BookBoardDeleteServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    if (bookBoardDao.delete(no) > 0) {
+    if (bookBoardService.delete(no) > 0) {
       out.println("삭제했습니다.");
 
     } else {

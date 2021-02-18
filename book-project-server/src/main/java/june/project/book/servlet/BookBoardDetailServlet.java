@@ -2,16 +2,16 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
+import june.project.book.service.BookBoardService;
 import june.project.util.Prompt;
 
 public class BookBoardDetailServlet implements Servlet {
 
-  BookBoardDao bookBoardDao;
+  BookBoardService bookBoardService;
 
-  public BookBoardDetailServlet(BookBoardDao bookBoardDao) {
-    this.bookBoardDao = bookBoardDao;
+  public BookBoardDetailServlet(BookBoardService bookBoardService) {
+    this.bookBoardService = bookBoardService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class BookBoardDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    BookBoard bookBoard = bookBoardDao.findByNo(no);
+    BookBoard bookBoard = bookBoardService.get(no);
 
     if (bookBoard != null) {
       out.printf("번호: %d\n", bookBoard.getNo());

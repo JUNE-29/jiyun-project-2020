@@ -2,16 +2,16 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
+import june.project.book.service.MemberService;
 import june.project.util.Prompt;
 
 public class MemberAddServlet implements Servlet {
 
-  MemberDao memberDao;
+  MemberService memberService;
 
-  public MemberAddServlet(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public MemberAddServlet(MemberService memberService) {
+    this.memberService = memberService;
   }
 
   @Override
@@ -20,14 +20,11 @@ public class MemberAddServlet implements Servlet {
     Member member = new Member();
 
     member.setName(Prompt.getString(in, out, "이름? "));
-
     member.setEmail(Prompt.getString(in, out, "이메일? "));
-
     member.setPassword(Prompt.getString(in, out, "비밀번호? "));
-
     member.setPhoto(Prompt.getString(in, out, "사진? "));
 
-    if (memberDao.insert(member) > 0) {
+    if (memberService.add(member) > 0) {
       out.println("등록했습니다.");
 
     } else {

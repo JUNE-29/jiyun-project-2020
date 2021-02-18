@@ -2,16 +2,16 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
+import june.project.book.service.MemberService;
 import june.project.util.Prompt;
 
 public class LoginServlet implements Servlet {
 
-  MemberDao memberDao;
+  MemberService memberService;
 
-  public LoginServlet(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public LoginServlet(MemberService memberService) {
+    this.memberService = memberService;
   }
 
   @Override
@@ -20,7 +20,7 @@ public class LoginServlet implements Servlet {
     String email = Prompt.getString(in, out, "이메일? ");
     String password = Prompt.getString(in, out, "암호? ");
 
-    Member member = memberDao.findByEmailAndPassword(email, password);
+    Member member = memberService.findByEmailAndPassword(email, password);
 
     if (member != null) {
       out.printf("'%s'님 환영합니다.\n", member.getName());

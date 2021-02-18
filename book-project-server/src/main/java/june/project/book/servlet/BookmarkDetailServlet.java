@@ -2,16 +2,16 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
-import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
+import june.project.book.service.BookmarkService;
 import june.project.util.Prompt;
 
 public class BookmarkDetailServlet implements Servlet {
 
-  BookmarkDao bookmarkDao;
+  BookmarkService bookmarkService;
 
-  public BookmarkDetailServlet(BookmarkDao bookmarkDao) {
-    this.bookmarkDao = bookmarkDao;
+  public BookmarkDetailServlet(BookmarkService bookmarkService) {
+    this.bookmarkService = bookmarkService;
   }
 
   @Override
@@ -19,7 +19,7 @@ public class BookmarkDetailServlet implements Servlet {
 
     int no = Prompt.getInt(in, out, "번호? ");
 
-    Bookmark bookmark = bookmarkDao.findByNo(no);
+    Bookmark bookmark = bookmarkService.get(no);
 
     if (bookmark != null) {
       out.printf("번호: %d\n", bookmark.getNo());
