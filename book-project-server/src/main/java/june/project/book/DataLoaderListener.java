@@ -11,15 +11,11 @@ import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
-import june.project.book.dao.mariadb.BookBoardDaoImpl;
-import june.project.book.dao.mariadb.BookmarkDaoImpl;
-import june.project.book.dao.mariadb.MemberDaoImpl;
-import june.project.book.dao.mariadb.PhotoBoardDaoImpl;
-import june.project.book.dao.mariadb.PhotoFileDaoImpl;
 import june.project.book.service.impl.BookBoardServiceImpl;
 import june.project.book.service.impl.BookmarkServiceImpl;
 import june.project.book.service.impl.MemberServiceImpl;
 import june.project.book.service.impl.PhotoBoardServiceImpl;
+import june.project.sql.MybatisDaoFactory;
 import june.project.sql.PlatformTransactionManager;
 import june.project.sql.SqlSessionFactoryProxy;
 
@@ -38,11 +34,14 @@ public class DataLoaderListener implements ApplicationContextListener {
           new SqlSessionFactoryProxy(new SqlSessionFactoryBuilder().build(inputStream));
       context.put("sqlSessionFactory", sqlSessionFactory);
 
-      BookBoardDao bookBoardDao = new BookBoardDaoImpl(sqlSessionFactory);
-      BookmarkDao bookmarkDao = new BookmarkDaoImpl(sqlSessionFactory);
-      MemberDao memberDao = new MemberDaoImpl(sqlSessionFactory);
-      PhotoBoardDao photoBoardDao = new PhotoBoardDaoImpl(sqlSessionFactory);
-      PhotoFileDao photoFileDao = new PhotoFileDaoImpl(sqlSessionFactory);
+      // DAO 프록시 객체를 생성해 줄 Factory 준비
+      MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSessionFactory);
+
+      BookBoardDao bookBoardDao = daoFactory.createDao(BookBoardDao.class);
+      BookmarkDao bookmarkDao = daoFactory.createDao(BookmarkDao.class);
+      MemberDao memberDao = daoFactory.createDao(MemberDao.class);
+      PhotoBoardDao photoBoardDao = daoFactory.createDao(PhotoBoardDao.class);
+      PhotoFileDao photoFileDao = daoFactory.createDao(PhotoFileDao.class);
 
       // 트랜잭션 관리자 준비
       PlatformTransactionManager txManager = new PlatformTransactionManager(sqlSessionFactory);

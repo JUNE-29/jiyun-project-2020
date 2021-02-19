@@ -3,7 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-  <mapper namespace="BookmarkMapper">
+  <mapper namespace="june.project.book.dao.BookmarkDao">
+  
    <resultMap type="Bookmark" id="BookmarkMap">
     <id column="bookmark_id" property="no"/>
   
@@ -25,23 +26,17 @@
     cdt 
   </sql>
   
-  <insert id="insertBookmark" parameterType="Bookmark">
+  <insert id="insert" parameterType="Bookmark">
   insert into bookmark(titl, book_titl, auth, pub, conts, photo) 
   values(#{title},#{bookTitle},#{author},#{publisher},#{content},#{photo})
   </insert>
   
-  <select id="selectBookmark" resultMap="BookmarkMap" parameterType="map">
+  <select id="findAll" resultMap="BookmarkMap" parameterType="map">
   <include refid="select1"/>
-  from bookmark
-  <where>
-    <if test="title != null">titl like concat('%', #{title}, '%')</if>
-    <if test="bookTitle != null">book_titl like concat('%', #{bookTitle}, '%')</if>
-    <if test="author != null">auth like concat('%', #{author}, '%')</if>
-    <if test="date != null">cdt like concat('%', #{date}, '%')</if>
-  </where>
+     from bookmark
   </select>
   
-  <select id="selectDetail" resultMap="BookmarkMap" parameterType="int">
+  <select id="findByNo" resultMap="BookmarkMap" parameterType="int">
    <include refid="select1"/>,
     pub, 
     conts, 
@@ -50,7 +45,7 @@
   where bookmark_id=#{no}
   </select>
   
-  <update id="updateBookmark" parameterType="Bookmark">
+  <update id="update" parameterType="Bookmark">
   update bookmark
   <set>
     <if test="title != null and title != ''">titl=#{title},</if>
@@ -63,7 +58,19 @@
   where bookmark_id=#{no}
   </update>
   
-  <delete id="deleteBookmark" parameterType="int">
+  <delete id="delete" parameterType="int">
   delete from bookmark where bookmark_id=#{no}
   </delete>
+  
+    <select id="findByKeyword" resultMap="BookmarkMap" parameterType="map">
+  <include refid="select1"/>
+  from bookmark
+  <where>
+    <if test="title != null">titl like concat('%', #{title}, '%')</if>
+    <if test="bookTitle != null">book_titl like concat('%', #{bookTitle}, '%')</if>
+    <if test="author != null">auth like concat('%', #{author}, '%')</if>
+    <if test="date != null">cdt like concat('%', #{date}, '%')</if>
+  </where>
+  </select>
+  
   </mapper>
