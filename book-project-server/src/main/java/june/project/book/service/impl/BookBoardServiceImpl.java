@@ -14,8 +14,8 @@ public class BookBoardServiceImpl implements BookBoardService {
   }
 
   @Override
-  public int add(BookBoard bookBoard) throws Exception {
-    return bookBoardDao.insert(bookBoard);
+  public void add(BookBoard bookBoard) throws Exception {
+    bookBoardDao.insert(bookBoard);
   }
 
   @Override

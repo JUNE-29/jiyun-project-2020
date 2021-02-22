@@ -5,7 +5,7 @@ import june.project.book.domain.BookBoard;
 
 public interface BookBoardService {
 
-  int add(BookBoard bookBoard) throws Exception;
+  void add(BookBoard bookBoard) throws Exception;
 
   List<BookBoard> list() throws Exception;
 

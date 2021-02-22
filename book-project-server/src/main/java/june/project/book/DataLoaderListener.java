@@ -11,7 +11,7 @@ import june.project.book.dao.BookmarkDao;
 import june.project.book.dao.MemberDao;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
-import june.project.book.service.impl.BookBoardServiceImpl;
+import june.project.book.service.impl.BookBoardServiceImpl2;
 import june.project.book.service.impl.BookmarkServiceImpl;
 import june.project.book.service.impl.MemberServiceImpl;
 import june.project.book.service.impl.PhotoBoardServiceImpl;
@@ -46,7 +46,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       // 트랜잭션 관리자 준비
       PlatformTransactionManager txManager = new PlatformTransactionManager(sqlSessionFactory);
 
-      context.put("bookBoardService", new BookBoardServiceImpl(bookBoardDao));
+      context.put("bookBoardService", new BookBoardServiceImpl2(sqlSessionFactory));
       context.put("bookmarkService", new BookmarkServiceImpl(bookmarkDao));
       context.put("memberService", new MemberServiceImpl(memberDao));
       context.put("photoBoardService",

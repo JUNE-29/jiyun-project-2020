@@ -30,10 +30,7 @@ public class BookBoardAddServlet implements Servlet {
     bookBoard.setBookStatus(Prompt.getInt(in, out, "진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정)?"));
     bookBoard.setScore(Prompt.getInt(in, out, "책에 대한 점수(5점만점)?"));
 
-    if (bookBoardService.add(bookBoard) > 0) {
-      out.println("저장하였습니다.");
-    } else {
-      out.println("게시글 등록에 실패했습니다.");
-    }
+    bookBoardService.add(bookBoard);
+    out.println("저장하였습니다.");
   }
 }
