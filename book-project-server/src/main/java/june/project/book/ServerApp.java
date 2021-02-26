@@ -230,7 +230,7 @@ public class ServerApp {
 
     ServerApp app = new ServerApp();
 
-    app.addApplicationContextListener(new DataLoaderListener());
+    app.addApplicationContextListener(new ContextLoaderListener());
     app.service();
   }
 }
