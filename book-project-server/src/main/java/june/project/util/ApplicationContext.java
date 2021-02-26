@@ -28,20 +28,23 @@ public class ApplicationContext {
     }
   }
 
-  private void createObject(Class<?> clazz) {
-    // 클래스의 생성자 정보를 알아낸다.
-    // => 첫 번째 생성자만 고려한다.
+  private void createObject(Class<?> clazz) throws Exception {
     Constructor<?> constructor = clazz.getConstructors()[0];
-
-    // 생성자의 파라미터 정보를 알아낸다.
     Parameter[] params = constructor.getParameters();
 
-    // 생성자 정보를 출력한다.
-    System.out.print(clazz.getName() + "(");
+    // 생성자의 파라미터 값 준비한다.
+    System.out.printf("%s()\n", clazz.getName());
+    Object[] paramValues = getParameterValues(params);
+  }
+
+  private Object[] getParameterValues(Parameter[] params) throws Exception {
+    Object[] values = new Object[params.length];
+    System.out.print("파라미터 값: {");
     for (Parameter param : params) {
       System.out.printf("%s,", param.getType().getSimpleName());
     }
-    System.out.println(")");
+    System.out.println("}");
+    return values;
   }
 
   private void findClasses(File path, String packageName) throws Exception {
