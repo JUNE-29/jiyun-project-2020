@@ -15,6 +15,7 @@ import june.project.book.dao.PhotoFileDao;
 import june.project.sql.MybatisDaoFactory;
 import june.project.sql.PlatformTransactionManager;
 import june.project.sql.SqlSessionFactoryProxy;
+import june.project.util.ApplicationContext;
 
 public class ContextLoaderListener implements ApplicationContextListener {
 
@@ -50,7 +51,9 @@ public class ContextLoaderListener implements ApplicationContextListener {
       beans.put("photoFileDao", txManager);
 
       // IoC 컨테이너 준비
-      // ApplicationContext appCtx = new ApplicationContext("june.project.book", beans);
+      ApplicationContext appCtx = new ApplicationContext("june.project.book");
+
+      context.put("iocContatiner", appCtx);
 
     } catch (Exception e) {
       e.printStackTrace();
