@@ -11,16 +11,20 @@ public class ApplicationContext {
   // - 객체를 생성과 소멸을 관리한다.
 
   public ApplicationContext(String packageName) throws Exception {
-    // 패키지의 실제 파일 시스템 경로를 알아낸다.
+    File path = Resources.getResourceAsFile(packageName.replace('.', '/'));
 
-    System.out.println("ApplicationContext: " + packageName);
+    // 해당 결로를 뒤져서 모든 파일의 이름을 알아낸다.
+    findFiles(path);
+  }
 
-    String packagePath = packageName.replace('.', '/');
-    System.out.println("ApplicationContext: " + packagePath);
-
-    File path = Resources.getResourceAsFile(packagePath);
-    // 패키지명을 파일 시스템 경로로 바꿔서 전달한다.
-
-    System.out.println("ApplicationContext: " + path.getAbsolutePath());
+  private void findFiles(File path) {
+    File[] files = path.listFiles();
+    for (File f : files) {
+      if (f.isFile()) {
+        System.out.println("ApplicationContext: " + f.getName());
+      } else {
+        findFiles(f);
+      }
+    }
   }
 }
