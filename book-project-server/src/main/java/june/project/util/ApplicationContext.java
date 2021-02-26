@@ -12,8 +12,6 @@ public class ApplicationContext {
 
   public ApplicationContext(String packageName) throws Exception {
     File path = Resources.getResourceAsFile(packageName.replace('.', '/'));
-
-    // 해당 결로를 뒤져서 모든 파일의 이름을 알아낸다.
     findClasses(path, packageName);
   }
 
@@ -27,7 +25,8 @@ public class ApplicationContext {
     });
 
     for (File f : files) {
-      String className = String.format("%s.%s", packageName, f.getName());
+      String className = String.format("%s.%s", packageName, //
+          f.getName().replace(".class", ""));
       if (f.isFile()) {
         System.out.println("ApplicationContext: " + className);
       } else {
