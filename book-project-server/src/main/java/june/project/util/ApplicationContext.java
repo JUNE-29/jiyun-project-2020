@@ -3,6 +3,7 @@ package june.project.util;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import org.apache.ibatis.io.Resources;
 
@@ -32,7 +33,15 @@ public class ApplicationContext {
     // => 첫 번째 생성자만 고려한다.
     Constructor<?> constructor = clazz.getConstructors()[0];
 
-    System.out.printf("%s() 생성자\n", constructor.getName());
+    // 생성자의 파라미터 정보를 알아낸다.
+    Parameter[] params = constructor.getParameters();
+
+    // 생성자 정보를 출력한다.
+    System.out.print(clazz.getName() + "(");
+    for (Parameter param : params) {
+      System.out.printf("%s,", param.getType().getSimpleName());
+    }
+    System.out.println(")");
   }
 
   private void findClasses(File path, String packageName) throws Exception {
