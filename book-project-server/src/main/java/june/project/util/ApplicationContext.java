@@ -14,16 +14,22 @@ public class ApplicationContext {
     File path = Resources.getResourceAsFile(packageName.replace('.', '/'));
 
     // 해당 결로를 뒤져서 모든 파일의 이름을 알아낸다.
-    findFiles(path);
+    findClasses(path);
   }
 
-  private void findFiles(File path) {
-    File[] files = path.listFiles();
+  private void findClasses(File path) {
+    File[] files = path.listFiles(file -> {
+      if (file.isDirectory() //
+          || file.getName().endsWith(".class"))
+        return true;
+      return false;
+    });
+
     for (File f : files) {
       if (f.isFile()) {
         System.out.println("ApplicationContext: " + f.getName());
       } else {
-        findFiles(f);
+        findClasses(f);
       }
     }
   }
