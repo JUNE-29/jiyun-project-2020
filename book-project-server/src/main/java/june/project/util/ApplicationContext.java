@@ -2,18 +2,28 @@ package june.project.util;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import org.apache.ibatis.io.Resources;
+
+// 역할:
+// - 클래스를 찾아 객체를 생성한다.
+// - 객체가 일을 하는데 필요로하는 의존 객체를 주입한다.
+// - 객체를 생성과 소멸을 관리한다.
 
 public class ApplicationContext {
 
-  // 역할:
-  // - 클래스를 찾아 객체를 생성한다.
-  // - 객체가 일을 하는데 필요로하는 의존 객체를 주입한다.
-  // - 객체를 생성과 소멸을 관리한다.
+  // concrete class를 담을 저장소
+  ArrayList<Class<?>> concreteClasses = new ArrayList<>();
 
   public ApplicationContext(String packageName) throws Exception {
     File path = Resources.getResourceAsFile(packageName.replace('.', '/'));
+
     findClasses(path, packageName);
+
+    // concrete class의 객체를 생성한다.
+    for (Class<?> clazz : concreteClasses) {
+      System.out.println(clazz.getName());
+    }
   }
 
   private void findClasses(File path, String packageName) throws Exception {
@@ -31,7 +41,7 @@ public class ApplicationContext {
       if (f.isFile()) {
         Class<?> clazz = Class.forName(className);
         if (isConcreteClass(clazz)) {
-          System.out.println("ApplicationContext: " + className);
+          concreteClasses.add(clazz);
         }
       } else {
         findClasses(f, className);
