@@ -1,6 +1,7 @@
 package june.project.util;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import org.apache.ibatis.io.Resources;
@@ -27,7 +28,11 @@ public class ApplicationContext {
   }
 
   private void createObject(Class<?> clazz) {
-    System.out.println(clazz.getName() + " 객체 생성!");
+    // 클래스의 생성자 정보를 알아낸다.
+    // => 첫 번째 생성자만 고려한다.
+    Constructor<?> constructor = clazz.getConstructors()[0];
+
+    System.out.printf("%s() 생성자\n", constructor.getName());
   }
 
   private void findClasses(File path, String packageName) throws Exception {
