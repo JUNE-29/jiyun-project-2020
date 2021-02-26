@@ -28,7 +28,11 @@ public class ApplicationContext {
 
     // concrete class의 객체를 생성한다.
     for (Class<?> clazz : concreteClasses) {
-      createObject(clazz);
+      try {
+        createObject(clazz);
+      } catch (Exception e) {
+        System.out.printf("%s 클래스의 객체를 생성할 수 없습니다.\n", clazz.getName());
+      }
     }
   }
 
