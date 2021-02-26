@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.apache.ibatis.io.Resources;
 
 // 역할:
@@ -16,6 +17,9 @@ public class ApplicationContext {
 
   // concrete class를 담을 저장소
   ArrayList<Class<?>> concreteClasses = new ArrayList<>();
+
+  // 객체 저장소
+  HashMap<String, Object> objPool = new HashMap<>();
 
   public ApplicationContext(String packageName) throws Exception {
     File path = Resources.getResourceAsFile(packageName.replace('.', '/'));
@@ -35,6 +39,13 @@ public class ApplicationContext {
     // 생성자의 파라미터 값 준비한다.
     System.out.printf("%s()\n", clazz.getName());
     Object[] paramValues = getParameterValues(params);
+
+    // 객체를 생성한다
+    Object obj = constructor.newInstance(paramValues);
+
+    // 객체풀에 보관한다.
+    objPool.put(clazz.getName(), obj);
+    System.out.println(clazz.getName() + " 객체 생성!");
   }
 
   private Object[] getParameterValues(Parameter[] params) throws Exception {
