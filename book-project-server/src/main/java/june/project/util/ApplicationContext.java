@@ -22,8 +22,12 @@ public class ApplicationContext {
 
     // concrete class의 객체를 생성한다.
     for (Class<?> clazz : concreteClasses) {
-      System.out.println(clazz.getName());
+      createObject(clazz);
     }
+  }
+
+  private void createObject(Class<?> clazz) {
+    System.out.println(clazz.getName() + " 객체 생성!");
   }
 
   private void findClasses(File path, String packageName) throws Exception {
