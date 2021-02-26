@@ -1,6 +1,7 @@
 package june.project.util;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import org.apache.ibatis.io.Resources;
 
 public class ApplicationContext {
@@ -15,7 +16,7 @@ public class ApplicationContext {
     findClasses(path, packageName);
   }
 
-  private void findClasses(File path, String packageName) {
+  private void findClasses(File path, String packageName) throws Exception {
     File[] files = path.listFiles(file -> {
       if (file.isDirectory() //
           || file.getName().endsWith(".class") //
@@ -28,10 +29,23 @@ public class ApplicationContext {
       String className = String.format("%s.%s", packageName, //
           f.getName().replace(".class", ""));
       if (f.isFile()) {
-        System.out.println("ApplicationContext: " + className);
+        Class<?> clazz = Class.forName(className);
+        if (isConcreteClass(clazz)) {
+          System.out.println("ApplicationContext: " + className);
+        }
       } else {
         findClasses(f, className);
       }
     }
+  }
+
+  private boolean isConcreteClass(Class<?> clazz) {
+    if (clazz.isInterface() // 인터페이스인 경우
+        || clazz.isEnum() // Enum 타입인 경우
+        || Modifier.isAbstract(clazz.getModifiers()) // 추상 클래스인 경우
+    ) {
+      return false;
+    }
+    return true;
   }
 }
