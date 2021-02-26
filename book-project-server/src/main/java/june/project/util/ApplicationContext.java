@@ -20,7 +20,8 @@ public class ApplicationContext {
   private void findClasses(File path) {
     File[] files = path.listFiles(file -> {
       if (file.isDirectory() //
-          || file.getName().endsWith(".class"))
+          || file.getName().endsWith(".class") //
+              && !file.getName().contains("$"))
         return true;
       return false;
     });
