@@ -3,8 +3,10 @@ package june.project.book.servlet;
 import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.service.BookmarkService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/bookmark/delete")
 public class BookmarkDeleteServlet implements Servlet {
 
   BookmarkService bookmarkService;

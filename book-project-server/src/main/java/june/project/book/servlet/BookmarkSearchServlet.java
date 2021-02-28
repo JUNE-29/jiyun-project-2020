@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/bookmark/search")
 public class BookmarkSearchServlet implements Servlet {
 
   BookmarkService bookmarkService;

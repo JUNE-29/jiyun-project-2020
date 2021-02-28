@@ -70,10 +70,20 @@ public class ApplicationContext {
     Object obj = constructor.newInstance(paramValues);
 
     // 객체풀에 보관한다.
-    objPool.put(clazz.getName(), obj);
+    objPool.put(getBeanName(clazz), obj);
     System.out.println(clazz.getName() + " 객체 생성!");
 
     return obj;
+  }
+
+  private String getBeanName(Class<?> clazz) {
+    Component compAnno = clazz.getAnnotation(Component.class);
+    if (compAnno == null || compAnno.value().length() == 0) {
+      // @Component 애노테이션이 없거나 이름을 지정하지 않았으면
+      // 클래스 이름을 빈의 이름으로 사용한다.
+      return clazz.getName();
+    }
+    return compAnno.value();
   }
 
   private Object[] getParameterValues(Parameter[] params) throws Exception {

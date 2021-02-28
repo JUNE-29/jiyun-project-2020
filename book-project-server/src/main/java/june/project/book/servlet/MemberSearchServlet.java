@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Scanner;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/member/search")
 public class MemberSearchServlet implements Servlet {
 
   MemberService memberService;

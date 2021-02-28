@@ -4,8 +4,10 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/member/add")
 public class MemberAddServlet implements Servlet {
 
   MemberService memberService;

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
+import june.project.util.Component;
 
+@Component("/book/list")
 public class BookBoardListServlet implements Servlet {
 
   BookBoardService bookBoardService;

@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.Component;
 
+@Component("/member/list")
 public class MemberListServlet implements Servlet {
 
   MemberService memberService;

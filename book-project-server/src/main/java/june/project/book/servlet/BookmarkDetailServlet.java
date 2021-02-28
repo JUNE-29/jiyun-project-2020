@@ -4,8 +4,10 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/bookmark/detail")
 public class BookmarkDetailServlet implements Servlet {
 
   BookmarkService bookmarkService;

@@ -7,8 +7,10 @@ import java.util.Scanner;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
 import june.project.book.service.PhotoBoardService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/photoboard/update")
 public class PhotoBoardUpdateServlet implements Servlet {
 
   PhotoBoardService photoBoardService;

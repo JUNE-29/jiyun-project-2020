@@ -9,8 +9,10 @@ import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
 import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
+import june.project.util.Component;
 import june.project.util.Prompt;
 
+@Component("/photoboard/add")
 public class PhotoBoardAddServlet implements Servlet {
 
   PhotoBoardService photoBoardService;
