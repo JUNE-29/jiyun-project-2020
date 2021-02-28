@@ -53,6 +53,11 @@ public class ApplicationContext {
     }
   }
 
+  // 객체 이름으로 객체를 찾아 꺼내준다.
+  public Object getBean(String name) {
+    return objPool.get(name);
+  }
+
   private Object createObject(Class<?> clazz) throws Exception {
     Constructor<?> constructor = clazz.getConstructors()[0];
     Parameter[] params = constructor.getParameters();

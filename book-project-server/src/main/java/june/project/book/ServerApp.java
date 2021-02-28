@@ -13,35 +13,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.service.BookBoardService;
-import june.project.book.service.BookmarkService;
-import june.project.book.service.MemberService;
-import june.project.book.service.PhotoBoardService;
-import june.project.book.servlet.BookBoardAddServlet;
-import june.project.book.servlet.BookBoardDeleteServlet;
-import june.project.book.servlet.BookBoardDetailServlet;
-import june.project.book.servlet.BookBoardListServlet;
-import june.project.book.servlet.BookBoardUpdateServlet;
-import june.project.book.servlet.BookmarkAddServlet;
-import june.project.book.servlet.BookmarkDeleteServlet;
-import june.project.book.servlet.BookmarkDetailServlet;
-import june.project.book.servlet.BookmarkListServlet;
-import june.project.book.servlet.BookmarkSearchServlet;
-import june.project.book.servlet.BookmarkUpdateServlet;
-import june.project.book.servlet.LoginServlet;
-import june.project.book.servlet.MemberAddServlet;
-import june.project.book.servlet.MemberDeleteServlet;
-import june.project.book.servlet.MemberDetailServlet;
-import june.project.book.servlet.MemberListServlet;
-import june.project.book.servlet.MemberSearchServlet;
-import june.project.book.servlet.MemberUpdateServlet;
-import june.project.book.servlet.PhotoBoardAddServlet;
-import june.project.book.servlet.PhotoBoardDeleteServlet;
-import june.project.book.servlet.PhotoBoardDetailServlet;
-import june.project.book.servlet.PhotoBoardListServlet;
-import june.project.book.servlet.PhotoBoardUpdateServlet;
 import june.project.book.servlet.Servlet;
 import june.project.sql.SqlSessionFactoryProxy;
+import june.project.util.ApplicationContext;
 
 public class ServerApp {
 
@@ -57,6 +31,9 @@ public class ServerApp {
 
   // 서버 멈춤 여부 설정 변수
   boolean serverStop = false;
+
+  // IoC 컨테이너 준비
+  ApplicationContext iocContainer;
 
   // 옵저버를 등록하는 메서드이다.
   public void addApplicationContextListener(ApplicationContextListener listener) {
@@ -86,42 +63,12 @@ public class ServerApp {
 
     notifyApplicationInitialized();
 
-    // SqlSessionFactory 꺼낸다.
-    SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
+    // ApplicationContext (IoC 컨테이너)를 꺼낸다.
+    iocContainer = (ApplicationContext) context.get("iocContatiner");
 
-    BookBoardService bookBoardService = (BookBoardService) context.get("bookBoardService");
-    BookmarkService bookmarkService = (BookmarkService) context.get("bookmarkService");
-    MemberService memberService = (MemberService) context.get("memberService");
-    PhotoBoardService photoBoardService = (PhotoBoardService) context.get("photoBoardService");
-
-    servletMap.put("/book/list", new BookBoardListServlet(bookBoardService));
-    servletMap.put("/book/add", new BookBoardAddServlet(bookBoardService));
-    servletMap.put("/book/detail", new BookBoardDetailServlet(bookBoardService));
-    servletMap.put("/book/update", new BookBoardUpdateServlet(bookBoardService));
-    servletMap.put("/book/delete", new BookBoardDeleteServlet(bookBoardService));
-
-    servletMap.put("/bookmark/list", new BookmarkListServlet(bookmarkService));
-    servletMap.put("/bookmark/add", new BookmarkAddServlet(bookmarkService));
-    servletMap.put("/bookmark/detail", new BookmarkDetailServlet(bookmarkService));
-    servletMap.put("/bookmark/update", new BookmarkUpdateServlet(bookmarkService));
-    servletMap.put("/bookmark/delete", new BookmarkDeleteServlet(bookmarkService));
-    servletMap.put("/bookmark/search", new BookmarkSearchServlet(bookmarkService));
-
-    servletMap.put("/member/list", new MemberListServlet(memberService));
-    servletMap.put("/member/add", new MemberAddServlet(memberService));
-    servletMap.put("/member/detail", new MemberDetailServlet(memberService));
-    servletMap.put("/member/update", new MemberUpdateServlet(memberService));
-    servletMap.put("/member/delete", new MemberDeleteServlet(memberService));
-    servletMap.put("/member/search", new MemberSearchServlet(memberService));
-
-    servletMap.put("/photoboard/list",
-        new PhotoBoardListServlet(photoBoardService, bookmarkService));
-    servletMap.put("/photoboard/detail", new PhotoBoardDetailServlet(photoBoardService));
-    servletMap.put("/photoboard/add", new PhotoBoardAddServlet(photoBoardService, bookmarkService));
-    servletMap.put("/photoboard/update", new PhotoBoardUpdateServlet(photoBoardService));
-    servletMap.put("/photoboard/delete", new PhotoBoardDeleteServlet(photoBoardService));
-
-    servletMap.put("/auth/login", new LoginServlet(memberService));
+    // IoC 컨테이너에서 SqlSessionFactory를 꺼낸다.
+    SqlSessionFactory sqlSessionFactory =
+        (SqlSessionFactory) iocContainer.getBean("sqlSessionFactory");
 
     try (ServerSocket serverSocket = new ServerSocket(9999);) {
 
