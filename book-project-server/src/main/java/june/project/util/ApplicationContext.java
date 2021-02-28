@@ -69,44 +69,53 @@ public class ApplicationContext {
   }
 
   private Object getParameterValue(Class<?> type) throws Exception {
-    // 먼저 객체 보관소에 파라미터 객체가 있는지 검사한다.
     Collection<?> objs = objPool.values();
     for (Object obj : objs) {
-      // 있으면, 같은 객체를 또 만들지 않고 기존의 생성된 객체를 리턴한다.
       if (type.isInstance(obj)) {
         return obj;
       }
     }
 
-    // 객체풀에 파라미터 타입에 맞는 객체가 없다면
-    // 파라미터 타입에 맞는 클래스를 찾는다.
     Class<?> availableClass = findAvailableClass(type);
     if (availableClass == null) {
-      // 파라미터에 해당하는 적절한 클래스를 찾지 못했으면
-      // 파라미터 객체를 생성할 수 없다.
       return null;
     }
     return createObject(availableClass);
   }
 
   private Class<?> findAvailableClass(Class<?> type) throws Exception {
-    // concrete class 목록에서 파라미터에 해당하는 클래스가 있는지 조사한다.
     for (Class<?> clazz : concreteClasses) {
       if (type.isInterface()) {
-        // 파라미터가 인터페이스라면
-        // 각각의 클래스에 대해 그 인터페이스를 구현했는지 검사한다.
         Class<?>[] interfaces = clazz.getInterfaces();
         for (Class<?> interfaceInfo : interfaces) {
           if (interfaceInfo == type) {
             return clazz;
           }
         }
+      } else if (isChildClass(clazz, type)) {
+        // 파라미터가 클래스라면,
+        // 각각의 클래스에 대해 같은 타입이거나 수퍼 클래스인지 검사한다.
+        return clazz;
       }
     }
 
     // 파라미터에 해당하는 타입이 concrete class 목록에 없다면
     // 그냥 null을 리턴한다.
     return null;
+  }
+
+  private boolean isChildClass(Class<?> clazz, Class<?> type) {
+    // 수퍼 클래스로 따라 올라가면서 같은 타입인지 검사한다.
+    if (clazz == type) {
+      return true;
+    }
+
+    if (clazz == Object.class) {
+      // 더 이상 상위 클래스가 없다면
+      return false;
+    }
+
+    return isChildClass(clazz.getSuperclass(), type);
   }
 
   private void findClasses(File path, String packageName) throws Exception {
