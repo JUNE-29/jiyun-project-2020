@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import org.apache.ibatis.io.Resources;
 
@@ -66,6 +67,14 @@ public class ApplicationContext {
   }
 
   private Object getParameterValue(Class<?> type) {
+    // 먼저 객체 보관소에 파라미터 객체가 있는지 검사한다.
+    Collection<?> objs = objPool.values();
+    for (Object obj : objs) {
+      // 있으면, 같은 객체를 또 만들지 않고 기존의 생성된 객체를 리턴한다.
+      if (type.isInstance(obj)) {
+        return obj;
+      }
+    }
     return null;
   }
 
