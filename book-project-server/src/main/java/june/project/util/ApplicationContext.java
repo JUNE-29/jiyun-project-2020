@@ -37,7 +37,7 @@ public class ApplicationContext {
     }
   }
 
-  private void createObject(Class<?> clazz) throws Exception {
+  private Object createObject(Class<?> clazz) throws Exception {
     Constructor<?> constructor = clazz.getConstructors()[0];
     Parameter[] params = constructor.getParameters();
 
@@ -51,6 +51,8 @@ public class ApplicationContext {
     // 객체풀에 보관한다.
     objPool.put(clazz.getName(), obj);
     System.out.println(clazz.getName() + " 객체 생성!");
+
+    return obj;
   }
 
   private Object[] getParameterValues(Parameter[] params) throws Exception {
@@ -66,7 +68,7 @@ public class ApplicationContext {
     return values;
   }
 
-  private Object getParameterValue(Class<?> type) {
+  private Object getParameterValue(Class<?> type) throws Exception {
     // 먼저 객체 보관소에 파라미터 객체가 있는지 검사한다.
     Collection<?> objs = objPool.values();
     for (Object obj : objs) {
@@ -75,6 +77,19 @@ public class ApplicationContext {
         return obj;
       }
     }
+
+    // 객체풀에 파라미터 타입에 맞는 객체가 없다면
+    // 파라미터 타입에 맞는 클래스를 찾는다.
+    Class<?> availableClass = findAvailableClass(type);
+    if (availableClass == null) {
+      // 파라미터에 해당하는 적절한 클래스를 찾지 못했으면
+      // 파라미터 객체를 생성할 수 없다.
+      return null;
+    }
+    return createObject(availableClass);
+  }
+
+  private Class<?> findAvailableClass(Class<?> type) throws Exception {
     return null;
   }
 
