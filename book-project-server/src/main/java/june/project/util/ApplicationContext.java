@@ -55,11 +55,18 @@ public class ApplicationContext {
   private Object[] getParameterValues(Parameter[] params) throws Exception {
     Object[] values = new Object[params.length];
     System.out.print("파라미터 값: {");
-    for (Parameter param : params) {
-      System.out.printf("%s,", param.getType().getSimpleName());
+    for (int i = 0; i < values.length; i++) {
+      values[i] = getParameterValue(params[i].getType());
+      System.out.printf("%s ==> %s,\n", //
+          params[i].getType().getSimpleName(), //
+          values[i].getClass().getName());
     }
     System.out.println("}");
     return values;
+  }
+
+  private Object getParameterValue(Class<?> type) {
+    return null;
   }
 
   private void findClasses(File path, String packageName) throws Exception {
