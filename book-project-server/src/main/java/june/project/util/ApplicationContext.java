@@ -7,6 +7,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 import org.apache.ibatis.io.Resources;
 
 // 역할:
@@ -22,7 +23,13 @@ public class ApplicationContext {
   // 객체 저장소
   HashMap<String, Object> objPool = new HashMap<>();
 
-  public ApplicationContext(String packageName) throws Exception {
+  public ApplicationContext(String packageName, HashMap<String, Object> beans) throws Exception {
+    // Map에 들어 있는 객체를 먼저 객체풀에 보관한다.
+    Set<String> keySet = beans.keySet();
+    for (String key : keySet) {
+      objPool.put(key, beans.get(key));
+    }
+
     File path = Resources.getResourceAsFile(packageName.replace('.', '/'));
 
     findClasses(path, packageName);

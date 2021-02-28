@@ -51,8 +51,9 @@ public class ContextLoaderListener implements ApplicationContextListener {
       beans.put("photoFileDao", txManager);
 
       // IoC 컨테이너 준비
-      ApplicationContext appCtx = new ApplicationContext("june.project.book");
+      ApplicationContext appCtx = new ApplicationContext("june.project.book", beans);
 
+      // ServerApp이 사용할 수 있게 context 맵에 담아 둔다.
       context.put("iocContatiner", appCtx);
 
     } catch (Exception e) {
