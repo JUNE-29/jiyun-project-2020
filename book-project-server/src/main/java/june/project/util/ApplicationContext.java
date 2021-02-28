@@ -44,6 +44,15 @@ public class ApplicationContext {
     }
   }
 
+  public void printBeans() {
+    System.out.println("-------------------------------------------");
+    Set<String> beanNames = objPool.keySet();
+    for (String beanName : beanNames) {
+      System.out.printf("%s =====> %s\n", //
+          beanName, objPool.get(beanName).getClass().getName());
+    }
+  }
+
   private Object createObject(Class<?> clazz) throws Exception {
     Constructor<?> constructor = clazz.getConstructors()[0];
     Parameter[] params = constructor.getParameters();

@@ -53,6 +53,8 @@ public class ContextLoaderListener implements ApplicationContextListener {
       // IoC 컨테이너 준비
       ApplicationContext appCtx = new ApplicationContext("june.project.book", beans);
 
+      appCtx.printBeans();
+
       // ServerApp이 사용할 수 있게 context 맵에 담아 둔다.
       context.put("iocContatiner", appCtx);
 
