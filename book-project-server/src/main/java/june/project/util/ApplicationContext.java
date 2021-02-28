@@ -90,6 +90,22 @@ public class ApplicationContext {
   }
 
   private Class<?> findAvailableClass(Class<?> type) throws Exception {
+    // concrete class 목록에서 파라미터에 해당하는 클래스가 있는지 조사한다.
+    for (Class<?> clazz : concreteClasses) {
+      if (type.isInterface()) {
+        // 파라미터가 인터페이스라면
+        // 각각의 클래스에 대해 그 인터페이스를 구현했는지 검사한다.
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> interfaceInfo : interfaces) {
+          if (interfaceInfo == type) {
+            return clazz;
+          }
+        }
+      }
+    }
+
+    // 파라미터에 해당하는 타입이 concrete class 목록에 없다면
+    // 그냥 null을 리턴한다.
     return null;
   }
 
