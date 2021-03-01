@@ -48,7 +48,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
 
       // 트랜잭션 관리자 준비
       PlatformTransactionManager txManager = new PlatformTransactionManager(sqlSessionFactory);
-      beans.put("photoFileDao", txManager);
+      beans.put("transactionManager", txManager);
 
       // IoC 컨테이너 준비
       ApplicationContext appCtx = new ApplicationContext("june.project.book", beans);

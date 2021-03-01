@@ -134,7 +134,7 @@ public class ServerApp {
         return;
       }
 
-      Servlet servlet = servletMap.get(request);
+      Servlet servlet = (Servlet) iocContainer.getBean(request);
 
       if (servlet != null) {
         try {
