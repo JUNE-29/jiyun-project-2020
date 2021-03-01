@@ -8,7 +8,9 @@ import june.project.book.service.PhotoBoardService;
 import june.project.sql.PlatformTransactionManager;
 import june.project.sql.TransactionCallback;
 import june.project.sql.TransactionTemplate;
+import june.project.util.Component;
 
+@Component
 public class PhotoBoardServiceImpl implements PhotoBoardService {
 
   TransactionTemplate transactionTemplate;

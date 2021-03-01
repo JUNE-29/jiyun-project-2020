@@ -163,7 +163,7 @@ public class ApplicationContext {
           f.getName().replace(".class", ""));
       if (f.isFile()) {
         Class<?> clazz = Class.forName(className);
-        if (isConcreteClass(clazz)) {
+        if (isComponentClass(clazz)) {
           concreteClasses.add(clazz);
         }
       } else {
@@ -172,13 +172,21 @@ public class ApplicationContext {
     }
   }
 
-  private boolean isConcreteClass(Class<?> clazz) {
+  private boolean isComponentClass(Class<?> clazz) {
     if (clazz.isInterface() // 인터페이스인 경우
         || clazz.isEnum() // Enum 타입인 경우
         || Modifier.isAbstract(clazz.getModifiers()) // 추상 클래스인 경우
     ) {
       return false;
     }
+
+    // 클래스에서 @Component 애노테이션 정보를 추출한다.
+    Component compAnno = clazz.getAnnotation(Component.class);
+    if (compAnno == null) {
+      return false;
+    }
+
+    // 오직 @Component 애노테이션이 붙은 일반 클래스만이 객체 생성 대상이다.
     return true;
   }
 }

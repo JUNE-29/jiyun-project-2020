@@ -5,7 +5,9 @@ import java.util.List;
 import june.project.book.dao.MemberDao;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.Component;
 
+@Component
 public class MemberServiceImpl implements MemberService {
 
   MemberDao memberDao;
