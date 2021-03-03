@@ -13,18 +13,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import june.project.book.context.ApplicationContextListener;
-import june.project.book.servlet.Servlet;
 import june.project.sql.SqlSessionFactoryProxy;
 import june.project.util.ApplicationContext;
+import june.project.util.RequestHandler;
+import june.project.util.RequestMappingHandlerMapping;
 
 public class ServerApp {
 
   // 옵저버 목록을 관리할 객체 준비
   Set<ApplicationContextListener> listeners = new HashSet<>();
-
   Map<String, Object> context = new HashMap<>();
 
-  Map<String, Servlet> servletMap = new HashMap<>();
 
   // 스레드풀
   ExecutorService executorService = Executors.newCachedThreadPool();
@@ -35,24 +34,23 @@ public class ServerApp {
   // IoC 컨테이너 준비
   ApplicationContext iocContainer;
 
-  // 옵저버를 등록하는 메서드이다.
+  // request handler 맵퍼 준비
+  RequestMappingHandlerMapping handlerMapper;
+
   public void addApplicationContextListener(ApplicationContextListener listener) {
     listeners.add(listener);
   }
 
-  // 옵저버를 제거하는 메서드이다.
   public void removeApplicationContextListener(ApplicationContextListener listener) {
     listeners.remove(listener);
   }
 
-  // 애플리케이션이 시작되면, 등록된 리스너에게 알린다.
   private void notifyApplicationInitialized() {
     for (ApplicationContextListener listener : listeners) {
       listener.contextInitialized(context);
     }
   }
 
-  // 애플리케이션이 종료되면, 등록된 리스너에게 알린다.
   private void notifyApplicationDestroyed() {
     for (ApplicationContextListener listener : listeners) {
       listener.contextDestroyed(context);
@@ -65,6 +63,9 @@ public class ServerApp {
 
     // ApplicationContext (IoC 컨테이너)를 꺼낸다.
     iocContainer = (ApplicationContext) context.get("iocContatiner");
+
+    // request handler mapper를 꺼낸다.
+    handlerMapper = (RequestMappingHandlerMapping) context.get("handlerMapper");
 
     // IoC 컨테이너에서 SqlSessionFactory를 꺼낸다.
     SqlSessionFactory sqlSessionFactory =
@@ -121,7 +122,6 @@ public class ServerApp {
   void processRequest(Socket clientSocket) {
 
     try (Socket socket = clientSocket;
-        // 클라이언트의 메시지를 수신하고 클라이언트로 전송할 입출력 도구 준비
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
 
@@ -134,11 +134,11 @@ public class ServerApp {
         return;
       }
 
-      Servlet servlet = (Servlet) iocContainer.getBean(request);
+      RequestHandler requestHandler = handlerMapper.getHandler(request);
 
-      if (servlet != null) {
+      if (requestHandler != null) {
         try {
-          servlet.service(in, out);
+          requestHandler.getMethod().invoke(requestHandler.getBean(), in, out);
 
         } catch (Exception e) {
           out.println("요청 처리 중 오류 발생!");

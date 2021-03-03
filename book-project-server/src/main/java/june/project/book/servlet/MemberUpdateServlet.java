@@ -6,9 +6,10 @@ import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/member/update")
-public class MemberUpdateServlet implements Servlet {
+@Component
+public class MemberUpdateServlet {
 
   MemberService memberService;
 
@@ -16,7 +17,7 @@ public class MemberUpdateServlet implements Servlet {
     this.memberService = memberService;
   }
 
-  @Override
+  @RequestMapping("/member/update")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

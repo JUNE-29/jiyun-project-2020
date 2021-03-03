@@ -5,9 +5,10 @@ import java.util.Scanner;
 import june.project.book.service.MemberService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/member/delete")
-public class MemberDeleteServlet implements Servlet {
+@Component
+public class MemberDeleteServlet {
 
   MemberService memberService;
 
@@ -15,7 +16,7 @@ public class MemberDeleteServlet implements Servlet {
     this.memberService = memberService;
   }
 
-  @Override
+  @RequestMapping("/member/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

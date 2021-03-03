@@ -7,9 +7,10 @@ import june.project.book.domain.PhotoFile;
 import june.project.book.service.PhotoBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/photoboard/detail")
-public class PhotoBoardDetailServlet implements Servlet {
+@Component
+public class PhotoBoardDetailServlet {
 
   PhotoBoardService photoBoardService;
 
@@ -18,7 +19,7 @@ public class PhotoBoardDetailServlet implements Servlet {
     this.photoBoardService = photoBoardService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "사진 게시글 번호? ");

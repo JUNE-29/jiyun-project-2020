@@ -9,9 +9,10 @@ import june.project.book.domain.PhotoFile;
 import june.project.book.service.PhotoBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/photoboard/update")
-public class PhotoBoardUpdateServlet implements Servlet {
+@Component
+public class PhotoBoardUpdateServlet {
 
   PhotoBoardService photoBoardService;
 
@@ -19,7 +20,7 @@ public class PhotoBoardUpdateServlet implements Servlet {
     this.photoBoardService = photoBoardSerivce;
   }
 
-  @Override
+  @RequestMapping("/photoboard/update")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

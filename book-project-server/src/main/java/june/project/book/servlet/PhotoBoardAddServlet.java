@@ -11,9 +11,10 @@ import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/photoboard/add")
-public class PhotoBoardAddServlet implements Servlet {
+@Component
+public class PhotoBoardAddServlet {
 
   PhotoBoardService photoBoardService;
   BookmarkService bookmarkService;
@@ -25,7 +26,7 @@ public class PhotoBoardAddServlet implements Servlet {
     this.bookmarkService = bookmarkService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/add")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     PhotoBoard photoBoard = new PhotoBoard();

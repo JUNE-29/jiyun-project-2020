@@ -9,9 +9,10 @@ import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/bookmark/search")
-public class BookmarkSearchServlet implements Servlet {
+@Component
+public class BookmarkSearchServlet {
 
   BookmarkService bookmarkService;
 
@@ -19,7 +20,7 @@ public class BookmarkSearchServlet implements Servlet {
     this.bookmarkService = bookmarkService;
   }
 
-  @Override
+  @RequestMapping("/bookmark/search")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     HashMap<String, Object> params = new HashMap<>();

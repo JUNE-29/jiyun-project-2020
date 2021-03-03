@@ -6,9 +6,10 @@ import java.util.Scanner;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
 import june.project.util.Component;
+import june.project.util.RequestMapping;
 
-@Component("/bookmark/list")
-public class BookmarkListServlet implements Servlet {
+@Component
+public class BookmarkListServlet {
 
   BookmarkService bookmarkService;
 
@@ -16,7 +17,7 @@ public class BookmarkListServlet implements Servlet {
     this.bookmarkService = bookmarkService;
   }
 
-  @Override
+  @RequestMapping("/bookmark/list")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     List<Bookmark> bookmark = bookmarkService.list();

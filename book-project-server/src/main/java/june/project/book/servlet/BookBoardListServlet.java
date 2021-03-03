@@ -6,9 +6,10 @@ import java.util.Scanner;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
 import june.project.util.Component;
+import june.project.util.RequestMapping;
 
-@Component("/book/list")
-public class BookBoardListServlet implements Servlet {
+@Component
+public class BookBoardListServlet {
 
   BookBoardService bookBoardService;
 
@@ -16,7 +17,7 @@ public class BookBoardListServlet implements Servlet {
     this.bookBoardService = bookBoardService;
   }
 
-  @Override
+  @RequestMapping("/book/list")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     List<BookBoard> bookBoard = bookBoardService.list();

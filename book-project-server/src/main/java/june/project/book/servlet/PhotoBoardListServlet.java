@@ -9,9 +9,10 @@ import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/photoboard/list")
-public class PhotoBoardListServlet implements Servlet {
+@Component
+public class PhotoBoardListServlet {
 
   PhotoBoardService photoBoardService;
   BookmarkService bookmarkService;
@@ -23,7 +24,7 @@ public class PhotoBoardListServlet implements Servlet {
     this.bookmarkService = bookmarkService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/list")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int bookmarkNo = Prompt.getInt(in, out, "북마크 번호? ");

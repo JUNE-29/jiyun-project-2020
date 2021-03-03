@@ -5,9 +5,10 @@ import java.util.Scanner;
 import june.project.book.service.PhotoBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/photoboard/delete")
-public class PhotoBoardDeleteServlet implements Servlet {
+@Component
+public class PhotoBoardDeleteServlet {
 
   PhotoBoardService photoBoardService;
 
@@ -15,7 +16,7 @@ public class PhotoBoardDeleteServlet implements Servlet {
     this.photoBoardService = photoBoardService;
   }
 
-  @Override
+  @RequestMapping("/photoboard/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");

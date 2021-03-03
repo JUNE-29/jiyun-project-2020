@@ -5,9 +5,10 @@ import java.util.Scanner;
 import june.project.book.service.BookBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/book/delete")
-public class BookBoardDeleteServlet implements Servlet {
+@Component
+public class BookBoardDeleteServlet {
 
   BookBoardService bookBoardService;
 
@@ -15,7 +16,7 @@ public class BookBoardDeleteServlet implements Servlet {
     this.bookBoardService = bookBoardService;
   }
 
-  @Override
+  @RequestMapping("/book/delete")
   public void service(Scanner in, PrintStream out) throws Exception {
 
 

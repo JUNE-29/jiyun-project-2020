@@ -6,9 +6,10 @@ import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
 import june.project.util.Component;
 import june.project.util.Prompt;
+import june.project.util.RequestMapping;
 
-@Component("/book/detail")
-public class BookBoardDetailServlet implements Servlet {
+@Component
+public class BookBoardDetailServlet {
 
   BookBoardService bookBoardService;
 
@@ -16,7 +17,7 @@ public class BookBoardDetailServlet implements Servlet {
     this.bookBoardService = bookBoardService;
   }
 
-  @Override
+  @RequestMapping("/book/detail")
   public void service(Scanner in, PrintStream out) throws Exception {
 
     int no = Prompt.getInt(in, out, "번호? ");
