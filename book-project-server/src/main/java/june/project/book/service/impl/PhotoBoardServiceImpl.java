@@ -1,6 +1,7 @@
 package june.project.book.service.impl;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import june.project.book.dao.PhotoBoardDao;
 import june.project.book.dao.PhotoFileDao;
 import june.project.book.domain.PhotoBoard;
@@ -8,7 +9,6 @@ import june.project.book.service.PhotoBoardService;
 import june.project.sql.PlatformTransactionManager;
 import june.project.sql.TransactionCallback;
 import june.project.sql.TransactionTemplate;
-import june.project.util.Component;
 
 @Component
 public class PhotoBoardServiceImpl implements PhotoBoardService {

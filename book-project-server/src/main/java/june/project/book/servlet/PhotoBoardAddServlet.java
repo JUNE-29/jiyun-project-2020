@@ -4,12 +4,12 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
 import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
-import june.project.util.Component;
 import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 

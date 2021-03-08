@@ -1,10 +1,10 @@
 package june.project.book.service.impl;
 
 import java.util.List;
+import org.springframework.stereotype.Component;
 import june.project.book.dao.BookBoardDao;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
-import june.project.util.Component;
 
 @Component
 public class BookBoardServiceImpl implements BookBoardService {

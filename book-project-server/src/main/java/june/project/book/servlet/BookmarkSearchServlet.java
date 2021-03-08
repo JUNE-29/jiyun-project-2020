@@ -5,9 +5,9 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
-import june.project.util.Component;
 import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 

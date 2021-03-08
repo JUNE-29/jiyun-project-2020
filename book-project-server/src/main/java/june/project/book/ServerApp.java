@@ -12,9 +12,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.context.ApplicationContext;
 import june.project.book.context.ApplicationContextListener;
 import june.project.sql.SqlSessionFactoryProxy;
-import june.project.util.ApplicationContext;
 import june.project.util.RequestHandler;
 import june.project.util.RequestMappingHandlerMapping;
 
@@ -23,7 +23,6 @@ public class ServerApp {
   // 옵저버 목록을 관리할 객체 준비
   Set<ApplicationContextListener> listeners = new HashSet<>();
   Map<String, Object> context = new HashMap<>();
-
 
   // 스레드풀
   ExecutorService executorService = Executors.newCachedThreadPool();

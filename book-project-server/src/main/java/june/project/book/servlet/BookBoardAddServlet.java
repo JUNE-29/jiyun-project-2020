@@ -2,9 +2,9 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
-import june.project.util.Component;
 import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 

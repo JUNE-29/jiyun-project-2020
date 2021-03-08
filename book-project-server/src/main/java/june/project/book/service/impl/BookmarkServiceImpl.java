@@ -2,10 +2,10 @@ package june.project.book.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import org.springframework.stereotype.Component;
 import june.project.book.dao.BookmarkDao;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
-import june.project.util.Component;
 
 @Component
 public class BookmarkServiceImpl implements BookmarkService {
