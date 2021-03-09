@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 import june.project.sql.MybatisDaoFactory;
-import june.project.sql.PlatformTransactionManager;
 import june.project.sql.SqlSessionFactoryProxy;
 
 // Spring IoC 컨테이너가 탐색할 패키지 설정
@@ -74,9 +75,7 @@ public class AppConfig {
   }
 
   @Bean
-  public PlatformTransactionManager transactionManager(SqlSessionFactory sqlSessionFactory) {
-    // 필요한 값이 있다면 이렇게 파라미터로 선언만 하라
-    // 단 IoC 컨테이너에 들어 있는 값이어야 한다.
-    return new PlatformTransactionManager(sqlSessionFactory);
+  public PlatformTransactionManager transactionManager(DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
   }
 }
