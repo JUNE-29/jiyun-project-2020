@@ -1,0 +1,51 @@
+package june.project.book;
+
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
+
+// Spring IoC 컨테이너에서 사용할 Properties 파일을 로딩한다.
+@PropertySource("classpath:june/project/book/conf/jdbc.properties")
+
+public class DatabaseConfig {
+
+  // @PropertySource로 로딩한 .properties 파일의 값을 사용하고 싶다면
+  // 다음 애노테이션을 인스턴스 필드 앞에 붙여야 한다.
+  // Spring IoC 컨테이너가 이 클래스의 객체를 생성할 때
+  // 해당 필드에 프로퍼티 값을 자동으로 주입할 것이다.
+
+  @Value("${jdbc.driver}")
+  String jdbcDriver;
+
+  @Value("${jdbc.url}")
+  String jdbcUrl;
+
+  @Value("${jdbc.username}")
+  String jdbcUsername;
+
+  @Value("${jdbc.password}")
+  String jdbcPassword;
+  
+  public DatabaseConfig() {
+    System.out.println("DatabaseConfig 객체 생성!");
+  }
+
+  @Bean
+  public DataSource dataSource() {
+    DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName(jdbcDriver);
+    ds.setUrl(jdbcUrl);
+    ds.setUsername(jdbcUsername);
+    ds.setPassword(jdbcPassword);
+    return ds;
+  }
+
+  @Bean
+  public PlatformTransactionManager transactionManager(DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
+  }
+}
