@@ -6,7 +6,12 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+// Spring IoC 컨테이너가 이 클래스를 Java Config로 자동 인식하게 하려면
+// 다음 태그를 붙여야 한다.
+// 단 이 클래스가 @ComponentScan에서 지정한 패키지 안에 있어야 한다.
+@Configuration
 
 // Mybatis DAO 프록시를 자동생성 할 인터페이스를 지정한다.
 @MapperScan("june.project.book.dao")
