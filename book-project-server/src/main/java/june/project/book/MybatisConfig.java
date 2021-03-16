@@ -3,8 +3,8 @@ package june.project.book;
 import javax.sql.DataSource;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +34,7 @@ public class MybatisConfig {
   ) throws Exception {
 
     // Mybatis의 log4j 활성화 시키기
-    LogFactory.useLog4JLogging();
+    LogFactory.useLog4J2Logging();
 
     // Spring IoC 컨테이너 용으로 mybatis 측에서 따로 제작한 SqlSessionFactory이다.
     SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
