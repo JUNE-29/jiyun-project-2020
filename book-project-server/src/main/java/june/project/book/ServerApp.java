@@ -122,16 +122,31 @@ public class ServerApp {
         Scanner in = new Scanner(socket.getInputStream());
         PrintStream out = new PrintStream(socket.getOutputStream())) {
 
-      String request = in.nextLine();
-      logger.info(String.format("요청 명령 => %s", request));
+      String[] requestLine = in.nextLine().split(" ");
 
+      // 기타 나머지 요청 데이터는 버린다.
+      while (true) {
+        // 읽다가 빈 문자를 발견하면 멈춤
+        String line = in.nextLine();
+        if (line.length() == 0) {
+          break;
+        }
+      }
 
-      if (request.equalsIgnoreCase("/server/stop")) {
+      String method = requestLine[0];
+      String requestUri = requestLine[1];
+      logger.info(String.format("method => %s", method));
+      logger.info(String.format("request-uri => %s", requestUri));
+
+      // HTTP 응답 헤더 출력
+      printResponseHeader(out);
+
+      if (requestUri.equalsIgnoreCase("/server/stop")) {
         quit(out);
         return;
       }
 
-      RequestHandler requestHandler = handlerMapper.getHandler(request);
+      RequestHandler requestHandler = handlerMapper.getHandler(requestUri);
 
       if (requestHandler != null) {
         try {
@@ -152,7 +167,6 @@ public class ServerApp {
         logger.info("해당 명령을 지원하지 않습니다.");
       }
 
-      out.println("!end!");
       out.flush();
       logger.info("클라이언트에게 응답하였음!");
 
@@ -173,6 +187,12 @@ public class ServerApp {
 
   private void notFound(PrintStream out) throws IOException {
     out.println("요청한 명령을 처리할 수 없습니다.");
+  }
+
+  private void printResponseHeader(PrintStream out) {
+    out.println("HTTP/1.1 200 OK");
+    out.println("Server: bitcampServer");
+    out.println();
   }
 
   public static void main(String[] args) {
