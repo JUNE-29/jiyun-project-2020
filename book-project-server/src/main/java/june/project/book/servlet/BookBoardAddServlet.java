@@ -23,7 +23,7 @@ public class BookBoardAddServlet {
     bookBoard.setBookTitle(params.get("bookTitle"));
     bookBoard.setAuthor(params.get("author"));
     bookBoard.setPublisher(params.get("publisher"));
-    bookBoard.setCategories(params.get("Categories"));
+    bookBoard.setCategories(params.get("categories"));
     bookBoard.setPublishedDate(params.get("publishedDate"));
     bookBoard.setContent(params.get("content"));
     bookBoard.setPhoto(params.get("photo"));

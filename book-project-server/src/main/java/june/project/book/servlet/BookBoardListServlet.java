@@ -42,12 +42,13 @@ public class BookBoardListServlet {
     for (BookBoard book : bookBoard) {
       out.printf("  <tr>" //
           + "<td>%d</td>" //
-          + "<td>%s</td>" //
+          + "<td><a href='/book/detail?no=%d'>%s</a></td>" //
           + "<td>%d</td>" //
           + "<td>%s</td>" //
           + "<td>%d</td>" //
           + "</tr>\n", //
-          book.getNo(), book.getBookTitle(), book.getScore(), book.getDate(), book.getBookStatus());
+          book.getNo(), book.getNo(), book.getBookTitle(), book.getScore(), book.getDate(),
+          book.getBookStatus());
     }
 
     out.println("</table>");

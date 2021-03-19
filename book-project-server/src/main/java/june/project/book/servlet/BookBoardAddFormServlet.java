@@ -22,7 +22,7 @@ public class BookBoardAddFormServlet {
     out.println("도서명: <input name='bookTitle' type='text' ><br>");
     out.println("지은이: <input name='author' type='text' ><br>");
     out.println("출판사: <input name='publisher' type='text' ><br>");
-    out.println("카테고리: <input name='Categories' type='text' ><br>");
+    out.println("카테고리: <input name='categories' type='text' ><br>");
     out.println("출판 연도: <input name='publishedDate' type='text' ><br>");
     out.println("내용(메모): <textarea name='content' rows='5' cols='60'></textarea><br>");
     out.println("이미지: <input name='photo' type='text' ><br>");
