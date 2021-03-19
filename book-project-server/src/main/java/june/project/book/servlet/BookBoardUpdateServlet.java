@@ -1,11 +1,10 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
-import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 
 @Component
@@ -18,56 +17,39 @@ public class BookBoardUpdateServlet {
   }
 
   @RequestMapping("/book/update")
-  public void service(Scanner in, PrintStream out) throws Exception {
-
-    int no = Prompt.getInt(in, out, "번호? ");
-
-    BookBoard old = bookBoardService.get(no);
-
-    if (old == null) {
-      out.println("해당 번호의 게시물이 없습니다.");
-      return;
-    }
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
     BookBoard bookBoard = new BookBoard();
 
-    bookBoard.setNo(no);
+    bookBoard.setNo(Integer.parseInt(params.get("no")));
+    bookBoard.setBookTitle(params.get("bookTitle"));
+    bookBoard.setAuthor(params.get("author"));
+    bookBoard.setPublisher(params.get("publisher"));
+    bookBoard.setCategories(params.get("categories"));
+    bookBoard.setPublishedDate(params.get("publishedDate"));
+    bookBoard.setContent(params.get("content"));
+    bookBoard.setPhoto(params.get("photo"));
+    bookBoard.setScore(Integer.parseInt(params.get("score")));
+    bookBoard.setBookStatus(Integer.parseInt(params.get("bookStatus")));
 
-    bookBoard.setBookTitle(Prompt.getString(in, out, //
-        String.format("도서명(%s)? ", old.getBookTitle()), old.getBookTitle()));
-
-    bookBoard.setAuthor(Prompt.getString(in, out, //
-        String.format("지은이(%s)? ", old.getAuthor()), old.getAuthor()));
-
-    bookBoard.setPublisher(Prompt.getString(in, out, //
-        String.format("출판사(%s)? ", old.getPublisher()), old.getPublisher()));
-
-    bookBoard.setCategories(Prompt.getString(in, out, //
-        String.format("카테고리(%s)? ", old.getCategories()), old.getCategories()));
-
-    bookBoard.setPublishedDate(Prompt.getString(in, out, //
-        String.format("출판 연도(%s)? ", old.getPublishedDate()), old.getPublishedDate()));
-
-    bookBoard.setContent(Prompt.getString(in, out, //
-        String.format("내용(%s)? ", old.getContent()), old.getContent()));
-
-    bookBoard.setPhoto(Prompt.getString(in, out, //
-        String.format("이미지(%s)? ", old.getPhoto()), old.getPhoto()));
-
-    bookBoard.setBookStatus(Prompt.getInt(in, out, //
-        String.format("진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정) (%d)? ", old.getBookStatus()),
-        String.valueOf(old.getBookStatus())));
-
-    bookBoard.setScore(Prompt.getInt(in, out, //
-        String.format("평가(%d점)? ", old.getScore()), //
-        String.valueOf(old.getScore())));
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<meta http-equiv='refresh' content='2;url=/book/list'>");
+    out.println("<title>Book 게시글 변경</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>Book 게시글 변경 결과</h1>");
 
     if (bookBoardService.update(bookBoard) > 0) {
-      out.println("변경했습니다.");
+      out.println("<p>Book 게시글을 변경했습니다.</p>");
 
     } else {
-      out.println("해당 번호의 게시글이 없습니다.");
+      out.println("<p>Book 게시글 변경에 실패했습니다.</p>");
     }
 
+    out.println("</body>");
+    out.println("</html>");
   }
 }
