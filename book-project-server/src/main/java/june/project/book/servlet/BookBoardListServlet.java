@@ -2,7 +2,7 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
@@ -18,7 +18,7 @@ public class BookBoardListServlet {
   }
 
   @RequestMapping("/book/list")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
     out.println("<!DOCTYPE html>");
     out.println("<html>");
