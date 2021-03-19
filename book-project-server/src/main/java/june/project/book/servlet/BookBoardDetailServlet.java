@@ -32,7 +32,7 @@ public class BookBoardDetailServlet {
     out.println("<h1>Book 게시글 상세정보</h1>");
 
     if (bookBoard != null) {
-      out.println("<form action='/book/detail'>");
+      out.println("<form action='/book/update'>");
       out.printf("번호: <input name='no' readonly type='text' value='%d'><br>\n", bookBoard.getNo());
       out.printf("도서명: <input name='bookTitle' type='text' value='%s'><br>\n",
           bookBoard.getBookTitle());
@@ -50,9 +50,10 @@ public class BookBoardDetailServlet {
       out.printf(
           "진행 상태 (1: 읽음 / 2: 읽는 중 / 3: 읽을 예정): <input name='bookStatus' type='number' value='%d'><br>\n",
           bookBoard.getBookStatus());
-      out.printf("등록일: %s\n", bookBoard.getDate());
+      out.printf("등록일: %s<br>\n", bookBoard.getDate());
       out.println("<p>");
       out.println("<button>변경</button>");
+      out.printf("<a href='/book/delete?no=%d'>삭제</a>\n", bookBoard.getNo());
       out.println("</p>");
       out.println("</form>");
     } else {
