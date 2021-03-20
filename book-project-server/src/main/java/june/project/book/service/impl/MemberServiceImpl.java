@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
   }
 
   @Override
-  public List<Member> getKeyword(String keyword) throws Exception {
+  public List<Member> search(String keyword) throws Exception {
     return memberDao.findByKeyword(keyword);
   }
 

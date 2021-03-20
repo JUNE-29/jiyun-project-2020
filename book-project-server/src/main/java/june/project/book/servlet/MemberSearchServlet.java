@@ -2,11 +2,10 @@ package june.project.book.servlet;
 
 import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
-import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 
 @Component
@@ -19,15 +18,38 @@ public class MemberSearchServlet {
   }
 
   @RequestMapping("/member/search")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
-    String keyword = Prompt.getString(in, out, "검색어? ");
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("  <meta charset='UTF-8'>");
+    out.println("  <title>회원 검색</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("  <h1>회원 검색 결과</h1>");
+    out.println("  <table border='1'>");
+    out.println("  <tr>");
+    out.println("    <th>번호</th>");
+    out.println("    <th>이름</th>");
+    out.println("    <th>이메일</th>");
+    out.println("    <th>등록일</th>");
+    out.println("  </tr>");
 
-    List<Member> members = memberService.getKeyword(keyword);
+    String keyword = params.get("keyword");
+    List<Member> members = memberService.search(keyword);
 
     for (Member m : members) {
-      out.printf("%d, %s, %s, %s\n", //
-          m.getNo(), m.getName(), m.getEmail(), m.getRegisteredDate());
+      out.printf("  <tr>" //
+          + "<td>%d</td>" //
+          + "<td><a href='/member/detail?no=%d'>%s</a></td>" //
+          + "<td>%s</td>" //
+          + "<td>%s</td>" //
+          + "</tr>\n", //
+          m.getNo(), m.getNo(), m.getName(), m.getEmail(), m.getRegisteredDate());
     }
+    out.println("</table>");
+    out.println("</body>");
+    out.println("</html>");
   }
 }
