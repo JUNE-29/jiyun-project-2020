@@ -17,5 +17,5 @@ public interface MemberService {
 
   List<Member> search(String keyword) throws Exception;
 
-  Member findByEmailAndPassword(String email, String password) throws Exception;
+  Member get(String email, String password) throws Exception;
 }
