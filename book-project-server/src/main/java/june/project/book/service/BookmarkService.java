@@ -16,6 +16,6 @@ public interface BookmarkService {
 
   List<Bookmark> list() throws Exception;
 
-  List<Bookmark> findByKeyword(HashMap<String, Object> params) throws Exception;
+  List<Bookmark> search(HashMap<String, Object> params) throws Exception;
 
 }

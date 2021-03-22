@@ -1,14 +1,12 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
-import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 
 @Component
@@ -21,39 +19,61 @@ public class BookmarkSearchServlet {
   }
 
   @RequestMapping("/bookmark/search")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
-    HashMap<String, Object> params = new HashMap<>();
+    HashMap<String, Object> map = new HashMap<>();
 
-    String keyword = Prompt.getString(in, out, "제목 검색: ");
-    if (keyword.length() > 0) {
-      params.put("title", keyword);
+    String value = params.get("title");
+    if (value.length() > 0) {
+      map.put("title", value);
     }
 
-    String bookTitle = Prompt.getString(in, out, "책 제목 검색: ");
-    if (bookTitle.length() > 0) {
-      params.put("bookTitle", bookTitle);
+    value = params.get("bookTitle");
+    if (value.length() > 0) {
+      map.put("bookTitle", value);
     }
 
-    String author = Prompt.getString(in, out, "지은이 검색: ");
-    if (author.length() > 0) {
-      params.put("author", author);
+    value = params.get("author");
+    if (value.length() > 0) {
+      map.put("author", value);
     }
 
-    Date date = Prompt.getDate(in, out, "글쓴 날짜 검색: ");
-    if (date != null) {
-      params.put("date", date);
+    value = params.get("date");
+    if (value.length() > 0) {
+      map.put("date", value);
     }
 
-    out.println("--------------------------------------------------");
-    out.println("[검색 결과]");
-    out.println();
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("  <meta charset='UTF-8'>");
+    out.println("  <title>북마크 검색</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("  <h1>북마크 검색 결과</h1>");
+    out.println("  <table border='1'>");
+    out.println("  <tr>");
+    out.println("    <th>번호</th>");
+    out.println("    <th>제목</th>");
+    out.println("    <th>도서명</th>");
+    out.println("    <th>지은이</th>");
+    out.println("    <th>등록일</th>");
+    out.println("  </tr>");
 
-    List<Bookmark> bookmarks = bookmarkService.findByKeyword(params);
+    List<Bookmark> bookmarks = bookmarkService.search(map);
     for (Bookmark b : bookmarks) {
-      out.printf("%d, %s, %s, %s, %s\n", //
-          b.getNo(), b.getTitle(), b.getBookTitle(), b.getAuthor(), b.getDate());
+      out.printf("  <tr>" //
+          + "<td>%d</td>" //
+          + "<td><a href='/bookmark/detail?no=%d'>%s</a></td>" //
+          + "<td>%s</td>" //
+          + "<td>%s</td>" //
+          + "<td>%s</td>" //
+          + "  </tr>\n", //
+          b.getNo(), b.getNo(), b.getTitle(), b.getBookTitle(), b.getAuthor(), b.getDate());
     }
+    out.println("</table>");
+    out.println("</body>");
+    out.println("</html>");
   }
 }
 

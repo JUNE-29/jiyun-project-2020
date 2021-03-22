@@ -1,11 +1,10 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
-import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 
 @Component
@@ -18,43 +17,36 @@ public class BookmarkUpdateServlet {
   }
 
   @RequestMapping("/bookmark/update")
-  public void service(Scanner in, PrintStream out) throws Exception {
-
-    int no = Prompt.getInt(in, out, "번호? ");
-
-    Bookmark old = bookmarkService.get(no);
-    if (old == null) {
-      out.println("해당 번호의 게시글이 없습니다.");
-      return;
-    }
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
     Bookmark bookmark = new Bookmark();
 
-    bookmark.setNo(no);
+    bookmark.setNo(Integer.parseInt(params.get("no")));
+    bookmark.setTitle(params.get("title"));
+    bookmark.setBookTitle(params.get("bookTitle"));
+    bookmark.setAuthor(params.get("author"));
+    bookmark.setPublisher(params.get("publisher"));
+    bookmark.setContent(params.get("content"));
+    bookmark.setPhoto(params.get("photo"));
 
-    bookmark.setTitle(Prompt.getString(in, out, //
-        String.format("제목(%s)?", old.getTitle())));
-
-    bookmark.setBookTitle(Prompt.getString(in, out, //
-        String.format("도서명(%s)?", old.getBookTitle())));
-
-    bookmark.setAuthor(Prompt.getString(in, out, //
-        String.format("지은이(%s)?", old.getAuthor())));
-
-    bookmark.setPublisher(Prompt.getString(in, out, //
-        String.format("출판사(%s)?", old.getPublisher())));
-
-    bookmark.setContent(Prompt.getString(in, out, //
-        String.format("내용(%s)?", old.getContent())));
-
-    bookmark.setPhoto(Prompt.getString(in, out, //
-        String.format("이미지(%s)?", old.getPhoto())));
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<meta http-equiv='refresh' content='2;url=/bookmark/list'>");
+    out.println("<title>북마크 변경</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>북마크 변경 결과</h1>");
 
     if (bookmarkService.update(bookmark) > 0) {
-      out.println("변경했습니다.");
+      out.println("<p>강의를 변경했습니다.</p>");
 
     } else {
-      out.println("변경에 실패했습니다.");
+      out.println("<p>변경에 실패했습니다.</p>");
     }
+
+    out.println("</body>");
+    out.println("</html>");
   }
 }

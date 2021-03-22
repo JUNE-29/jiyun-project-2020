@@ -43,7 +43,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 
 
   @Override
-  public List<Bookmark> findByKeyword(HashMap<String, Object> params) throws Exception {
+  public List<Bookmark> search(HashMap<String, Object> params) throws Exception {
     return bookmarkDao.findByKeyword(params);
   }
 

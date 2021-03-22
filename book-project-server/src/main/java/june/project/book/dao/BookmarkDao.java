@@ -16,7 +16,5 @@ public interface BookmarkDao {
 
   public int delete(int no) throws Exception;
 
-  default List<Bookmark> findByKeyword(Map<String, Object> params) throws Exception {
-    return null;
-  }
+  List<Bookmark> findByKeyword(Map<String, Object> params) throws Exception;
 }

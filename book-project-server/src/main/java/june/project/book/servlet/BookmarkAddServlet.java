@@ -1,11 +1,10 @@
 package june.project.book.servlet;
 
 import java.io.PrintStream;
-import java.util.Scanner;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
-import june.project.util.Prompt;
 import june.project.util.RequestMapping;
 
 @Component
@@ -18,22 +17,29 @@ public class BookmarkAddServlet {
   }
 
   @RequestMapping("/bookmark/add")
-  public void service(Scanner in, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintStream out) throws Exception {
 
     Bookmark bookmark = new Bookmark();
+    bookmark.setTitle(params.get("title"));
+    bookmark.setBookTitle(params.get("bookTitle"));
+    bookmark.setAuthor(params.get("author"));
+    bookmark.setPublisher(params.get("publisher"));
+    bookmark.setContent(params.get("content"));
+    bookmark.setPhoto(params.get("photo"));
 
-    bookmark.setTitle(Prompt.getString(in, out, "게시글 제목? "));
-    bookmark.setBookTitle(Prompt.getString(in, out, "도서명? "));
-    bookmark.setAuthor(Prompt.getString(in, out, "지은이? "));
-    bookmark.setPublisher(Prompt.getString(in, out, "출판사? "));
-    bookmark.setContent(Prompt.getString(in, out, "내용? "));
-    bookmark.setPhoto(Prompt.getString(in, out, "이미지? "));
+    bookmarkService.add(bookmark);
 
-    if (bookmarkService.add(bookmark) > 0) {
-      out.println("저장하였습니다.");
-
-    } else {
-      out.println("게시글 등록에 실패했습니다.");
-    }
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<meta charset='UTF-8'>");
+    out.println("<meta http-equiv='refresh' content='2;url=/bookmark/list'>");
+    out.println("<title>북마크 입력</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>북마크 입력 결과</h1>");
+    out.println("<p>새 북마크를 등록했습니다.</p>");
+    out.println("</body>");
+    out.println("</html>");
   }
 }
