@@ -51,6 +51,7 @@ public class BookmarkDetailServlet {
       out.println("<p>");
       out.println("<button>변경</button>");
       out.printf("<a href='/bookmark/delete?no=%d'>삭제</a>\n", bookmark.getNo());
+      out.printf("<a href='/photoboard/list?bookmarkNo=%d'>사진게시판</a>\n", bookmark.getNo());
       out.println("</p>");
       out.println("</form>");
     } else {
