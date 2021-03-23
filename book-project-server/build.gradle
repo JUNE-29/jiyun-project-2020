@@ -47,6 +47,9 @@ dependencies {
     
     // MyBatis 퍼시스턴스 프레임워크
     implementation 'org.mybatis:mybatis:3.5.4'
+    
+    // Apache HttpComponents 라이브러리
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.0'
 
     implementation 'com.google.guava:guava:28.0-jre'
     testImplementation 'junit:junit:4.12'

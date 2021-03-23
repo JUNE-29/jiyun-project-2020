@@ -1,6 +1,6 @@
 package june.project.book.servlet;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Member;
@@ -17,7 +17,7 @@ public class MemberUpdateServlet {
   }
 
   @RequestMapping("/member/update")
-  public void service(Map<String, String> params, PrintStream out) throws Exception {
+  public void service(Map<String, String> params, PrintWriter out) throws Exception {
 
     Member member = new Member();
 
