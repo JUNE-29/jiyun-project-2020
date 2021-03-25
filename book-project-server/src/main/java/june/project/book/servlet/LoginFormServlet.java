@@ -1,22 +1,24 @@
 package june.project.book.servlet;
 
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
-import org.springframework.stereotype.Component;
-import june.project.book.service.MemberService;
-import june.project.util.RequestMapping;
+import javax.servlet.GenericServlet;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebServlet;
 
-@Component
-public class LoginFormServlet {
+@WebServlet("/auth/loginForm")
+public class LoginFormServlet extends GenericServlet {
+  private static final long serialVersionUID = 1L;
 
-  MemberService memberService;
+  @Override
+  public void service(ServletRequest req, ServletResponse res)
+      throws ServletException, IOException {
 
-  public LoginFormServlet(MemberService memberService) {
-    this.memberService = memberService;
-  }
+    res.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = res.getWriter();
 
-  @RequestMapping("/auth/loginForm")
-  public void service(Map<String, String> params, PrintWriter out) throws Exception {
     out.println("<!DOCTYPE html>");
     out.println("<html>");
     out.println("<head>");

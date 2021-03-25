@@ -1,15 +1,23 @@
 package june.project.book.servlet;
 
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
-import org.springframework.stereotype.Component;
-import june.project.util.RequestMapping;
+import javax.servlet.GenericServlet;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebServlet;
 
-@Component
-public class BookmarkAddFormServlet {
+@WebServlet("/bookmark/addForm")
+public class BookmarkAddFormServlet extends GenericServlet {
+  private static final long serialVersionUID = 1L;
 
-  @RequestMapping("/bookmark/addForm")
-  public void service(Map<String, String> params, PrintWriter out) throws Exception {
+  @Override
+  public void service(ServletRequest req, ServletResponse res)
+      throws ServletException, IOException {
+
+    res.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = res.getWriter();
 
     out.println("<!DOCTYPE html>");
     out.println("<html>");
