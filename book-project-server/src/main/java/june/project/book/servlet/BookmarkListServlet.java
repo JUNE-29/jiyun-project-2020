@@ -3,6 +3,7 @@ package june.project.book.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -13,14 +14,10 @@ import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
 
 @WebServlet("/bookmark/list")
-public class BookmarkListServlet {
+public class BookmarkListServlet extends GenericServlet {
+  private static final long serialVersionUID = 1L;
 
-  BookmarkService bookmarkService;
-
-  public BookmarkListServlet(BookmarkService bookmarkService) {
-    this.bookmarkService = bookmarkService;
-  }
-
+  @Override
   public void service(ServletRequest req, ServletResponse res)
       throws ServletException, IOException {
 
