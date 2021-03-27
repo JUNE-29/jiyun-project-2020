@@ -3,12 +3,12 @@ package june.project.book.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.PhotoBoard;
@@ -16,18 +16,18 @@ import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
 
 @WebServlet("/photoboard/list")
-public class PhotoBoardListServlet extends GenericServlet {
+public class PhotoBoardListServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       PhotoBoardService photoBoardService = iocContainer.getBean(PhotoBoardService.class);
@@ -42,7 +42,7 @@ public class PhotoBoardListServlet extends GenericServlet {
       out.println("<body>");
 
       try {
-        int bookmarkNo = Integer.parseInt(req.getParameter("bookmarkNo"));
+        int bookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
         Bookmark bookmark = bookmarkService.get(bookmarkNo);
 
         if (bookmark == null) {
@@ -51,7 +51,7 @@ public class PhotoBoardListServlet extends GenericServlet {
 
         out.printf("  <h1>책과 함께한 사진 - %s</h1>", bookmark.getTitle());
 
-        out.printf("  <a href='/photoboard/addForm?bookmarkNo=%d'> 추가 </a><br>\n", //
+        out.printf("  <a href='add?bookmarkNo=%d'> 추가 </a><br>\n", //
             bookmarkNo);
         out.println("  <table border='1'>");
         out.println("  <tr>");
@@ -66,7 +66,7 @@ public class PhotoBoardListServlet extends GenericServlet {
         for (PhotoBoard photoBaord : photoBoards) {
           out.printf("  <tr>"//
               + "<td>%d</td> "//
-              + "<td><a href='/photoboard/detail?no=%d'>%s</a></td> "//
+              + "<td><a href='detail?no=%d'>%s</a></td> "//
               + "<td>%s</td> "//
               + "<td>%d</td>"//
               + "</tr>\n", //

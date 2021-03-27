@@ -2,34 +2,35 @@ package june.project.book.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
 
 @WebServlet("/bookmark/detail")
-public class BookmarkDetailServlet extends GenericServlet {
+public class BookmarkDetailServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
+
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
-      int no = Integer.parseInt(req.getParameter("no"));
+      int no = Integer.parseInt(request.getParameter("no"));
       Bookmark bookmark = bookmarkService.get(no);
 
       out.println("<!DOCTYPE html>");
@@ -42,7 +43,7 @@ public class BookmarkDetailServlet extends GenericServlet {
       out.println("<h1>북마크 상세정보</h1>");
 
       if (bookmark != null) {
-        out.println("<form action='/bookmark/update'>");
+        out.println("<form action='update' method='post'>");
         out.printf("번호: <input name='no' readonly type='text' value='%d'><br>\n", //
             bookmark.getNo());
         out.printf("제목: <input name='title' type='text' value='%s'><br>\n", //
@@ -60,8 +61,8 @@ public class BookmarkDetailServlet extends GenericServlet {
         out.printf("등록일: %s\n", bookmark.getDate());
         out.println("<p>");
         out.println("<button>변경</button>");
-        out.printf("<a href='/bookmark/delete?no=%d'>삭제</a>\n", bookmark.getNo());
-        out.printf("<a href='/photoboard/list?bookmarkNo=%d'>사진게시판</a>\n", bookmark.getNo());
+        out.printf("<a href='delete?no=%d'>삭제</a>\n", bookmark.getNo());
+        out.printf("<a href='../photoboard/list?bookmarkNo=%d'>사진게시판</a>\n", bookmark.getNo());
         out.println("</p>");
         out.println("</form>");
       } else {

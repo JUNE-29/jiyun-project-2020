@@ -3,42 +3,43 @@ package june.project.book.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
 import june.project.book.service.PhotoBoardService;
 
 @WebServlet("/photoboard/update")
-public class PhotoBoardUpdateServlet extends GenericServlet {
+public class PhotoBoardUpdateServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      request.setCharacterEncoding("UTF-8");
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       PhotoBoardService photoBoardService = iocContainer.getBean(PhotoBoardService.class);
 
-      int no = Integer.parseInt(req.getParameter("no"));
+      int no = Integer.parseInt(request.getParameter("no"));
 
       PhotoBoard photoBoard = photoBoardService.get(no);
-      photoBoard.setTitle(req.getParameter("title"));
+      photoBoard.setTitle(request.getParameter("title"));
 
       ArrayList<PhotoFile> photoFiles = new ArrayList<>();
       for (int i = 1; i <= 5; i++) {
-        String filepath = req.getParameter("photo" + i);
+        String filepath = request.getParameter("photo" + i);
         if (filepath.length() > 0) {
           photoFiles.add(new PhotoFile().setFilePath(filepath));
         }
@@ -54,7 +55,7 @@ public class PhotoBoardUpdateServlet extends GenericServlet {
       out.println("<html>");
       out.println("<head>");
       out.println("<meta charset='UTF-8'>");
-      out.printf("<meta http-equiv='refresh' content='2;url=/photoboard/list?bookmarkNo=%d'>", //
+      out.printf("<meta http-equiv='refresh' content='2;url=list?bookmarkNo=%d'>", //
           photoBoard.getBookmark().getNo());
       out.println("<title>사진 변경</title>");
       out.println("</head>");

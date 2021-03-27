@@ -4,51 +4,52 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
 
 @WebServlet("/bookmark/search")
-public class BookmarkSearchServlet extends GenericServlet {
+public class BookmarkSearchServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
+
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
       HashMap<String, Object> map = new HashMap<>();
 
-      String value = req.getParameter("title");
+      String value = request.getParameter("title");
       if (value.length() > 0) {
         map.put("title", value);
       }
 
-      value = req.getParameter("bookTitle");
+      value = request.getParameter("bookTitle");
       if (value.length() > 0) {
         map.put("bookTitle", value);
       }
 
-      value = req.getParameter("author");
+      value = request.getParameter("author");
       if (value.length() > 0) {
         map.put("author", value);
       }
 
-      value = req.getParameter("date");
+      value = request.getParameter("date");
       if (value.length() > 0) {
         map.put("date", value);
       }
@@ -74,7 +75,7 @@ public class BookmarkSearchServlet extends GenericServlet {
       for (Bookmark b : bookmarks) {
         out.printf("  <tr>" //
             + "<td>%d</td>" //
-            + "<td><a href='/bookmark/detail?no=%d'>%s</a></td>" //
+            + "<td><a href='detail?no=%d'>%s</a></td>" //
             + "<td>%s</td>" //
             + "<td>%s</td>" //
             + "<td>%s</td>" //

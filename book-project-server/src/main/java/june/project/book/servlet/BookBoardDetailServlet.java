@@ -2,34 +2,34 @@ package june.project.book.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
 
 @WebServlet("/book/detail")
-public class BookBoardDetailServlet extends GenericServlet {
+public class BookBoardDetailServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookBoardService bookBoardService = iocContainer.getBean(BookBoardService.class);
 
-      int no = Integer.parseInt(req.getParameter("no"));
+      int no = Integer.parseInt(request.getParameter("no"));
       BookBoard bookBoard = bookBoardService.get(no);
 
       out.println("<!DOCTYPE html>");
@@ -42,7 +42,7 @@ public class BookBoardDetailServlet extends GenericServlet {
       out.println("<h1>Book 게시글 상세정보</h1>");
 
       if (bookBoard != null) {
-        out.println("<form action='/book/update'>");
+        out.println("<form action='update' method='post'>");
         out.printf("번호: <input name='no' readonly type='text' value='%d'><br>\n",
             bookBoard.getNo());
         out.printf("도서명: <input name='bookTitle' type='text' value='%s'><br>\n",
@@ -66,7 +66,7 @@ public class BookBoardDetailServlet extends GenericServlet {
         out.printf("등록일: %s<br>\n", bookBoard.getDate());
         out.println("<p>");
         out.println("<button>변경</button>");
-        out.printf("<a href='/book/delete?no=%d'>삭제</a>\n", bookBoard.getNo());
+        out.printf("<a href='delete?no=%d'>삭제</a>\n", bookBoard.getNo());
         out.println("</p>");
         out.println("</form>");
       } else {

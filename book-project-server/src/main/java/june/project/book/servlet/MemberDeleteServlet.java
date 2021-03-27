@@ -2,28 +2,29 @@ package june.project.book.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.service.MemberService;
 
 @WebServlet("/member/delete")
-public class MemberDeleteServlet extends GenericServlet {
+public class MemberDeleteServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
+
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       MemberService memberService = iocContainer.getBean(MemberService.class);
@@ -32,13 +33,13 @@ public class MemberDeleteServlet extends GenericServlet {
       out.println("<html>");
       out.println("<head>");
       out.println("<meta charset='UTF-8'>");
-      out.println("<meta http-equiv='refresh' content='2;url=/member/list'>");
+      out.println("<meta http-equiv='refresh' content='2;url=list'>");
       out.println("<title>회원 삭제</title>");
       out.println("</head>");
       out.println("<body>");
       out.println("<h1>회원 삭제 결과</h1>");
 
-      int no = Integer.parseInt(req.getParameter("no"));
+      int no = Integer.parseInt(request.getParameter("no"));
       if (memberService.delete(no) > 0) {
         out.println("<p>회원을 삭제했습니다.</p>");
 

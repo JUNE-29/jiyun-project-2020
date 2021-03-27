@@ -3,29 +3,29 @@ package june.project.book.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
 
 @WebServlet("/book/list")
-public class BookBoardListServlet extends GenericServlet {
+public class BookBoardListServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void service(ServletRequest req, ServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      res.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = res.getWriter();
+      response.setContentType("text/html;charset=UTF-8");
+      PrintWriter out = response.getWriter();
 
-      ServletContext servletContext = req.getServletContext();
+      ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookBoardService bookBoardService = iocContainer.getBean(BookBoardService.class);
@@ -38,7 +38,7 @@ public class BookBoardListServlet extends GenericServlet {
       out.println("</head>");
       out.println("<body>");
       out.println("  <h1> 게시글 </h1>");
-      out.println("  <a href='/book/addForm'> 새 글</a><br>");
+      out.println("  <a href='add'> 새 글</a><br>");
       out.println("  <table border='1'>");
       out.println("  <tr>");
       out.println("    <th>번호</th>");
@@ -52,7 +52,7 @@ public class BookBoardListServlet extends GenericServlet {
       for (BookBoard book : bookBoard) {
         out.printf("  <tr>" //
             + "<td>%d</td>" //
-            + "<td><a href='/book/detail?no=%d'>%s</a></td>" //
+            + "<td><a href='detail?no=%d'>%s</a></td>" //
             + "<td>%d</td>" //
             + "<td>%s</td>" //
             + "<td>%d</td>" //
