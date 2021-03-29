@@ -3,7 +3,6 @@ package june.project.book;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +15,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 // => javax.servlet.ServletContextListener 인터페이스를 구현해야 한다.
 //
 
-@WebListener // 이 애노테이션을 붙이면 서블릿 컨테이너가 이 객체를 관리한다.
+// @WebListener // 이 애노테이션을 붙이면 서블릿 컨테이너가 이 객체를 관리한다.
 public class ContextLoaderListener implements ServletContextListener {
 
   static Logger logger = LogManager.getLogger(ContextLoaderListener.class);
@@ -29,11 +28,6 @@ public class ContextLoaderListener implements ServletContextListener {
     // => 보통 이 메서드에서는 웹 애플리케이션이 실행되는 동안 사용할 객체를 준비한다.
     // => 이 프로젝트에서는 Spring IoC 컨테이너를 준비한다.
 
-    // 준비한 객체를 담을 공용 바구니 준비
-    ServletContext servlectContext = sce.getServletContext();
-    // => 이 객체는 웹애플리케이션 설정 정보를 제공한다.
-    // => 또한 서블릿들이 공유할 객체를 담는 바구니 역할도 겸한다.
-
     try {
 
       // Spring IoC 컨테이너 준비
@@ -43,6 +37,12 @@ public class ContextLoaderListener implements ServletContextListener {
       );
 
       printBeans(iocContainer);
+
+      // 준비한 객체를 담을 공용 바구니 준비
+      // => 이 객체는 웹애플리케이션 설정 정보를 제공한다.
+      // => 또한 서블릿들이 공유할 객체를 담는 바구니 역할도 겸한다.
+      // => 모든 "웹 컴포넌트(서블릿,리스너,필터,JSP)"들이 공유할 객체를 보관한다.
+      ServletContext servlectContext = sce.getServletContext();
 
       // 서블릿이 사용할 수 있게 ServletContext에 담아 둔다.
       servlectContext.setAttribute("iocContainer", iocContainer);
