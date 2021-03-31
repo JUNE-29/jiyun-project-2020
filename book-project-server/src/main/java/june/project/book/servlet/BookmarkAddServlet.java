@@ -57,8 +57,6 @@ public class BookmarkAddServlet extends HttpServlet {
 
     try {
       request.setCharacterEncoding("UTF-8");
-      response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
 
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
@@ -73,21 +71,13 @@ public class BookmarkAddServlet extends HttpServlet {
       bookmark.setContent(request.getParameter("content"));
       bookmark.setPhoto(request.getParameter("photo"));
 
-      bookmarkService.add(bookmark);
-
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("<meta charset='UTF-8'>");
-      out.println("<meta http-equiv='refresh' content='2;url=list'>");
-      out.println("<title>북마크 입력</title>");
-      out.println("</head>");
-      out.println("<body>");
-      out.println("<h1>북마크 입력 결과</h1>");
-      out.println("<p>새 북마크를 등록했습니다.</p>");
-      out.println("</body>");
-      out.println("</html>");
-
+      if (bookmarkService.add(bookmark) > 0) {
+        response.sendRedirect("list");
+      } else {
+        request.getSession().setAttribute("errorMessage", "게시물을 추가할 수 없습니다.");
+        request.getSession().setAttribute("url", "bookboard/list");
+        response.sendRedirect("../error");
+      }
     } catch (Exception e) {
       throw new ServletException(e);
     }

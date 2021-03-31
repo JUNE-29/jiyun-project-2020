@@ -65,7 +65,7 @@ public class BookBoardDetailServlet extends HttpServlet {
             bookBoard.getBookStatus());
         out.printf("등록일: %s<br>\n", bookBoard.getDate());
         out.println("<p>");
-        out.println("<button>변경</button>");
+        out.printf("<button>변경</button>\n", bookBoard.getNo());
         out.printf("<a href='delete?no=%d'>삭제</a>\n", bookBoard.getNo());
         out.println("</p>");
         out.println("</form>");

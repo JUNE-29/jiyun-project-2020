@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,8 +22,6 @@ public class BookmarkUpdateServlet extends HttpServlet {
 
     try {
       request.setCharacterEncoding("UTF-8");
-      response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
 
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
@@ -41,25 +38,15 @@ public class BookmarkUpdateServlet extends HttpServlet {
       bookmark.setContent(request.getParameter("content"));
       bookmark.setPhoto(request.getParameter("photo"));
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("<meta charset='UTF-8'>");
-      out.println("<meta http-equiv='refresh' content='2;url=list'>");
-      out.println("<title>북마크 변경</title>");
-      out.println("</head>");
-      out.println("<body>");
-      out.println("<h1>북마크 변경 결과</h1>");
 
       if (bookmarkService.update(bookmark) > 0) {
-        out.println("<p>강의를 변경했습니다.</p>");
-
+        response.sendRedirect("list");
       } else {
-        out.println("<p>변경에 실패했습니다.</p>");
+        request.getSession().setAttribute("errorMessage", "번호가 유효하지 않습니다.");
+        request.getSession().setAttribute("url", "bookmark/list");
+        response.sendRedirect("../error");
       }
 
-      out.println("</body>");
-      out.println("</html>");
     } catch (Exception e) {
       throw new ServletException(e);
     }
