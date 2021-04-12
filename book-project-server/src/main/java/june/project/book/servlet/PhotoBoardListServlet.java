@@ -23,6 +23,7 @@ public class PhotoBoardListServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
+    int bookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
     try {
       response.setContentType("text/html;charset=UTF-8");
       PrintWriter out = response.getWriter();
@@ -42,7 +43,6 @@ public class PhotoBoardListServlet extends HttpServlet {
       out.println("<body>");
 
       try {
-        int bookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
         Bookmark bookmark = bookmarkService.get(bookmarkNo);
 
         if (bookmark == null) {
@@ -85,7 +85,9 @@ public class PhotoBoardListServlet extends HttpServlet {
       out.println("</html>");
 
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

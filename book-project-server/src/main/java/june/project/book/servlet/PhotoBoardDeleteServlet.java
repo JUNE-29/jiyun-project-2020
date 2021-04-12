@@ -33,9 +33,9 @@ public class PhotoBoardDeleteServlet extends HttpServlet {
       response.sendRedirect("list?bookmarkNo=" + bookmarkNo);
 
     } catch (Exception e) {
-      request.getSession().setAttribute("errorMessage", e.getMessage());
-      request.getSession().setAttribute("url", "photoboard/list?bookmarkNo=" + bookmarkNo);
-      response.sendRedirect("../error");
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

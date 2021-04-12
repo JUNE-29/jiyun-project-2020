@@ -13,22 +13,17 @@ public class ErrorServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  public void service(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
 
-    out.println("<!DOCTYPE html>");
-    out.println("<html>");
-    out.println("<head>");
-    out.println("  <meta charset='UTF-8'>");
-    out.println("  <title>Book 게시글 입력 </title>");
-    out.println("</head>");
-    out.println("<body>");
-    out.println("  <h1> 게시물 입력 </h1>");
-    out.printf("<p>%s</p>", //
-        (String) request.getSession().getAttribute("errorMessage"));
+    request.getRequestDispatcher("/header").include(request, response);
+    out.println("<h1>오류 내용</h1>");
+
+    Exception error = (Exception) request.getAttribute("error");
+    out.printf("<p>%s</p>", error.getMessage());
 
     String url = (String) request.getSession().getAttribute("url");
     if (url != null) {

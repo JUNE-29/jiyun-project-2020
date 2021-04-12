@@ -21,6 +21,7 @@ public class PhotoBoardDetailServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
+    int bookmarkNo = 0;
     try {
       response.setContentType("text/html;charset=UTF-8");
       PrintWriter out = response.getWriter();
@@ -65,9 +66,10 @@ public class PhotoBoardDetailServlet extends HttpServlet {
         out.println("사진: <input name='photo4' type='file'><br>");
         out.println("사진: <input name='photo5' type='file'><br>");
 
+        bookmarkNo = photoBoard.getBookmark().getNo();
         out.println("<p><button>변경</button>");
         out.printf("<a href='delete?no=%d&bookmarkNo=%d'>삭제</a></p>\n", //
-            photoBoard.getNo(), photoBoard.getBookmark().getNo());
+            photoBoard.getNo(), bookmarkNo);
         out.println("</form>");
 
       } else {
@@ -77,7 +79,9 @@ public class PhotoBoardDetailServlet extends HttpServlet {
       out.println("</html>");
 
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

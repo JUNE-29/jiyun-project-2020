@@ -71,9 +71,7 @@ public class MemberAddServlet extends HttpServlet {
       if (memberService.add(member) > 0) {
         response.sendRedirect("list");
       } else {
-        request.getSession().setAttribute("errorMessage", "회원을 추가할 수 없습니다.");
-        request.getSession().setAttribute("url", "member/list");
-        response.sendRedirect("../error");
+        throw new Exception("회원을 추가할 수 없습니다.");
       }
     } catch (Exception e) {
       request.setAttribute("error", e);

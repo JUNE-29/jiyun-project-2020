@@ -47,7 +47,9 @@ public class BookmarkAddServlet extends HttpServlet {
       out.println("</html>");
 
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list");
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 
@@ -74,12 +76,12 @@ public class BookmarkAddServlet extends HttpServlet {
       if (bookmarkService.add(bookmark) > 0) {
         response.sendRedirect("list");
       } else {
-        request.getSession().setAttribute("errorMessage", "게시물을 추가할 수 없습니다.");
-        request.getSession().setAttribute("url", "bookboard/list");
-        response.sendRedirect("../error");
+        throw new Exception("추가할 수 없습니다.");
       }
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list");
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

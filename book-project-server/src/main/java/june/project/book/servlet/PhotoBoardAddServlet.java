@@ -25,6 +25,7 @@ public class PhotoBoardAddServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
+    int BookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
     try {
       response.setContentType("text/html;charset=UTF-8");
       PrintWriter out = response.getWriter();
@@ -34,8 +35,6 @@ public class PhotoBoardAddServlet extends HttpServlet {
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
-
-      int BookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
       Bookmark bookmark = bookmarkService.get(BookmarkNo);
 
       out.println("<!DOCTYPE html>");
@@ -64,7 +63,9 @@ public class PhotoBoardAddServlet extends HttpServlet {
       out.println("</html>");
 
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list");
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 
@@ -111,9 +112,9 @@ public class PhotoBoardAddServlet extends HttpServlet {
       response.sendRedirect("list?bookmarkNo=" + bookmarkNo);
 
     } catch (Exception e) {
-      request.getSession().setAttribute("errorMessage", e.getMessage());
-      request.getSession().setAttribute("url", "photoboard/list?bookmarkNo=" + bookmarkNo);
-      response.sendRedirect("../error");
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
+      request.getRequestDispatcher("/error").forward(request, response);
 
     }
   }

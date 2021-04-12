@@ -38,13 +38,13 @@ public class MemberUpdateServlet extends HttpServlet {
       if (memberService.update(member) > 0) {
         response.sendRedirect("list");
       } else {
-        request.getSession().setAttribute("errorMessage", "번호가 유효하지 않습니다.");
-        request.getSession().setAttribute("url", "member/list");
-        response.sendRedirect("../error");
+        throw new Exception("번호가 유효하지 않습니다.");
       }
 
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("error", e);
+      request.setAttribute("url", "list");
+      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }
