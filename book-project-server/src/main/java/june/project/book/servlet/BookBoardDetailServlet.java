@@ -32,13 +32,8 @@ public class BookBoardDetailServlet extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
       BookBoard bookBoard = bookBoardService.get(no);
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("<meta charset='UTF-8'>");
-      out.println("<title>Book 게시글 상세정보</title>");
-      out.println("</head>");
-      out.println("<body>");
+      request.getRequestDispatcher("/header").include(request, response);
+
       out.println("<h1>Book 게시글 상세정보</h1>");
 
       if (bookBoard != null) {
@@ -72,8 +67,8 @@ public class BookBoardDetailServlet extends HttpServlet {
       } else {
         out.println("<p>해당 번호의 게시물이 없습니다.</p>");
       }
-      out.println("</body>");
-      out.println("</html>");
+
+      request.getRequestDispatcher("/footer").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);

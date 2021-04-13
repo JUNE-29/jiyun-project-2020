@@ -54,13 +54,7 @@ public class BookmarkSearchServlet extends HttpServlet {
         map.put("date", value);
       }
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("  <meta charset='UTF-8'>");
-      out.println("  <title>북마크 검색</title>");
-      out.println("</head>");
-      out.println("<body>");
+      request.getRequestDispatcher("/header").include(request, response);
       out.println("  <h1>북마크 검색 결과</h1>");
       out.println("  <table border='1'>");
       out.println("  <tr>");
@@ -83,8 +77,7 @@ public class BookmarkSearchServlet extends HttpServlet {
             b.getNo(), b.getNo(), b.getTitle(), b.getBookTitle(), b.getAuthor(), b.getDate());
       }
       out.println("</table>");
-      out.println("</body>");
-      out.println("</html>");
+      request.getRequestDispatcher("/footer").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);

@@ -34,13 +34,7 @@ public class PhotoBoardListServlet extends HttpServlet {
       PhotoBoardService photoBoardService = iocContainer.getBean(PhotoBoardService.class);
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("  <meta charset='UTF-8'>");
-      out.println("  <title>책과 함께한 사진 목록</title>");
-      out.println("</head>");
-      out.println("<body>");
+      request.getRequestDispatcher("/header").include(request, response);
 
       try {
         Bookmark bookmark = bookmarkService.get(bookmarkNo);
@@ -81,8 +75,7 @@ public class PhotoBoardListServlet extends HttpServlet {
       } catch (Exception e) {
         out.printf("<p>%s</p>\n", e.getMessage());
       }
-      out.println("</body>");
-      out.println("</html>");
+      request.getRequestDispatcher("/footer").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);

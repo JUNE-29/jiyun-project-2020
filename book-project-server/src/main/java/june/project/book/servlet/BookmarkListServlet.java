@@ -31,13 +31,7 @@ public class BookmarkListServlet extends HttpServlet {
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("  <meta charset='UTF-8'>");
-      out.println("  <title>북마크 목록</title>");
-      out.println("</head>");
-      out.println("<body>");
+      request.getRequestDispatcher("/header").include(request, response);
       out.println("  <h1>북마크</h1>");
       out.println("  <a href='add'>북마크 추가</a><br>");
       out.println("  <table border='1'>");
@@ -70,8 +64,7 @@ public class BookmarkListServlet extends HttpServlet {
       out.println("등록일: <input name='date' type='date'><br>");
       out.println("<button>검색</button>");
 
-      out.println("</body>");
-      out.println("</html>");
+      request.getRequestDispatcher("/footer").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);

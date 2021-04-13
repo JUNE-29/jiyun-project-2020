@@ -30,13 +30,8 @@ public class BookBoardListServlet extends HttpServlet {
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookBoardService bookBoardService = iocContainer.getBean(BookBoardService.class);
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("  <meta charset='UTF-8'>");
-      out.println("  <title>Book 게시글 목록 </title>");
-      out.println("</head>");
-      out.println("<body>");
+      request.getRequestDispatcher("/header").include(request, response);
+
       out.println("  <h1> 게시글 </h1>");
       out.println("  <a href='add'> 새 글</a><br>");
       out.println("  <table border='1'>");
@@ -62,8 +57,8 @@ public class BookBoardListServlet extends HttpServlet {
       }
       out.println("</table>");
 
-      out.println("</body>");
-      out.println("</html>");
+      request.getRequestDispatcher("/footer").include(request, response);
+
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
