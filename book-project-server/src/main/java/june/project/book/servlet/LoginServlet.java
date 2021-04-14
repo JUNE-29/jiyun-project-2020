@@ -25,21 +25,16 @@ public class LoginServlet extends HttpServlet {
       response.setContentType("text/html;charset=UTF-8");
       PrintWriter out = response.getWriter();
 
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("<meta charset='UTF-8'>");
-      out.println("<title>로그인</title>");
-      out.println("</head>");
-      out.println("<body>");
+      request.getRequestDispatcher("/header").include(request, response);
+
       out.println("<h1>로그인</h1>");
       out.println("<form action='login' method='post'>");
       out.println("이메일: <input name='email' type='email'><br>");
       out.println("암호: <input name='password' type='password'><br>");
       out.println("<button>로그인</button>");
       out.println("</form>");
-      out.println("</body>");
-      out.println("</html>");
+
+      request.getRequestDispatcher("/footer").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
@@ -82,6 +77,7 @@ public class LoginServlet extends HttpServlet {
 
       if (member != null) {
         out.printf("<p>'%s'님 환영합니다.</p>\n", member.getName());
+        request.getSession().setAttribute("loginUser", member);
       } else {
         out.println("<p>사용자 정보가 유효하지 않습니다.</p>");
       }
