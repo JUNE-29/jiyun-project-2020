@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import june.project.book.domain.PhotoFile;
 import june.project.book.service.PhotoBoardService;
 
 @WebServlet("/photoboard/detail")
+@MultipartConfig(maxFileSize = 500000)
 public class PhotoBoardDetailServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -38,27 +40,29 @@ public class PhotoBoardDetailServlet extends HttpServlet {
       out.println("<h1>사진 상세정보</h1>");
 
       if (photoBoard != null) {
-        out.println("<form action='update' method='post'>");
+        out.println("<form action='update' method='post' enctype='multipart/form-data'>");
         out.printf("번호: <input name='no' type='text' readonly value='%d'><br>\n", //
             photoBoard.getNo());
         out.printf("제목: <textarea name='title' rows='5' cols='60'>%s</textarea><br>\n",
             photoBoard.getTitle());
-        out.println("<hr>");
-        out.printf("책: %s<br>\n", photoBoard.getBookmark().getBookTitle());
-        out.println("사진 파일: <br>");
-        out.println("<ul>\n");
-        for (PhotoFile photoFile : photoBoard.getFiles()) {
-          out.printf("> %s\n", photoFile.getFilePath());
-        }
-        out.println("</ul>");
         out.printf("등록일: %s<br>\n", photoBoard.getCreadtedDate());
         out.printf("조회수: %s<br>\n", photoBoard.getViewCount());
+        out.printf("책: %s<br>\n", photoBoard.getBookmark().getBookTitle());
+        out.println("<hr>");
+        out.println("사진 파일: <br>");
+        out.println("<p>");
 
-        out.println("사진: <input name='photo1' type='file'><br>");
-        out.println("사진: <input name='photo2' type='file'><br>");
-        out.println("사진: <input name='photo3' type='file'><br>");
-        out.println("사진: <input name='photo4' type='file'><br>");
-        out.println("사진: <input name='photo5' type='file'><br>");
+        for (PhotoFile photoFile : photoBoard.getFiles()) {
+          out.printf("<img src='../upload/photoboard/%s' height = '80'>\n",
+              photoFile.getFilePath());
+        }
+        out.println("</p>");
+
+        out.println("사진: <input name='photo' type='file'><br>");
+        out.println("사진: <input name='photo' type='file'><br>");
+        out.println("사진: <input name='photo' type='file'><br>");
+        out.println("사진: <input name='photo' type='file'><br>");
+        out.println("사진: <input name='photo' type='file'><br>");
 
         bookmarkNo = photoBoard.getBookmark().getNo();
         out.println("<p><button>변경</button>");
