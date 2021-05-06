@@ -2,17 +2,21 @@ package june.project.book.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import org.springframework.context.ApplicationContext;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
 
 @WebServlet("/member/add")
+@MultipartConfig(maxFileSize = 100000)
 public class MemberAddServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -26,14 +30,16 @@ public class MemberAddServlet extends HttpServlet {
       PrintWriter out = response.getWriter();
 
       request.getRequestDispatcher("/header").include(request, response);
+
       out.println("<h1>회원 입력</h1>");
-      out.println("<form action='add' method='post'>");
+      out.println("<form action='add' method='post' enctype='multipart/form-data'>");
       out.println("이름: <input name='name' type='text'><br>");
       out.println("이메일: <input name='email' type='email'><br>");
       out.println("비밀번호: <input name='password' type='password'><br>");
-      out.println("사진: <input name='photo' type='text'><br>");
+      out.println("사진: <input name='photo' type='file'><br>");
       out.println("<button>제출</button>");
       out.println("</form>");
+
       request.getRequestDispatcher("/footer").include(request, response);
 
     } catch (Exception e) {
@@ -59,7 +65,15 @@ public class MemberAddServlet extends HttpServlet {
       member.setName(request.getParameter("name"));
       member.setEmail(request.getParameter("email"));
       member.setPassword(request.getParameter("password"));
-      member.setPhoto(request.getParameter("photo"));
+
+      Part photoPart = request.getPart("photo");
+      if (photoPart.getSize() > 0) {
+        String dirPath = getServletContext().getRealPath("/upload/member");
+        String filename = UUID.randomUUID().toString();
+        photoPart.write(dirPath + "/" + filename);
+        member.setPhoto(filename);
+      }
+
 
       if (memberService.add(member) > 0) {
         response.sendRedirect("list");
