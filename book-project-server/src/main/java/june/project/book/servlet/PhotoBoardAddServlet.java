@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
@@ -32,8 +31,6 @@ public class PhotoBoardAddServlet extends HttpServlet {
 
     int BookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
     try {
-      response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
 
       ServletContext servletContext = request.getServletContext();
       ApplicationContext iocContainer =
@@ -41,25 +38,10 @@ public class PhotoBoardAddServlet extends HttpServlet {
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
       Bookmark bookmark = bookmarkService.get(BookmarkNo);
+      request.setAttribute("bookmark", bookmark);
 
-      request.getRequestDispatcher("/header").include(request, response);
-      out.println("<h1>사진 입력</h1>");
-      out.println("<form action='add' method='post' enctype='multipart/form-data'>");
-      out.printf("북마크 번호: <input name='bookmarkNo' type='text' value='%d' readonly><br>\n", //
-          bookmark.getNo());
-      out.printf("북마크 제목: %s<br>\n", bookmark.getTitle());
-      out.println("사진 제목:<br>");
-      out.println("<textarea name='title' rows='5' cols='60'></textarea><br>");
-      out.println("<hr>");
-      out.println("사진: <input name='photo' type='file'><br>");
-      out.println("사진: <input name='photo' type='file'><br>");
-      out.println("사진: <input name='photo' type='file'><br>");
-      out.println("사진: <input name='photo' type='file'><br>");
-      out.println("사진: <input name='photo' type='file'><br>");
-      out.println("<button>제출</button>");
-      out.println("</form>");
-
-      request.getRequestDispatcher("/footer").include(request, response);
+      response.setContentType("text/html;charset=UTF-8");
+      request.getRequestDispatcher("/photoboard/form.jsp").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
