@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,21 +22,7 @@ public class BookmarkAddServlet extends HttpServlet {
 
     try {
       response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
-
-      request.getRequestDispatcher("/header").include(request, response);
-      out.println("<h1>북마크 입력</h1>");
-      out.println("<form action='add' method='post'>");
-      out.println("제목: <input name='title' type='text'><br>");
-      out.println("도서명: <input name='bookTitle' type='text' ><br>");
-      out.println("지은이: <input name='author' type='text' ><br>");
-      out.println("출판사: <input name='publisher' type='text' ><br>");
-      out.println("내용:<br>");
-      out.println("<textarea name='content' rows='5' cols='60'></textarea><br>");
-      out.println("이미지: <input name='photo' type='file' ><br>");
-      out.println("<button>제출</button>");
-      out.println("</form>");
-      request.getRequestDispatcher("/footer").include(request, response);
+      request.getRequestDispatcher("/bookmark/form.jsp").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
