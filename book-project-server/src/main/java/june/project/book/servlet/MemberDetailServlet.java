@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,9 +21,6 @@ public class MemberDetailServlet extends HttpServlet {
       throws ServletException, IOException {
 
     try {
-      response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
-
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
@@ -33,28 +29,13 @@ public class MemberDetailServlet extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
 
       Member member = memberService.get(no);
-
-      request.getRequestDispatcher("/header").include(request, response);
-      out.println("<h1>회원 상세정보</h1>");
-
-      if (member != null) {
-        out.println("<form action='update' method='post' enctype='multipart/form-data'>");
-        out.printf("<img src='../upload/member/%s' height='80'><br>\n", member.getPhoto());
-        out.printf("번호: <input name='no' type='text' readonly value='%d'><br>\n", member.getNo());
-        out.printf("이름: <input name='name' type='text' value='%s'><br>\n", member.getName());
-        out.printf("이메일: <input name='email' type='email' value='%s'><br>\n", member.getEmail());
-        out.printf("비밀번호: <input name='password' type='password'><br>\n", member.getPassword());
-        out.printf("사진: <input name='photo' type='file' value='%s'><br>\n", member.getPhoto());
-        out.printf("가입일: <input name='date' type='date' readonly value='%s'><br>\n",
-            member.getRegisteredDate());
-        out.println("<p><button>변경</button>");
-        out.printf("<a href='delete?no=%d'>삭제</a></p>\n", //
-            member.getNo());
-        out.println("</form>");
-      } else {
-        out.println("<p>해당 번호의 회원이 없습니다.</p>");
+      if (member == null) {
+        throw new Exception("<p>해당 번호의 회원이 없습니다.</p>");
       }
-      request.getRequestDispatcher("/footer").include(request, response);
+      request.setAttribute("member", member);
+
+      response.setContentType("text/html;charset=UTF-8");
+      request.getRequestDispatcher("/member/detail.jsp").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);

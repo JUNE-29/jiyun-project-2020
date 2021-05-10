@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.UUID;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,20 +26,7 @@ public class MemberAddServlet extends HttpServlet {
 
     try {
       response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
-
-      request.getRequestDispatcher("/header").include(request, response);
-
-      out.println("<h1>회원 입력</h1>");
-      out.println("<form action='add' method='post' enctype='multipart/form-data'>");
-      out.println("이름: <input name='name' type='text'><br>");
-      out.println("이메일: <input name='email' type='email'><br>");
-      out.println("비밀번호: <input name='password' type='password'><br>");
-      out.println("사진: <input name='photo' type='file'><br>");
-      out.println("<button>제출</button>");
-      out.println("</form>");
-
-      request.getRequestDispatcher("/footer").include(request, response);
+      request.getRequestDispatcher("/member/form.jsp").include(request, response);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
