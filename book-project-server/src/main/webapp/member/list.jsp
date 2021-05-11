@@ -19,12 +19,13 @@
       <jsp:useBean id="list" type="java.util.List<Member>" class="java.util.ArrayList" scope="request"/>
 <% 
   for(Member item : list) {
+    pageContext.setAttribute("item", item);
 %>
        <tr>
-         <td><%=item.getNo()%></td>
-         <td><a href='detail?no=<%=item.getNo()%>'><%=item.getName()%></a></td>
-         <td><%=item.getEmail()%></td>
-         <td><%=item.getRegisteredDate()%></td>
+         <td>${item.no}</td>
+         <td><a href='detail?no=${item.no}'>${item.name}</a></td>
+         <td>${item.email}</td>
+         <td>${item.registeredDate}</td>
        </tr>
 <%
    }

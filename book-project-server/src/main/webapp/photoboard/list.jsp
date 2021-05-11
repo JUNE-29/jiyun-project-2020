@@ -7,12 +7,8 @@
 
  <jsp:include page="/header.jsp"/>
  
-<%
-  Bookmark bookmark = (Bookmark) request.getAttribute("bookmark");
-%>
- 
- <h1>책과 함께한 사진 - <a href='../bookmark/detail?no=<%=bookmark.getNo()%>'><%=bookmark.getTitle()%></a></h1>
-<a href='add?bookmarkNo=<%=bookmark.getNo()%>'> 추가 </a><br>
+ <h1>책과 함께한 사진 - <a href='../bookmark/detail?no=${bookmark.no}'>${bookmark.title}</a></h1>
+<a href='add?bookmarkNo=${bookmark.no}'> 추가 </a><br>
   <table border='1'>
     <tr>
       <th>번호</th>
@@ -23,12 +19,13 @@
    <jsp:useBean id="list" type="java.util.List<PhotoBoard>" class="java.util.ArrayList" scope="request"/>
 <% 
   for(PhotoBoard item : list) {
+    pageContext.setAttribute("item", item);
 %>
   <tr>
-    <td><%=item.getNo()%></td>
-    <td><a href='detail?no=<%=item.getNo()%>'><%=item.getTitle()%></a></td>
-    <td><%=item.getCreadtedDate()%></td>
-    <td><%=item.getViewCount()%></td>
+    <td>${item.no}</td>
+    <td><a href='detail?no=${item.no}'>${item.title}</a></td>
+    <td>${item.creadtedDate}</td>
+    <td>${item.viewCount}</td>
   </tr>
 <%
 }

@@ -19,13 +19,14 @@
   <jsp:useBean id="list" type="java.util.List<BookBoard>" class="java.util.ArrayList" scope="request"/>
   <%
   for(BookBoard item : list) {
+    pageContext.setAttribute("item", item);
   %>
   <tr>
-  <td><%=item.getNo()%></td>
-  <td><a href='detail?no=<%=item.getNo()%>'><%=item.getBookTitle()%></a></td>
-  <td><%=item.getScore()%></td>
-  <td><%=item.getDate()%></td>
-  <td><%=item.getBookStatus()%></td>
+  <td>${item.no}</td>
+  <td><a href='detail?no=${item.no}'>${item.bookTitle}</a></td>
+  <td>${item.score}</td>
+  <td>${item.date}</td>
+  <td>${item.bookStatus}</td>
   </tr>
   <%
   }

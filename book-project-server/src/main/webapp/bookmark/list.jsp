@@ -17,15 +17,16 @@
      <th>등록일</th>
      </tr>
 <jsp:useBean id="list" type="java.util.List<Bookmark>" class="java.util.ArrayList" scope="request"/>
-<% 
+<%
   for(Bookmark item : list) {
+    pageContext.setAttribute("item", item);
 %>
      <tr>
-     <td><%=item.getNo()%></td>
-     <td><a href='detail?no=<%=item.getNo()%>'><%=item.getTitle()%></a></td>
-     <td><%=item.getBookTitle()%></td>
-     <td><%=item.getAuthor()%></td>
-     <td><%=item.getDate()%></td>
+     <td>${item.no}</td>
+     <td><a href='detail?no=${item.no}'>${item.title}</a></td>
+     <td>${item.bookTitle}</td>
+     <td>${item.author}</td>
+     <td>${item.date}</td>
      </tr>
 <%
   }
