@@ -1,9 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"
+    trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<jsp:include page="/header.jsp"></jsp:include>
+<jsp:include page="/header.jsp"/>
 
 <h1>상세정보(JSP)</h1>
+
+<c:if test="${not empty bookBoard}">
 <form action='update' method='post'>
 번호: <input name='no' readonly type='text' value='${bookBoard.no}'><br>
 도서명: <input name='bookTitle' type='text' value='${bookBoard.bookTitle}'><br>
@@ -23,5 +27,10 @@
 <a href='delete?no=${bookBoard.no}'>삭제</a>
 </p>
 </form>
+</c:if>
 
-<jsp:include page="/footer.jsp"></jsp:include>
+<c:if test="${empty bookBoard}">
+<p>해당 번호의 게시물이 없습니다.</p>
+</c:if>
+
+<jsp:include page="/footer.jsp"/>

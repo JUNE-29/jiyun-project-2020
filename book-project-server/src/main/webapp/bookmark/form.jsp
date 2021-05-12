@@ -3,7 +3,7 @@
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
     
-<jsp:include page="/header.jsp"></jsp:include>
+<jsp:include page="/header.jsp"/>
 
 <h1>북마크 등록(JSP)</h1>
 <form action='add' method='post'>

@@ -3,8 +3,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
-    
-<jsp:include page="/header.jsp"></jsp:include>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<jsp:include page="/header.jsp"/>
 
   <h1>Book List</h1>
   <a href='add'>새 글</a>
@@ -16,11 +17,8 @@
     <th>등록일</th>
     <th>상태</th>
   </tr>
-  <jsp:useBean id="list" type="java.util.List<BookBoard>" class="java.util.ArrayList" scope="request"/>
-  <%
-  for(BookBoard item : list) {
-    pageContext.setAttribute("item", item);
-  %>
+  
+<c:forEach items="${list}" var="item">
   <tr>
   <td>${item.no}</td>
   <td><a href='detail?no=${item.no}'>${item.bookTitle}</a></td>
@@ -28,9 +26,7 @@
   <td>${item.date}</td>
   <td>${item.bookStatus}</td>
   </tr>
-  <%
-  }
-  %>
+</c:forEach>
   </table>
   <jsp:include page="/footer.jsp"/>
   

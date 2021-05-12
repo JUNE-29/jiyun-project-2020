@@ -31,10 +31,6 @@ public class PhotoBoardDetailServlet extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
 
       PhotoBoard photoBoard = photoBoardService.get(no);
-
-      if (photoBoard == null) {
-        throw new Exception("<p>해당 번호의 사진 게시글이 없습니다.</p>");
-      }
       request.setAttribute("photoBoard", photoBoard);
 
       response.setContentType("text/html;charset=UTF-8");

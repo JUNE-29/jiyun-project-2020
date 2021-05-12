@@ -64,6 +64,9 @@ dependencies {
   // => comileOnly : 컴파일한 후 생성되는 빌드파일에 포함되지 않는다.
   //
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    
+  // JSTL API 및 구현 라이브러리
+  implementation 'jstl:jstl:1.2'
 
     implementation 'com.google.guava:guava:28.0-jre'
     testImplementation 'junit:junit:4.12'

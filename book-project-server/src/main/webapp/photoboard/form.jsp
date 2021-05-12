@@ -10,8 +10,8 @@
   <h1>사진 입력</h1>
   <form action='add' method='post' enctype='multipart/form-data'>
 북마크 번호: 
-<input name='bookmarkNo' type='text' value='<%=bookmark.getNo()%>' readonly><br>
-북마크 제목: <%=bookmark.getTitle()%><br>
+<input name='bookmarkNo' type='text' value='${bookmark.no}' readonly><br>
+북마크 제목: ${bookmark.title}<br>
 사진 제목:<br>
 <textarea name='title' rows='5' cols='60'></textarea><br>
 <hr>

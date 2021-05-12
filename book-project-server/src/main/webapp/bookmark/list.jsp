@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <jsp:include page="/header.jsp"/>
 
@@ -17,10 +18,8 @@
      <th>등록일</th>
      </tr>
 <jsp:useBean id="list" type="java.util.List<Bookmark>" class="java.util.ArrayList" scope="request"/>
-<%
-  for(Bookmark item : list) {
-    pageContext.setAttribute("item", item);
-%>
+
+<c:forEach items="${list}" var="item">
      <tr>
      <td>${item.no}</td>
      <td><a href='detail?no=${item.no}'>${item.title}</a></td>
@@ -28,9 +27,7 @@
      <td>${item.author}</td>
      <td>${item.date}</td>
      </tr>
-<%
-  }
-%>
+</c:forEach>
      </table>
 <hr>
 <form action='search' method='get'>

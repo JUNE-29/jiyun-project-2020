@@ -28,9 +28,6 @@ public class BookmarkDetailServlet extends HttpServlet {
 
       int no = Integer.parseInt(request.getParameter("no"));
       Bookmark bookmark = bookmarkService.get(no);
-      if (bookmark == null) {
-        throw new Exception("<p>해당 번호의 게시물이 없습니다.</p>");
-      }
       request.setAttribute("bookmark", bookmark);
 
       response.setContentType("text/html;charset=UTF-8");
