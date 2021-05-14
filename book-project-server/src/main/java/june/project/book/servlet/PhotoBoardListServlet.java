@@ -40,14 +40,11 @@ public class PhotoBoardListServlet extends HttpServlet {
 
       List<PhotoBoard> photoBoards = photoBoardService.listBookmarkPhoto(bookmarkNo);
       request.setAttribute("list", photoBoards);
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/photoboard/list.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/photoboard/list.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

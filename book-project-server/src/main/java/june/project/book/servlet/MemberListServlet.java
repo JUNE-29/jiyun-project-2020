@@ -28,14 +28,11 @@ public class MemberListServlet extends HttpServlet {
       MemberService memberService = iocContainer.getBean(MemberService.class);
       List<Member> member = memberService.list();
       request.setAttribute("list", member);
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/member/list.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/member/list.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

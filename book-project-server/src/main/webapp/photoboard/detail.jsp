@@ -20,7 +20,7 @@
 <p>
 
 <c:forEach items="${photoBoard.files}" var="photoFile">
-<img src='../upload/photoboard/${photoFile.filePath}' height = '80'>
+<img src='${pageContext.servletContext.contextPath}/upload/photoboard/${photoFile.filePath}' height = '80'>
 </c:forEach>
 
 </p>

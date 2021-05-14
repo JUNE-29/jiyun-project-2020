@@ -15,11 +15,10 @@ public class BookBoardDeleteServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
@@ -27,8 +26,7 @@ public class BookBoardDeleteServlet extends HttpServlet {
 
       int no = Integer.parseInt(request.getParameter("no"));
       if (bookBoardService.delete(no) > 0) {
-        response.sendRedirect("list");
-
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("번호가 유효하지 않습니다.");
       }
@@ -36,7 +34,6 @@ public class BookBoardDeleteServlet extends HttpServlet {
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

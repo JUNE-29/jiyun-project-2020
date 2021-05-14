@@ -39,14 +39,11 @@ public class PhotoBoardAddServlet extends HttpServlet {
 
       Bookmark bookmark = bookmarkService.get(BookmarkNo);
       request.setAttribute("bookmark", bookmark);
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/photoboard/form.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/photoboard/form.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 
@@ -95,13 +92,11 @@ public class PhotoBoardAddServlet extends HttpServlet {
       photoBoard.setFiles(photoFiles);
       photoBoardService.add(photoBoard);
 
-      response.sendRedirect("list?bookmarkNo=" + bookmarkNo);
+      request.setAttribute("viewUrl", "redirect:list?bookmarkNo=" + bookmarkNo);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
-      request.getRequestDispatcher("/error").forward(request, response);
-
     }
   }
 }

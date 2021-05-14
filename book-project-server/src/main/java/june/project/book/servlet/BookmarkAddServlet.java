@@ -17,22 +17,13 @@ public class BookmarkAddServlet extends HttpServlet {
 
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
-    try {
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/bookmark/form.jsp").include(request, response);
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
-    }
+    request.setAttribute("viewUrl", "/bookmark/form.jsp");
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
@@ -52,7 +43,7 @@ public class BookmarkAddServlet extends HttpServlet {
       bookmark.setPhoto(request.getParameter("photo"));
 
       if (bookmarkService.add(bookmark) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("추가할 수 없습니다.");
       }

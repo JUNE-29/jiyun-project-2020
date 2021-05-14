@@ -1,7 +1,6 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.ServletContext;
@@ -18,15 +17,11 @@ import june.project.book.service.BookmarkService;
 public class BookmarkSearchServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
-
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
@@ -54,35 +49,13 @@ public class BookmarkSearchServlet extends HttpServlet {
         map.put("date", value);
       }
 
-      request.getRequestDispatcher("/header").include(request, response);
-      out.println("  <h1>북마크 검색 결과</h1>");
-      out.println("  <table border='1'>");
-      out.println("  <tr>");
-      out.println("    <th>번호</th>");
-      out.println("    <th>제목</th>");
-      out.println("    <th>도서명</th>");
-      out.println("    <th>지은이</th>");
-      out.println("    <th>등록일</th>");
-      out.println("  </tr>");
-
       List<Bookmark> bookmarks = bookmarkService.search(map);
-      for (Bookmark b : bookmarks) {
-        out.printf("  <tr>" //
-            + "<td>%d</td>" //
-            + "<td><a href='detail?no=%d'>%s</a></td>" //
-            + "<td>%s</td>" //
-            + "<td>%s</td>" //
-            + "<td>%s</td>" //
-            + "  </tr>\n", //
-            b.getNo(), b.getNo(), b.getTitle(), b.getBookTitle(), b.getAuthor(), b.getDate());
-      }
-      out.println("</table>");
-      request.getRequestDispatcher("/footer").include(request, response);
+      request.setAttribute("list", bookmarks);
+      request.setAttribute("viewUrl", "/bookmark/search.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

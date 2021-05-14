@@ -47,15 +47,13 @@ public class MemberUpdateServlet extends HttpServlet {
       }
 
       if (memberService.update(member) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("번호가 유효하지 않습니다.");
       }
-
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

@@ -1,6 +1,7 @@
 package june.project.book.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +16,6 @@ import june.project.book.service.MemberService;
 @WebServlet("/auth/login")
 public class LoginServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
-
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -33,14 +33,11 @@ public class LoginServlet extends HttpServlet {
       }
 
       request.setAttribute("email", email);
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/auth/form.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/auth/form.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 
@@ -66,23 +63,25 @@ public class LoginServlet extends HttpServlet {
       }
       response.addCookie(cookie);
 
-      Member member = memberService.get(email, password);
+      // 프론트 컨트롤러가 쿠키를 응답헤더에 담을 수 있도록
+      // 쿠키 바구니에 저장한다.
+      @SuppressWarnings("unchecked")
+      ArrayList<Cookie> cookies = (ArrayList<Cookie>) request.getAttribute("cookies");
+      cookies.add(cookie);
 
+      Member member = memberService.get(email, password);
       if (member != null) {
         request.getSession().setAttribute("loginUser", member);
-        response.setHeader("Refresh", "2;url=../index.html");
+        request.setAttribute("refreshUrl", "2;url=../index.html");
       } else {
         request.getSession().invalidate();
-        response.setHeader("Refresh", "2;url=login");
+        request.setAttribute("refreshUrl", "2;url=login");
       }
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/auth/login.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/auth/login.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

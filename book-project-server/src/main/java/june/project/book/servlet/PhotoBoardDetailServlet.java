@@ -29,17 +29,14 @@ public class PhotoBoardDetailServlet extends HttpServlet {
       PhotoBoardService photoBoardService = iocContainer.getBean(PhotoBoardService.class);
 
       int no = Integer.parseInt(request.getParameter("no"));
-
       PhotoBoard photoBoard = photoBoardService.get(no);
-      request.setAttribute("photoBoard", photoBoard);
 
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/photoboard/detail.jsp").include(request, response);
+      request.setAttribute("photoBoard", photoBoard);
+      request.setAttribute("viewUrl", "/photoboard/detail.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

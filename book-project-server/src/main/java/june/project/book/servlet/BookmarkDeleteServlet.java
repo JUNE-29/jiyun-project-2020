@@ -16,11 +16,10 @@ public class BookmarkDeleteServlet extends HttpServlet {
 
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
@@ -28,9 +27,8 @@ public class BookmarkDeleteServlet extends HttpServlet {
 
       int no = Integer.parseInt(request.getParameter("no"));
 
-
       if (bookmarkService.delete(no) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("번호가 유효하지 않습니다.");
       }

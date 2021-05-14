@@ -16,12 +16,11 @@ public class BookBoardDetailServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
       ServletContext servletContext = getServletContext();
-
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookBoardService bookBoardService = iocContainer.getBean(BookBoardService.class);
@@ -29,18 +28,12 @@ public class BookBoardDetailServlet extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
       BookBoard bookBoard = bookBoardService.get(no);
 
-      // JSP가 출력할 때 사용할 수 있도록
-      // 조회 결과를 ServletRequest 보관소에 담는다.
       request.setAttribute("bookBoard", bookBoard);
-
-      // 출력을 담당할 JSP를 인클루딩 한다.
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/bookboard/detail.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/bookboard/detail.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

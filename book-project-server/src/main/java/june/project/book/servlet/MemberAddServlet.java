@@ -19,20 +19,10 @@ import june.project.book.service.MemberService;
 public class MemberAddServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
-    try {
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/member/form.jsp").include(request, response);
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
-    }
+    request.setAttribute("viewUrl", "/member/form.jsp");
   }
 
   @Override
@@ -60,16 +50,14 @@ public class MemberAddServlet extends HttpServlet {
         member.setPhoto(filename);
       }
 
-
       if (memberService.add(member) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("회원을 추가할 수 없습니다.");
       }
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

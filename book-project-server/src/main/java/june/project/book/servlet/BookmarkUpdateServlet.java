@@ -15,21 +15,17 @@ import june.project.book.service.BookmarkService;
 public class BookmarkUpdateServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
-      request.setCharacterEncoding("UTF-8");
-
       ServletContext servletContext = getServletContext();
       ApplicationContext iocContainer =
           (ApplicationContext) servletContext.getAttribute("iocContainer");
       BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
 
       Bookmark bookmark = new Bookmark();
-
       bookmark.setNo(Integer.parseInt(request.getParameter("no")));
       bookmark.setTitle(request.getParameter("title"));
       bookmark.setBookTitle(request.getParameter("bookTitle"));
@@ -38,9 +34,8 @@ public class BookmarkUpdateServlet extends HttpServlet {
       bookmark.setContent(request.getParameter("content"));
       bookmark.setPhoto(request.getParameter("photo"));
 
-
       if (bookmarkService.update(bookmark) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("번호가 유효하지 않습니다.");
       }
@@ -48,7 +43,6 @@ public class BookmarkUpdateServlet extends HttpServlet {
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

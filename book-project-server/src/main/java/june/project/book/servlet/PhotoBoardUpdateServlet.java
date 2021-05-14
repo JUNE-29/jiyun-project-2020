@@ -61,12 +61,11 @@ public class PhotoBoardUpdateServlet extends HttpServlet {
 
       bookmarkNo = photoBoard.getBookmark().getNo();
       photoBoardService.update(photoBoard);
-      response.sendRedirect("list?bookmarkNo=" + bookmarkNo);
+      request.setAttribute("viewUrl", "redirect:list?bookmarkNo=" + bookmarkNo);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

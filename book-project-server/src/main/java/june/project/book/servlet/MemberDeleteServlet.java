@@ -14,7 +14,6 @@ import june.project.book.service.MemberService;
 public class MemberDeleteServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -28,7 +27,7 @@ public class MemberDeleteServlet extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
 
       if (memberService.delete(no) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("번호가 유효하지 않습니다.");
       }

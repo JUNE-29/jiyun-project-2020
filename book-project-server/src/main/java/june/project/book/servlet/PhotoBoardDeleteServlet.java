@@ -18,8 +18,6 @@ public class PhotoBoardDeleteServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    response.setContentType("text/html;charset=UTF-8");
-
     int bookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
     int no = Integer.parseInt(request.getParameter("no"));
 
@@ -30,12 +28,11 @@ public class PhotoBoardDeleteServlet extends HttpServlet {
       PhotoBoardService photoBoardService = iocContainer.getBean(PhotoBoardService.class);
 
       photoBoardService.delete(no);
-      response.sendRedirect("list?bookmarkNo=" + bookmarkNo);
+      request.setAttribute("viewUrl", "redirect:list?bookmarkNo=" + bookmarkNo);
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

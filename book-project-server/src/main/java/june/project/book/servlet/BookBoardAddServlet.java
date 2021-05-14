@@ -16,16 +16,14 @@ public class BookBoardAddServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    response.setContentType("text/html;charset=UTF-8");
-    request.getRequestDispatcher("/bookboard/form.jsp").include(request, response);
+    request.setAttribute("viewUrl", "/bookboard/form.jsp");
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
     try {
       request.setCharacterEncoding("UTF-8");
 
@@ -46,13 +44,11 @@ public class BookBoardAddServlet extends HttpServlet {
       bookBoard.setScore(Integer.parseInt(request.getParameter("score")));
 
       bookBoardService.add(bookBoard);
-
-      response.sendRedirect("list");
+      request.setAttribute("viewUrl", "redirect:list");
 
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }

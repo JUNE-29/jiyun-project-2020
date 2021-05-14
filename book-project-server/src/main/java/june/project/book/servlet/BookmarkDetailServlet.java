@@ -15,9 +15,8 @@ import june.project.book.service.BookmarkService;
 public class BookmarkDetailServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
@@ -29,9 +28,7 @@ public class BookmarkDetailServlet extends HttpServlet {
       int no = Integer.parseInt(request.getParameter("no"));
       Bookmark bookmark = bookmarkService.get(no);
       request.setAttribute("bookmark", bookmark);
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/bookmark/detail.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/bookmark/detail.jsp");
 
     } catch (Exception e) {
       request.setAttribute("error", e);

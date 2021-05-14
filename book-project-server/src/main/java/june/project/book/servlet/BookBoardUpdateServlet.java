@@ -16,7 +16,7 @@ public class BookBoardUpdateServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     try {
@@ -41,14 +41,13 @@ public class BookBoardUpdateServlet extends HttpServlet {
       bookBoard.setBookStatus(Integer.parseInt(request.getParameter("bookStatus")));
 
       if (bookBoardService.update(bookBoard) > 0) {
-        response.sendRedirect("list");
+        request.setAttribute("viewUrl", "redirect:list");
       } else {
         throw new Exception("번호가 유효하지 않습니다.");
       }
     } catch (Exception e) {
       request.setAttribute("error", e);
       request.setAttribute("url", "list");
-      request.getRequestDispatcher("/error").forward(request, response);
     }
   }
 }
