@@ -1,54 +1,37 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/book/add")
-public class BookBoardAddServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class BookBoardAddController {
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    request.setAttribute("viewUrl", "/bookboard/form.jsp");
-  }
+  @Autowired
+  BookBoardService bookBoardService;
 
-  @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    try {
-      request.setCharacterEncoding("UTF-8");
-
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      BookBoardService bookBoardService = iocContainer.getBean(BookBoardService.class);
-
-      BookBoard bookBoard = new BookBoard();
-      bookBoard.setBookTitle(request.getParameter("bookTitle"));
-      bookBoard.setAuthor(request.getParameter("author"));
-      bookBoard.setPublisher(request.getParameter("publisher"));
-      bookBoard.setCategories(request.getParameter("categories"));
-      bookBoard.setPublishedDate(request.getParameter("publishedDate"));
-      bookBoard.setContent(request.getParameter("content"));
-      bookBoard.setPhoto(request.getParameter("photo"));
-      bookBoard.setBookStatus(Integer.parseInt(request.getParameter("bookStatus")));
-      bookBoard.setScore(Integer.parseInt(request.getParameter("score")));
-
-      bookBoardService.add(bookBoard);
-      request.setAttribute("viewUrl", "redirect:list");
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
+  @RequestMapping("/book/add")
+  public String add(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    if (request.getMethod().equals("GET")) {
+      return "/bookboard/form.jsp";
     }
+
+    BookBoard bookBoard = new BookBoard();
+    bookBoard.setBookTitle(request.getParameter("bookTitle"));
+    bookBoard.setAuthor(request.getParameter("author"));
+    bookBoard.setPublisher(request.getParameter("publisher"));
+    bookBoard.setCategories(request.getParameter("categories"));
+    bookBoard.setPublishedDate(request.getParameter("publishedDate"));
+    bookBoard.setContent(request.getParameter("content"));
+    bookBoard.setPhoto(request.getParameter("photo"));
+    bookBoard.setBookStatus(Integer.parseInt(request.getParameter("bookStatus")));
+    bookBoard.setScore(Integer.parseInt(request.getParameter("score")));
+    bookBoardService.add(bookBoard);
+
+    return "redirect:list";
   }
 }

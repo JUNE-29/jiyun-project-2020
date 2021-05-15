@@ -1,39 +1,26 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/book/detail")
-public class BookBoardDetailServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class BookBoardDetailController {
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @Autowired
+  BookBoardService bookBoardService;
 
-    try {
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      BookBoardService bookBoardService = iocContainer.getBean(BookBoardService.class);
+  @RequestMapping("/book/detail")
+  public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-      int no = Integer.parseInt(request.getParameter("no"));
-      BookBoard bookBoard = bookBoardService.get(no);
+    int no = Integer.parseInt(request.getParameter("no"));
+    BookBoard bookBoard = bookBoardService.get(no);
 
-      request.setAttribute("bookBoard", bookBoard);
-      request.setAttribute("viewUrl", "/bookboard/detail.jsp");
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
-    }
+    request.setAttribute("bookBoard", bookBoard);
+    return "/bookboard/detail.jsp";
   }
 }

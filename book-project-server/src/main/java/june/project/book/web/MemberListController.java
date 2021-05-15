@@ -1,38 +1,25 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
 import java.util.List;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/member/list")
-public class MemberListServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class MemberListController {
 
+  @Autowired
+  MemberService memberService;
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @RequestMapping("/member/list")
+  public String list(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    try {
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      MemberService memberService = iocContainer.getBean(MemberService.class);
-      List<Member> member = memberService.list();
-      request.setAttribute("list", member);
-      request.setAttribute("viewUrl", "/member/list.jsp");
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
-    }
+    List<Member> member = memberService.list();
+    request.setAttribute("list", member);
+    return "/member/list.jsp";
   }
 }

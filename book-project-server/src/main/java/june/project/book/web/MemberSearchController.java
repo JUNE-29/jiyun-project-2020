@@ -1,40 +1,26 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
 import java.util.List;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/member/search")
-public class MemberSearchServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class MemberSearchController {
 
+  @Autowired
+  MemberService memberService;
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @RequestMapping("/member/search")
+  public String search(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    try {
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      MemberService memberService = iocContainer.getBean(MemberService.class);
-
-      String keyword = request.getParameter("keyword");
-      List<Member> members = memberService.search(keyword);
-      request.setAttribute("list", members);
-      request.setAttribute("viewUrl", "/member/search.jsp");
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
-    }
+    String keyword = request.getParameter("keyword");
+    List<Member> members = memberService.search(keyword);
+    request.setAttribute("list", members);
+    return "/member/search.jsp";
   }
 }

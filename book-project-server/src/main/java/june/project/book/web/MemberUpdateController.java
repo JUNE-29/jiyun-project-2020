@@ -1,59 +1,42 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
 import java.util.UUID;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.domain.Member;
 import june.project.book.service.MemberService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/member/update")
-@MultipartConfig(maxFileSize = 100000)
-public class MemberUpdateServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class MemberUpdateController {
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @Autowired
+  MemberService memberService;
 
-    try {
-      request.setCharacterEncoding("UTF-8");
+  @RequestMapping("/member/update")
+  public String update(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      MemberService memberService = iocContainer.getBean(MemberService.class);
+    Member member = new Member();
+    member.setNo(Integer.parseInt(request.getParameter("no")));
+    member.setName(request.getParameter("name"));
+    member.setEmail(request.getParameter("email"));
+    member.setPassword(request.getParameter("password"));
 
-      Member member = new Member();
+    Part photoPart = request.getPart("photo");
+    if (photoPart.getSize() > 0) {
+      String dirPath = request.getServletContext().getRealPath("/upload/member");
+      String filename = UUID.randomUUID().toString();
+      photoPart.write(dirPath + "/" + filename);
+      member.setPhoto(filename);
+    }
 
-      member.setNo(Integer.parseInt(request.getParameter("no")));
-      member.setName(request.getParameter("name"));
-      member.setEmail(request.getParameter("email"));
-      member.setPassword(request.getParameter("password"));
-
-      Part photoPart = request.getPart("photo");
-      if (photoPart.getSize() > 0) {
-        String dirPath = getServletContext().getRealPath("/upload/member");
-        String filename = UUID.randomUUID().toString();
-        photoPart.write(dirPath + "/" + filename);
-        member.setPhoto(filename);
-      }
-
-      if (memberService.update(member) > 0) {
-        request.setAttribute("viewUrl", "redirect:list");
-      } else {
-        throw new Exception("번호가 유효하지 않습니다.");
-      }
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
+    if (memberService.update(member) > 0) {
+      return "redirect:list";
+    } else {
+      throw new Exception("번호가 유효하지 않습니다.");
     }
   }
 }

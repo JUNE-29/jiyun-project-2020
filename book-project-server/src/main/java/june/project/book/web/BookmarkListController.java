@@ -1,35 +1,21 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.service.BookmarkService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/bookmark/list")
-public class BookmarkListServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class BookmarkListController {
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @Autowired
+  BookmarkService bookmarkService;
 
-    try {
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      BookmarkService bookmarkService = iocContainer.getBean(BookmarkService.class);
-
-      request.setAttribute("list", bookmarkService.list());
-      request.setAttribute("viewUrl", "/bookmark/list.jsp");
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list");
-    }
+  @RequestMapping("/bookmark/list")
+  public String list(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    request.setAttribute("list", bookmarkService.list());
+    return "/bookmark/list.jsp";
   }
 }

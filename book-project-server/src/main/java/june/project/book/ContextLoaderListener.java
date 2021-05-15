@@ -1,12 +1,18 @@
 package june.project.book;
 
+import java.lang.reflect.Method;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
+import june.project.util.RequestHandler;
+import june.project.util.RequestMapping;
+import june.project.util.RequestMappingHandlerMapping;
 
 // 서블릿 컨테이너가 시작하거나 종료할 때
 // 이 클래스의 객체에 대해 메서드를 호출한다.
@@ -15,7 +21,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 // => javax.servlet.ServletContextListener 인터페이스를 구현해야 한다.
 //
 
-// @WebListener // 이 애노테이션을 붙이면 서블릿 컨테이너가 이 객체를 관리한다.
+@WebListener // 이 애노테이션을 붙이면 서블릿 컨테이너가 이 객체를 관리한다.
 public class ContextLoaderListener implements ServletContextListener {
 
   static Logger logger = LogManager.getLogger(ContextLoaderListener.class);
@@ -29,28 +35,51 @@ public class ContextLoaderListener implements ServletContextListener {
     // => 이 프로젝트에서는 Spring IoC 컨테이너를 준비한다.
 
     try {
-
       // Spring IoC 컨테이너 준비
-      ApplicationContext iocContainer = new AnnotationConfigApplicationContext( //
-          AppConfig.class //
-      // Spring IoC 컨테이너의 설정 정보를 담고 있는 클래스 타입 지정.
-      );
-
+      ApplicationContext iocContainer = new AnnotationConfigApplicationContext(//
+          // Spring IoC 컨테이너의 설정 정보를 담고 있는 클래스 타입을 지정.
+          AppConfig.class);
       printBeans(iocContainer);
 
-      // 준비한 객체를 담을 공용 바구니 준비
+      // 준비한 Spring IoC 컨테이너를 ServletContext 보관소에 저장한다.
       // => 이 객체는 웹애플리케이션 설정 정보를 제공한다.
       // => 또한 서블릿들이 공유할 객체를 담는 바구니 역할도 겸한다.
-      // => 모든 "웹 컴포넌트(서블릿,리스너,필터,JSP)"들이 공유할 객체를 보관한다.
-      ServletContext servlectContext = sce.getServletContext();
+      // => 모든 "웹 컴포넌트(서블릿,리스너,필터,JSP)"들이
+      // 공유할 객체를 보관하는 저장소이다.
+      ServletContext servletContext = sce.getServletContext();
 
       // 서블릿이 사용할 수 있게 ServletContext에 담아 둔다.
-      servlectContext.setAttribute("iocContainer", iocContainer);
+      // => Spring IoC 컨테이너는 모든 서블릿이 사용해야 하는 객체이다.
+      servletContext.setAttribute("iocContainer", iocContainer);
 
-      logger.debug("----------------------------------");
+      logger.debug("----------------------------");
 
-      // 서블릿 객체는 더이상 'SpringIoC 컨테이너'에서 관리하지 않는다.
-      // 서블릿 객체의 고나리 주체가 서블릿 컨테이너로 넘어갔다.
+      logger.debug("@RequestMapping 메서드를 찾기");
+
+      // @Component 애노테이션이 붙은 객체를 찾는다.
+      RequestMappingHandlerMapping handlerMapper = //
+          new RequestMappingHandlerMapping();
+      String[] beanNames = iocContainer.getBeanNamesForAnnotation(Component.class);
+      for (String beanName : beanNames) {
+        Object component = iocContainer.getBean(beanName);
+
+        // @RequestHandler가 붙은 메서드를 찾는다.
+        Method method = getRequestHandler(component.getClass());
+        if (method != null) {
+          // 클라이언트 명령을 처리하는 메서드 정보를 준비한다.
+          RequestHandler requestHandler = new RequestHandler(method, component);
+
+          // 명령을 처리할 메서드를 찾을 수 있도록
+          // 명령 이름으로 메서드 정보를 저장한다.
+          handlerMapper.addHandler(requestHandler.getPath(), requestHandler);
+
+          // @RequestMapping 메서드가 들어있는 클래스 이름을 로그로 남긴다.
+          logger.debug("==> " + component.getClass().getName());
+        }
+      }
+
+      // ServerApp 에서 request handler를 사용할 수 있도록 공유한다.
+      servletContext.setAttribute("handlerMapper", handlerMapper);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -61,9 +90,26 @@ public class ContextLoaderListener implements ServletContextListener {
     logger.debug("Spring IoC 컨테이너에 들어있는 객체들:");
     String[] beanNames = appCtx.getBeanDefinitionNames();
     for (String beanName : beanNames) {
-      logger.debug(String.format("%s ========> %s", beanName,
+      logger.debug(String.format("%s =======> %s", //
+          beanName, //
           appCtx.getBean(beanName).getClass().getName()));
     }
+
+  }
+
+  private Method getRequestHandler(Class<?> type) {
+    // 클라이언트 명령을 처리할 메서드는 public 이기 때문에
+    // 클래스에서 public 메서드만 조사한다.
+    Method[] methods = type.getMethods();
+    for (Method m : methods) {
+      // 메서드에 @RequestMapping 애노테이션이 붙었는지 검사한다.
+      RequestMapping anno = m.getAnnotation(RequestMapping.class);
+      if (anno != null) {
+        return m;
+      }
+    }
+
+    return null;
   }
 
   @Override

@@ -1,38 +1,23 @@
-package june.project.book.servlet;
+package june.project.book.web;
 
-import java.io.IOException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import june.project.book.service.PhotoBoardService;
+import june.project.util.RequestMapping;
 
-@WebServlet("/photoboard/delete")
-public class PhotoBoardDeleteServlet extends HttpServlet {
-  private static final long serialVersionUID = 1L;
+@Component
+public class PhotoBoardDeleteController {
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @Autowired
+  PhotoBoardService photoBoardService;
 
+  @RequestMapping("/photoboard/delete")
+  public String delete(HttpServletRequest request, HttpServletResponse response) throws Exception {
     int bookmarkNo = Integer.parseInt(request.getParameter("bookmarkNo"));
     int no = Integer.parseInt(request.getParameter("no"));
-
-    try {
-      ServletContext servletContext = getServletContext();
-      ApplicationContext iocContainer =
-          (ApplicationContext) servletContext.getAttribute("iocContainer");
-      PhotoBoardService photoBoardService = iocContainer.getBean(PhotoBoardService.class);
-
-      photoBoardService.delete(no);
-      request.setAttribute("viewUrl", "redirect:list?bookmarkNo=" + bookmarkNo);
-
-    } catch (Exception e) {
-      request.setAttribute("error", e);
-      request.setAttribute("url", "list?bookmarkNo=" + bookmarkNo);
-    }
+    photoBoardService.delete(no);
+    return "redirect:list?bookmarkNo=" + bookmarkNo;
   }
 }
