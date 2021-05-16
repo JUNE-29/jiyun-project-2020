@@ -11,7 +11,7 @@ import june.project.book.service.MemberService;
 import june.project.util.RequestMapping;
 
 @Component
-public class LoginController {
+public class AuthController {
 
   @Autowired
   MemberService memberService;
@@ -60,5 +60,11 @@ public class LoginController {
       request.setAttribute("refreshUrl", "2;url=login");
     }
     return "/auth/login.jsp";
+  }
+
+  @RequestMapping("/auth/logout")
+  public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    request.getSession().invalidate();
+    return "redirect:../../index.html";
   }
 }

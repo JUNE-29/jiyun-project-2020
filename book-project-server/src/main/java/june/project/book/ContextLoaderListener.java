@@ -1,6 +1,8 @@
 package june.project.book;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -52,7 +54,7 @@ public class ContextLoaderListener implements ServletContextListener {
       // => Spring IoC 컨테이너는 모든 서블릿이 사용해야 하는 객체이다.
       servletContext.setAttribute("iocContainer", iocContainer);
 
-      logger.debug("----------------------------");
+      logger.debug("------------------------------------------------------");
 
       logger.debug("@RequestMapping 메서드를 찾기");
 
@@ -64,17 +66,21 @@ public class ContextLoaderListener implements ServletContextListener {
         Object component = iocContainer.getBean(beanName);
 
         // @RequestHandler가 붙은 메서드를 찾는다.
-        Method method = getRequestHandler(component.getClass());
-        if (method != null) {
+        Iterator<Method> handlers = getRequestHandlers(component.getClass());
+        while (handlers.hasNext()) {
           // 클라이언트 명령을 처리하는 메서드 정보를 준비한다.
-          RequestHandler requestHandler = new RequestHandler(method, component);
+          RequestHandler requestHandler = //
+              new RequestHandler(handlers.next(), component);
 
           // 명령을 처리할 메서드를 찾을 수 있도록
           // 명령 이름으로 메서드 정보를 저장한다.
           handlerMapper.addHandler(requestHandler.getPath(), requestHandler);
 
           // @RequestMapping 메서드가 들어있는 클래스 이름을 로그로 남긴다.
-          logger.debug("==> " + component.getClass().getName());
+          logger.debug(String.format("%s ==> %s.%s()", //
+              requestHandler.getPath(), //
+              component.getClass().getName(), //
+              requestHandler.getMethod().getName()));
         }
       }
 
@@ -94,10 +100,10 @@ public class ContextLoaderListener implements ServletContextListener {
           beanName, //
           appCtx.getBean(beanName).getClass().getName()));
     }
-
   }
 
-  private Method getRequestHandler(Class<?> type) {
+  private Iterator<Method> getRequestHandlers(Class<?> type) {
+    ArrayList<Method> handlers = new ArrayList<>();
     // 클라이언트 명령을 처리할 메서드는 public 이기 때문에
     // 클래스에서 public 메서드만 조사한다.
     Method[] methods = type.getMethods();
@@ -105,11 +111,10 @@ public class ContextLoaderListener implements ServletContextListener {
       // 메서드에 @RequestMapping 애노테이션이 붙었는지 검사한다.
       RequestMapping anno = m.getAnnotation(RequestMapping.class);
       if (anno != null) {
-        return m;
+        handlers.add(m);
       }
     }
-
-    return null;
+    return handlers.iterator();
   }
 
   @Override
