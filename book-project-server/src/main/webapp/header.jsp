@@ -80,7 +80,7 @@ if (loginUser != null) {
 <%
 } else{
 %>
- <a href='../auth/login' class='btn btn-primary btn-sm'>로그인</a>
+ <a href='../auth/form' class='btn btn-primary btn-sm'>로그인</a>
 <%
 }
 %>

@@ -8,7 +8,7 @@
 <jsp:include page="/header.jsp"/>
 
   <h1>Book List</h1>
-  <a href='add'>새 글</a>
+  <a href='form'>새 글</a>
   <table border='1'>
   <tr>
     <th>번호</th>

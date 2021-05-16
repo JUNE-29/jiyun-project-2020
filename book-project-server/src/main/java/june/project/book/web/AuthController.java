@@ -1,9 +1,9 @@
 package june.project.book.web;
 
 import java.util.ArrayList;
+import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Member;
@@ -16,26 +16,26 @@ public class AuthController {
   @Autowired
   MemberService memberService;
 
-  @RequestMapping("/auth/login")
-  public String login(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    if (request.getMethod().equals("GET")) {
-      String email = "";
-      Cookie[] cookies = request.getCookies();
-      if (cookies != null) {
-        for (Cookie cookie : cookies) {
-          if (cookie.getName().contentEquals("email")) {
-            email = cookie.getValue();
-            break;
-          }
+  @RequestMapping("/auth/form")
+  public String form(HttpServletRequest request, Map<String, Object> model) {
+    String email = "";
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().contentEquals("email")) {
+          email = cookie.getValue();
+          break;
         }
       }
-      request.setAttribute("email", email);
-      return "/auth/form.jsp";
     }
+    request.setAttribute("email", email);
+    return "/auth/form.jsp";
+  }
 
-    String email = request.getParameter("email");
-    String password = request.getParameter("password");
-    String saveEmail = request.getParameter("saveEmail");
+
+  @RequestMapping("/auth/login")
+  public String login(HttpServletRequest request, String email, String password, String saveEmail)
+      throws Exception {
 
     Cookie cookie = new Cookie("email", email);
     if (saveEmail != null) {
@@ -43,7 +43,6 @@ public class AuthController {
     } else {
       cookie.setMaxAge(0);
     }
-    response.addCookie(cookie);
 
     // 프론트 컨트롤러가 쿠키를 응답헤더에 담을 수 있도록
     // 쿠키 바구니에 저장한다.
@@ -63,7 +62,7 @@ public class AuthController {
   }
 
   @RequestMapping("/auth/logout")
-  public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  public String logout(HttpServletRequest request) throws Exception {
     request.getSession().invalidate();
     return "redirect:../../index.html";
   }

@@ -1,9 +1,7 @@
 package june.project.book.web;
 
 import java.util.HashMap;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import june.project.book.domain.Bookmark;
@@ -16,20 +14,13 @@ public class BookmarkController {
   @Autowired
   BookmarkService bookmarkService;
 
+  @RequestMapping("/bookmark/form")
+  public String form() {
+    return "/bookmark/form.jsp";
+  }
+
   @RequestMapping("/bookmark/add")
-  public String add(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    if (request.getMethod().equals("GET")) {
-      return "/bookmark/form.jsp";
-    }
-
-    Bookmark bookmark = new Bookmark();
-    bookmark.setTitle(request.getParameter("title"));
-    bookmark.setBookTitle(request.getParameter("bookTitle"));
-    bookmark.setAuthor(request.getParameter("author"));
-    bookmark.setPublisher(request.getParameter("publisher"));
-    bookmark.setContent(request.getParameter("content"));
-    bookmark.setPhoto(request.getParameter("photo"));
-
+  public String add(Bookmark bookmark) throws Exception {
     if (bookmarkService.add(bookmark) > 0) {
       return "redirect:list";
     } else {
@@ -38,30 +29,19 @@ public class BookmarkController {
   }
 
   @RequestMapping("/bookmark/list")
-  public String list(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    request.setAttribute("list", bookmarkService.list());
+  public String list(Map<String, Object> model) throws Exception {
+    model.put("list", bookmarkService.list());
     return "/bookmark/list.jsp";
   }
 
   @RequestMapping("/bookmark/detail")
-  public String detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    int no = Integer.parseInt(request.getParameter("no"));
-    Bookmark bookmark = bookmarkService.get(no);
-    request.setAttribute("bookmark", bookmark);
+  public String detail(int no, Map<String, Object> model) throws Exception {
+    model.put("bookmark", bookmarkService.get(no));
     return "/bookmark/detail.jsp";
   }
 
   @RequestMapping("/bookmark/update")
-  public String update(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    Bookmark bookmark = new Bookmark();
-    bookmark.setNo(Integer.parseInt(request.getParameter("no")));
-    bookmark.setTitle(request.getParameter("title"));
-    bookmark.setBookTitle(request.getParameter("bookTitle"));
-    bookmark.setAuthor(request.getParameter("author"));
-    bookmark.setPublisher(request.getParameter("publisher"));
-    bookmark.setContent(request.getParameter("content"));
-    bookmark.setPhoto(request.getParameter("photo"));
-
+  public String update(Bookmark bookmark) throws Exception {
     if (bookmarkService.update(bookmark) > 0) {
       return "redirect:list";
     } else {
@@ -70,8 +50,7 @@ public class BookmarkController {
   }
 
   @RequestMapping("/bookmark/delete")
-  public String delete(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    int no = Integer.parseInt(request.getParameter("no"));
+  public String delete(int no) throws Exception {
     if (bookmarkService.delete(no) > 0) {
       return "redirect:list";
     } else {
@@ -80,31 +59,25 @@ public class BookmarkController {
   }
 
   @RequestMapping("/bookmark/search")
-  public String search(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+  public String search(Bookmark bookmark, Map<String, Object> model) throws Exception {
     HashMap<String, Object> map = new HashMap<>();
-    String value = request.getParameter("title");
-    if (value.length() > 0) {
-      map.put("title", value);
+    if (bookmark.getTitle().length() > 0) {
+      map.put("title", bookmark.getTitle());
     }
 
-    value = request.getParameter("bookTitle");
-    if (value.length() > 0) {
-      map.put("bookTitle", value);
+    if (bookmark.getBookTitle().length() > 0) {
+      map.put("bookTitle", bookmark.getBookTitle());
     }
 
-    value = request.getParameter("author");
-    if (value.length() > 0) {
-      map.put("author", value);
+    if (bookmark.getAuthor().length() > 0) {
+      map.put("author", bookmark.getAuthor());
     }
 
-    value = request.getParameter("date");
-    if (value.length() > 0) {
-      map.put("date", value);
+    if (bookmark.getDate() != null) {
+      map.put("date", bookmark.getDate().toString());
     }
 
-    List<Bookmark> bookmarks = bookmarkService.search(map);
-    request.setAttribute("list", bookmarks);
+    model.put("list", bookmarkService.search(map));
     return "/bookmark/search.jsp";
   }
 }

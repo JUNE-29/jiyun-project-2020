@@ -9,7 +9,7 @@
  <jsp:include page="/header.jsp"/>
  
  <h1>책과 함께한 사진 - <a href='../bookmark/detail?no=${bookmark.no}'>${bookmark.title}</a></h1>
-<a href='add?bookmarkNo=${bookmark.no}'> 추가 </a><br>
+<a href='form?bookmarkNo=${bookmark.no}'> 추가 </a><br>
   <table border='1'>
     <tr>
       <th>번호</th>

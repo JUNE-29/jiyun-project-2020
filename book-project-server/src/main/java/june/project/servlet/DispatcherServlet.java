@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +20,7 @@ import june.project.util.RequestHandler;
 import june.project.util.RequestMappingHandlerMapping;
 
 @WebServlet("/app/*")
-@MultipartConfig(maxFileSize = 100000)
+@MultipartConfig(maxFileSize = 10000000)
 public class DispatcherServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -56,11 +59,15 @@ public class DispatcherServlet extends HttpServlet {
       // Request Handler의 메서드 호출
       if (requestHandler != null) {
         try {
-          viewUrl = (String) requestHandler.getMethod().invoke(// @RequestMapping이 붙은 메서드를 호출
-              requestHandler.getBean(), // 페이지 컨트롤러 객체
-              request, // HttpServletRequest
-              response); // HttpServletResponse
+          Map<String, Object> model = requestHandler.invoke(request, response);
+          viewUrl = (String) model.get("viewUrl");
 
+          // 요청 핸들러의 작업 결과를 꺼내서 JSP가 사용할 수 있도록
+          // ServlectRequest 보관소에 저장한다.
+          Set<Entry<String, Object>> entrySet = model.entrySet();
+          for (Entry<String, Object> entry : entrySet) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+          }
         } catch (Exception e) {
           StringWriter out = new StringWriter();
           e.printStackTrace(new PrintWriter(out));

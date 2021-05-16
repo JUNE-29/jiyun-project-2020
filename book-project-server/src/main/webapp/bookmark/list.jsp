@@ -8,7 +8,7 @@
 <jsp:include page="/header.jsp"/>
 
   <h1>북마크</h1>
-<a href='add'>북마크 추가</a><br>
+<a href='form'>북마크 추가</a><br>
      <table border='1'>
       <tr>
      <th>번호</th>
