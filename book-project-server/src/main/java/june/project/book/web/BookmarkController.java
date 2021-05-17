@@ -3,12 +3,12 @@ package june.project.book.web;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
-import june.project.util.RequestMapping;
 
-@Component
+@Controller
 public class BookmarkController {
 
   @Autowired

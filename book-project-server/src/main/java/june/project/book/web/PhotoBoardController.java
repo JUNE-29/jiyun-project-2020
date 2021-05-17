@@ -7,15 +7,15 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
 import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
-import june.project.util.RequestMapping;
 
-@Component
+@Controller
 public class PhotoBoardController {
 
   @Autowired
