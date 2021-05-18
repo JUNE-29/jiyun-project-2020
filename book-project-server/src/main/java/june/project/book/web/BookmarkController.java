@@ -1,25 +1,26 @@
 package june.project.book.web;
 
 import java.util.HashMap;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import june.project.book.domain.Bookmark;
 import june.project.book.service.BookmarkService;
 
 @Controller
+@RequestMapping("/bookmark")
 public class BookmarkController {
 
   @Autowired
   BookmarkService bookmarkService;
 
-  @RequestMapping("/bookmark/form")
-  public String form() {
-    return "/bookmark/form.jsp";
-  }
+  @GetMapping("form")
+  public void form() {}
 
-  @RequestMapping("/bookmark/add")
+  @PostMapping("add")
   public String add(Bookmark bookmark) throws Exception {
     if (bookmarkService.add(bookmark) > 0) {
       return "redirect:list";
@@ -28,19 +29,17 @@ public class BookmarkController {
     }
   }
 
-  @RequestMapping("/bookmark/list")
-  public String list(Map<String, Object> model) throws Exception {
-    model.put("list", bookmarkService.list());
-    return "/bookmark/list.jsp";
+  @GetMapping("list")
+  public void list(Model model) throws Exception {
+    model.addAttribute("list", bookmarkService.list());
   }
 
-  @RequestMapping("/bookmark/detail")
-  public String detail(int no, Map<String, Object> model) throws Exception {
-    model.put("bookmark", bookmarkService.get(no));
-    return "/bookmark/detail.jsp";
+  @GetMapping("detail")
+  public void detail(int no, Model model) throws Exception {
+    model.addAttribute("bookmark", bookmarkService.get(no));
   }
 
-  @RequestMapping("/bookmark/update")
+  @PostMapping("update")
   public String update(Bookmark bookmark) throws Exception {
     if (bookmarkService.update(bookmark) > 0) {
       return "redirect:list";
@@ -49,7 +48,7 @@ public class BookmarkController {
     }
   }
 
-  @RequestMapping("/bookmark/delete")
+  @GetMapping("delete")
   public String delete(int no) throws Exception {
     if (bookmarkService.delete(no) > 0) {
       return "redirect:list";
@@ -58,8 +57,8 @@ public class BookmarkController {
     }
   }
 
-  @RequestMapping("/bookmark/search")
-  public String search(Bookmark bookmark, Map<String, Object> model) throws Exception {
+  @GetMapping("search")
+  public void search(Bookmark bookmark, Model model) throws Exception {
     HashMap<String, Object> map = new HashMap<>();
     if (bookmark.getTitle().length() > 0) {
       map.put("title", bookmark.getTitle());
@@ -77,7 +76,6 @@ public class BookmarkController {
       map.put("date", bookmark.getDate().toString());
     }
 
-    model.put("list", bookmarkService.search(map));
-    return "/bookmark/search.jsp";
+    model.addAttribute("list", bookmarkService.search(map));
   }
 }

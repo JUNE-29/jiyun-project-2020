@@ -6,7 +6,7 @@
     trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
- <jsp:include page="/header.jsp"/>
+ <jsp:include page="../header.jsp"/>
  
  <h1>책과 함께한 사진 - <a href='../bookmark/detail?no=${bookmark.no}'>${bookmark.title}</a></h1>
 <a href='form?bookmarkNo=${bookmark.no}'> 추가 </a><br>
@@ -28,4 +28,4 @@
 </c:forEach>
 
   </table>
-  <jsp:include page="/footer.jsp"/>
+  <jsp:include page="../footer.jsp"/>

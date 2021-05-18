@@ -3,7 +3,7 @@
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
     
-<jsp:include page="/header.jsp"></jsp:include>
+<jsp:include page="../header.jsp"></jsp:include>
 
 <h1>등록(JSP)</h1>
 <form action='add' method='post'>
@@ -27,4 +27,4 @@
 <button>등록</button>
 </form>
 
-  <jsp:include page="/footer.jsp"/>
+  <jsp:include page="../footer.jsp"/>

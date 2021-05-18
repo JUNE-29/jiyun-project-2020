@@ -5,7 +5,7 @@
     trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
- <jsp:include page="/header.jsp"/>
+ <jsp:include page="../header.jsp"/>
     
   <h1>회원</h1>
     <a href='form'>새 회원</a><br>
@@ -31,4 +31,4 @@
   <button>검색</button>
 </form>
       
- <jsp:include page="/footer.jsp"/>
+ <jsp:include page="../footer.jsp"/>

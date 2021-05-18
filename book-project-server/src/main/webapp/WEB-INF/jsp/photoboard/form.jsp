@@ -3,7 +3,7 @@
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
 
-<jsp:include page="/header.jsp"/>
+<jsp:include page="../header.jsp"/>
 <%
   Bookmark bookmark = (Bookmark) request.getAttribute("bookmark");
 %>
@@ -23,4 +23,4 @@
 <button>제출</button>
 </form>
 
-<jsp:include page="/footer.jsp"/>
+<jsp:include page="../footer.jsp"/>

@@ -1,14 +1,16 @@
 package june.project.book.web;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
+import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 import june.project.book.domain.Bookmark;
 import june.project.book.domain.PhotoBoard;
 import june.project.book.domain.PhotoFile;
@@ -16,7 +18,11 @@ import june.project.book.service.BookmarkService;
 import june.project.book.service.PhotoBoardService;
 
 @Controller
+@RequestMapping("/photoboard")
 public class PhotoBoardController {
+
+  @Autowired
+  ServletContext servletContext;
 
   @Autowired
   PhotoBoardService photoBoardService;
@@ -24,16 +30,13 @@ public class PhotoBoardController {
   @Autowired
   BookmarkService bookmarkService;
 
-  @RequestMapping("/photoboard/form")
-  public String form(int bookmarkNo, Map<String, Object> model) throws Exception {
-    model.put("bookmark", bookmarkService.get(bookmarkNo));
-    return "/photoboard/form.jsp";
+  @GetMapping("form")
+  public void form(int bookmarkNo, Model model) throws Exception {
+    model.addAttribute("bookmark", bookmarkService.get(bookmarkNo));
   }
 
-  @RequestMapping("/photoboard/add")
-  public String add(int bookmarkNo, String title, Part[] photoFiles, HttpServletRequest request)
-      throws Exception {
-
+  @PostMapping("add")
+  public String add(int bookmarkNo, String title, MultipartFile[] photoFiles) throws Exception {
     Bookmark bookmark = bookmarkService.get(bookmarkNo);
     if (bookmark == null) {
       throw new Exception("북마크 번호가 유효하지 않습니다.");
@@ -44,13 +47,13 @@ public class PhotoBoardController {
     photoBoard.setBookmark(bookmark);
 
     ArrayList<PhotoFile> photos = new ArrayList<>();
-    String dirPath = request.getServletContext().getRealPath("/upload/photoboard");
-    for (Part photoFile : photoFiles) {
+    String dirPath = servletContext.getRealPath("/upload/photoboard");
+    for (MultipartFile photoFile : photoFiles) {
       if (photoFile.getSize() <= 0) {
         continue;
       }
       String filename = UUID.randomUUID().toString();
-      photoFile.write(dirPath + "/" + filename);
+      photoFile.transferTo(new File(dirPath + "/" + filename));
       photos.add(new PhotoFile().setFilePath(filename));
     }
 
@@ -64,41 +67,36 @@ public class PhotoBoardController {
     return "redirect:list?bookmarkNo=" + bookmarkNo;
   }
 
-  @RequestMapping("/photoboard/list")
-  public String list(int bookmarkNo, Map<String, Object> model) throws Exception {
+  @GetMapping("list")
+  public void list(int bookmarkNo, Model model) throws Exception {
 
     Bookmark bookmark = bookmarkService.get(bookmarkNo);
     if (bookmark == null) {
       throw new Exception("번호가 유효하지 않습니다.");
     }
-    model.put("bookmark", bookmark);
-
-    List<PhotoBoard> photoBoards = photoBoardService.listBookmarkPhoto(bookmarkNo);
-    model.put("list", photoBoards);
-    return "/photoboard/list.jsp";
+    model.addAttribute("bookmark", bookmark);
+    model.addAttribute("list", photoBoardService.listBookmarkPhoto(bookmarkNo));
   }
 
-  @RequestMapping("/photoboard/detail")
-  public String detail(int no, Map<String, Object> model) throws Exception {
-    model.put("photoBoard", photoBoardService.get(no));
-    return "/photoboard/detail.jsp";
+  @GetMapping("detail")
+  public void detail(int no, Model model) throws Exception {
+    model.addAttribute("photoBoard", photoBoardService.get(no));
   }
 
-  @RequestMapping("/photoboard/update")
-  public String update(int no, String title, Part[] photoFiles, HttpServletRequest request)
-      throws Exception {
+  @PostMapping("update")
+  public String update(int no, String title, MultipartFile[] photoFiles) throws Exception {
 
     PhotoBoard photoBoard = photoBoardService.get(no);
     photoBoard.setTitle(title);
 
     ArrayList<PhotoFile> photos = new ArrayList<>();
-    String dirPath = request.getServletContext().getRealPath("/upload/photoboard");
-    for (Part photoFile : photoFiles) {
+    String dirPath = servletContext.getRealPath("/upload/photoboard");
+    for (MultipartFile photoFile : photoFiles) {
       if (photoFile.getSize() <= 0) {
         continue;
       }
       String filename = UUID.randomUUID().toString();
-      photoFile.write(dirPath + "/" + filename);
+      photoFile.transferTo(new File(dirPath + "/" + filename));
       photos.add(new PhotoFile().setFilePath(filename));
     }
 
@@ -113,7 +111,7 @@ public class PhotoBoardController {
     return "redirect:list?bookmarkNo=" + bookmarkNo;
   }
 
-  @RequestMapping("/photoboard/delete")
+  @GetMapping("delete")
   public String delete(int no, int bookmarkNo) throws Exception {
     photoBoardService.delete(no);
     return "redirect:list?bookmarkNo=" + bookmarkNo;

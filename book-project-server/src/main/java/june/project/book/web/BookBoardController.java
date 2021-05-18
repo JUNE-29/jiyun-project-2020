@@ -1,43 +1,42 @@
 package june.project.book.web;
 
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
 
 @Controller
+@RequestMapping("/book")
 public class BookBoardController {
 
   @Autowired
   BookBoardService bookBoardService;
 
-  @RequestMapping("/book/form")
-  public String form() throws Exception {
-    return "/bookboard/form.jsp";
-  }
+  @GetMapping("form")
+  public void form() throws Exception {}
 
-  @RequestMapping("/book/add")
+  @PostMapping("add")
   public String add(BookBoard bookBoard) throws Exception {
     bookBoardService.add(bookBoard);
     return "redirect:list";
   }
 
-  @RequestMapping("/book/list")
-  public String list(Map<String, Object> model) throws Exception {
-    model.put("list", bookBoardService.list());
-    return "/bookboard/list.jsp";
+  @GetMapping("list")
+  public void list(Model model) throws Exception {
+    model.addAttribute("list", bookBoardService.list());
   }
 
-  @RequestMapping("/book/detail")
-  public String detail(int no, Map<String, Object> model) throws Exception {
+  @GetMapping("detail")
+  public void detail(int no, Model model) throws Exception {
     BookBoard bookBoard = bookBoardService.get(no);
-    model.put("bookBoard", bookBoard);
-    return "/bookboard/detail.jsp";
+    model.addAttribute("bookBoard", bookBoard);
   }
 
-  @RequestMapping("/book/update")
+  @PostMapping("update")
   public String update(BookBoard bookBoard) throws Exception {
     if (bookBoardService.update(bookBoard) > 0) {
       return "redirect:list";
@@ -46,7 +45,7 @@ public class BookBoardController {
     }
   }
 
-  @RequestMapping("/book/delete")
+  @GetMapping("delete")
   public String delete(int no) throws Exception {
     if (bookBoardService.delete(no) > 0) {
       return "redirect:list";
