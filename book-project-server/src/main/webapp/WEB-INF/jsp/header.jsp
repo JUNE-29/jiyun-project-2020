@@ -62,7 +62,7 @@ div.container {
 <div class='collapse navbar-collapse' id='navbarNav'>
   <ul class='navbar-nav'>
     <li class='nav-item'>
-     <a class='nav-link' href='../book/list'>읽고 싶은 책</span></a>
+     <a class='nav-link' href='../bookboard/list'>읽고 싶은 책</span></a>
     </li>
     <li class='nav-item'>
       <a class='nav-link' href='../bookmark/list'>간직 하고 싶은 말</a>

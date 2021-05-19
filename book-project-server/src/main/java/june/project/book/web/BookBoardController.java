@@ -10,7 +10,7 @@ import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
 
 @Controller
-@RequestMapping("/book")
+@RequestMapping("/bookboard")
 public class BookBoardController {
 
   @Autowired

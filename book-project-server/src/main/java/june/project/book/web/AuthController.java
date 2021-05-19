@@ -41,7 +41,7 @@ public class AuthController {
       model.addAttribute("refreshUrl", "2;url=../../index.html");
     } else {
       session.invalidate();
-      model.addAttribute("refreshUrl", "2;url=login");
+      model.addAttribute("refreshUrl", "2;url=form");
     }
     return "auth/login";
   }
