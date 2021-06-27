@@ -8,51 +8,12 @@
 <head>
 <meta charset="UTF-8">
 <title>책갈피</title>
-<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6' crossorigin='anonymous'>
-<style>
-body {
-    background-color: white;
-}
+<!-- <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6' crossorigin='anonymous'>
+ -->
+ 
+<link rel='stylesheet' href='${pageContext.getServletContext().getContextPath()}/node_modules/bootstrap/dist/css/bootstrap.min.css'>
+<link rel='stylesheet' href='<tiles:getAsString name="css.common"/>'>
 
-div.container {
-  background-color: white;
-  width: 500px;
-}
-
-.navbar {
-    background-color: #fcfcce;
-}
-
-.navbar .navbar-brand {
-    color: #48a0ed;
-}
-
-.navbar .navbar-brand:hover,
-.navbar .navbar-brand:focus {
- color: #acd7fe;
-}
-
-.navbar .navbar-nav .nav-link {
-    color: #48a0ed;
-    border-radius: .25rem;
-    margin: 0 0.25em;
-}
-
-.navbar .navbar-nav .nav-link:not(.disabled):hover,
-.navbar .navbar-nav .nav-link:not(.disabled):focus {
-    color: #acd7fe;
-}
-
-.navbar .navbar-nav .nav-item.active .nav-link,
-.navbar .navbar-nav .nav-item.active .nav-link:hover,
-.navbar .navbar-nav .nav-item.active .nav-link:focus,
-.navbar .navbar-nav .nav-item.show .nav-link,
-.navbar .navbar-nav .nav-item.show .nav-link:hover,
-.navbar .navbar-nav .nav-item.show .nav-link:focus {
-    color: #acd7fe;
-    background-color: #baf7ff;
-}
-</style>
 </head>
 <body>
 
@@ -62,8 +23,12 @@ div.container {
 <div class='container'>
 <tiles:insertAttribute name="body"/>
 </div>
-
 <tiles:insertAttribute name="footer"/>
+
+<script src='${pageContext.getServletContext().getContextPath()}/node_modules/jquery/dist/jquery.min.js'></script>
+<script src='${pageContext.getServletContext().getContextPath()}/node_modules/@popperjs/core/dist/umd/popper.min.js'></script>
+<script src='${pageContext.getServletContext().getContextPath()}/node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
+<script src='${pageContext.getServletContext().getContextPath()}/node_modules/sweetalert/dist/sweetalert.min.js'></script>
 
 </body>
 </html>
