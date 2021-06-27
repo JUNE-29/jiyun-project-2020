@@ -35,19 +35,19 @@ public class AppConfig {
     vr.setOrder(2);
     return vr;
   }
-  
+
   @Bean
   public ViewResolver tilesViewResolver() {
     UrlBasedViewResolver vr = new UrlBasedViewResolver();
-    
+
     // Tiles 설정에 따라 템플릿을 실행할 뷰 처리기를 등록한다.
     vr.setViewClass(TilesView.class);
-    
+
     // 뷰리졸버의 우선 순위를 InternalResourceViewResolver 보다 우선시 한다.
     vr.setOrder(1);
     return vr;
   }
-  
+
   @Bean
   public TilesConfigurer tilesConfiturer() {
     TilesConfigurer configurer = new TilesConfigurer();
