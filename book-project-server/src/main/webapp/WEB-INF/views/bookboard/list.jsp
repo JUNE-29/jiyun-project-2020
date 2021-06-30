@@ -5,6 +5,10 @@
     trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<script src='${pageContext.getServletContext().getContextPath()}/js/bookBoard/searchBook.js'></script>
+
+  <h1>API가져오기 TEST</h1>
+  
   <h1>Book List</h1>
   <a href='form'>새 글</a>
   <table border='1'>
