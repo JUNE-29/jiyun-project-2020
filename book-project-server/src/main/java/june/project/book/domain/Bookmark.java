@@ -9,34 +9,85 @@ public class Bookmark implements Serializable {
 
   private int no;
   private String title;
-  private String bookTitle;
-  private String author;
-  private String publisher;
   private String content;
-  private String photo;
+  private String photoFilePath;
   private Date date;
+  private int memberNo;
+  private int bookNo;
 
-  public static Bookmark valueOf(String csv) {
-    String[] data = csv.split(",");
+  Member member;
+  Books books;
 
-    Bookmark bookmark = new Bookmark();
-    bookmark.setNo(Integer.parseInt(data[0]));
-    bookmark.setTitle(data[1]);
-    bookmark.setBookTitle(data[2]);
-    bookmark.setAuthor(data[3]);
-    bookmark.setPublisher(data[4]);
-    bookmark.setContent(data[5]);
-    bookmark.setPhoto(data[6]);
-    bookmark.setDate(Date.valueOf(data[7]));
-    return bookmark;
+  @Override
+  public String toString() {
+    return "Bookmark [no=" + no + ", title=" + title + ", content=" + content + ", photo="
+        + photoFilePath + ", date=" + date + ", memberNo=" + memberNo + ", bookNo=" + bookNo
+        + ", member=" + member + ", books=" + books + "]";
   }
 
-  public String toCsvString() {
-    return String.format("%d,%s,%s,%s,%s,%s,%s,%s", this.getNo(), this.getTitle(),
-        this.getBookTitle(), this.getAuthor(), this.getPublisher(), this.getContent(),
-        this.getPhoto(), this.getDate());
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + bookNo;
+    result = prime * result + ((books == null) ? 0 : books.hashCode());
+    result = prime * result + ((content == null) ? 0 : content.hashCode());
+    result = prime * result + ((date == null) ? 0 : date.hashCode());
+    result = prime * result + ((member == null) ? 0 : member.hashCode());
+    result = prime * result + memberNo;
+    result = prime * result + no;
+    result = prime * result + ((photoFilePath == null) ? 0 : photoFilePath.hashCode());
+    result = prime * result + ((title == null) ? 0 : title.hashCode());
+    return result;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Bookmark other = (Bookmark) obj;
+    if (bookNo != other.bookNo)
+      return false;
+    if (books == null) {
+      if (other.books != null)
+        return false;
+    } else if (!books.equals(other.books))
+      return false;
+    if (content == null) {
+      if (other.content != null)
+        return false;
+    } else if (!content.equals(other.content))
+      return false;
+    if (date == null) {
+      if (other.date != null)
+        return false;
+    } else if (!date.equals(other.date))
+      return false;
+    if (member == null) {
+      if (other.member != null)
+        return false;
+    } else if (!member.equals(other.member))
+      return false;
+    if (memberNo != other.memberNo)
+      return false;
+    if (no != other.no)
+      return false;
+    if (photoFilePath == null) {
+      if (other.photoFilePath != null)
+        return false;
+    } else if (!photoFilePath.equals(other.photoFilePath))
+      return false;
+    if (title == null) {
+      if (other.title != null)
+        return false;
+    } else if (!title.equals(other.title))
+      return false;
+    return true;
+  }
 
   public int getNo() {
     return no;
@@ -54,30 +105,6 @@ public class Bookmark implements Serializable {
     this.title = title;
   }
 
-  public String getBookTitle() {
-    return bookTitle;
-  }
-
-  public void setBookTitle(String bookTitle) {
-    this.bookTitle = bookTitle;
-  }
-
-  public String getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-
-  public String getPublisher() {
-    return publisher;
-  }
-
-  public void setPublisher(String publisher) {
-    this.publisher = publisher;
-  }
-
   public String getContent() {
     return content;
   }
@@ -87,11 +114,11 @@ public class Bookmark implements Serializable {
   }
 
   public String getPhoto() {
-    return photo;
+    return photoFilePath;
   }
 
   public void setPhoto(String photo) {
-    this.photo = photo;
+    this.photoFilePath = photo;
   }
 
   public Date getDate() {
@@ -102,68 +129,36 @@ public class Bookmark implements Serializable {
     this.date = date;
   }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((author == null) ? 0 : author.hashCode());
-    result = prime * result + ((bookTitle == null) ? 0 : bookTitle.hashCode());
-    result = prime * result + ((content == null) ? 0 : content.hashCode());
-    result = prime * result + ((date == null) ? 0 : date.hashCode());
-    result = prime * result + no;
-    result = prime * result + ((photo == null) ? 0 : photo.hashCode());
-    result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
-    result = prime * result + ((title == null) ? 0 : title.hashCode());
-    return result;
+  public int getMemberNo() {
+    return memberNo;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Bookmark other = (Bookmark) obj;
-    if (author == null) {
-      if (other.author != null)
-        return false;
-    } else if (!author.equals(other.author))
-      return false;
-    if (bookTitle == null) {
-      if (other.bookTitle != null)
-        return false;
-    } else if (!bookTitle.equals(other.bookTitle))
-      return false;
-    if (content == null) {
-      if (other.content != null)
-        return false;
-    } else if (!content.equals(other.content))
-      return false;
-    if (date == null) {
-      if (other.date != null)
-        return false;
-    } else if (!date.equals(other.date))
-      return false;
-    if (no != other.no)
-      return false;
-    if (photo == null) {
-      if (other.photo != null)
-        return false;
-    } else if (!photo.equals(other.photo))
-      return false;
-    if (publisher == null) {
-      if (other.publisher != null)
-        return false;
-    } else if (!publisher.equals(other.publisher))
-      return false;
-    if (title == null) {
-      if (other.title != null)
-        return false;
-    } else if (!title.equals(other.title))
-      return false;
-    return true;
+  public void setMemberNo(int memberNo) {
+    this.memberNo = memberNo;
+  }
+
+  public int getBookNo() {
+    return bookNo;
+  }
+
+  public void setBookNo(int bookNo) {
+    this.bookNo = bookNo;
+  }
+
+  public Member getMember() {
+    return member;
+  }
+
+  public void setMember(Member member) {
+    this.member = member;
+  }
+
+  public Books getBooks() {
+    return books;
+  }
+
+  public void setBooks(Books books) {
+    this.books = books;
   }
 
 }

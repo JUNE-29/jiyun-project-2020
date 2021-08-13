@@ -6,71 +6,119 @@
   <mapper namespace="june.project.book.dao.BookmarkDao">
   
    <resultMap type="Bookmark" id="BookmarkMap">
-    <id column="bookmark_id" property="no"/>
-  
-    <result column="titl" property="title"/>
-    <result column="book_titl" property="bookTitle"/>
-    <result column="auth" property="author"/>
-    <result column="pub" property="publisher"/>
+    <id column="bookmark_no" property="no"/>
+    <result column="bookmark_titl" property="title"/>
     <result column="conts" property="content"/>
-    <result column="photo" property="photo"/>
-    <result column="cdt" property="date"/>
+    <result column="photo" property="photoFilePath"/>
+    <result column="bookmark_cdt" property="date"/>
+    <result column="member_no" property="memberNo"/>
+    <result column="book_no" property="bookNo"/>
+  
+  <association property="member" javaType="Member" >
+    <id column="member_no" property="no"/>
+    <result column="name" property="name"/>
+    <result column="email" property="email"/>
+  </association>
+  
+  <association property="books" javaType="Books">
+  <id column="book_no" property="no"/>
+  <result column="book_titl" property="bookTitle"/>
+  <result column="book_author" property="author"/>
+  <result column="pub" property="publisher"/>
+  <result column="isbn" property="isbn"/>
+  <result column="thumbnail" property="thumbnail"/>
+  <result column="score" property="score"/>
+  <result column="bookboard_no" property="bookboardNo"/>
+  </association>
   </resultMap>
   
-  <sql id="select1">
-    select 
-    bookmark_id, 
-    titl, 
-    book_titl, 
-    auth, 
-    cdt 
-  </sql>
-  
-  <insert id="insert" parameterType="Bookmark">
-  insert into bookmark(titl, book_titl, auth, pub, conts, photo) 
-  values(#{title},#{bookTitle},#{author},#{publisher},#{content},#{photo})
+  <insert id="insert" parameterType="Bookmark"
+   useGeneratedKeys="true" keyColumn="bookmark_no" keyProperty="no">
+    insert into bookmark(
+      member_no,
+      book_no,
+      bookmark_titl, 
+      conts, 
+      photo,
+      date
+      ) 
+    values(
+      #{memberNo},
+      #{bookNo},
+      #{title},
+      #{content},
+      #{photoFilePath},
+      now()
+    )
   </insert>
   
   <select id="findAll" resultMap="BookmarkMap" parameterType="map">
-  <include refid="select1"/>
-     from bookmark
+    select
+      bm.member_no,
+      bm.book_no,
+      bm.bookmark_titl,
+      bm.conts,
+      bm.photo,
+      DATE_FORMAT(bookmark_cdt, "%Y-%m-%d") as bookmark_cdt,
+      bk.book_titl,
+      bk.book_author,
+      bk.isbn,
+      bk.thumbnail,
+      bk.score,
+      bk.bookboard_no
+    from 
+     bookmark bm
+    join books bk on bm.book_no=bk.book_no 
+    where
+      bm.member_no=#{memberNo}
+    order by
+      bookmark_no desc
   </select>
   
   <select id="findByNo" resultMap="BookmarkMap" parameterType="int">
-   <include refid="select1"/>,
-    pub, 
-    conts, 
-    photo
-  from bookmark
-  where bookmark_id=#{no}
+    select
+      bm.member_no,
+      bm.book_no,
+      bm.bookmark_titl,
+      bm.conts,
+      bm.photo,
+      DATE_FORMAT(bookmark_cdt, "%Y-%m-%d") as bookmark_cdt,
+      bk.book_titl,
+      bk.book_author,
+      bk.isbn,
+      bk.thumbnail,
+      bk.score
+    from 
+      bookmark bm
+      join books bk on bm.book_no=bk.book_no
+    where bm.bookmark_no=#{no}
   </select>
   
   <update id="update" parameterType="Bookmark">
   update bookmark
   <set>
-    <if test="title != null and title != ''">titl=#{title},</if>
-    <if test="bookTitle != null and bookTitle != ''">book_titl=#{bookTitle},</if>
-    <if test="author != null and author != ''">auth=#{author},</if>
-    <if test="publisher != null and publisher != ''">pub=#{publisher},</if> 
+    <if test="title != null and title != ''">bookmark_titl=#{title},</if>
     <if test="content != null and content != ''">conts=#{content},</if>
-    <if test="photo != null and photo != ''">photo=#{photo}</if>
+    <if test="photoFilePath != null and photoFilePath != ''">photo=#{photoFilePath},</if>
+    bookmark_cdt=now()
   </set>
-  where bookmark_id=#{no}
+  where bookmark_no=#{no}
   </update>
   
   <delete id="delete" parameterType="int">
-  delete from bookmark where bookmark_id=#{no}
+  delete from bookmark where bookmark_no=#{no}
   </delete>
   
-    <select id="findByKeyword" resultMap="BookmarkMap" parameterType="map">
-  <include refid="select1"/>
-  from bookmark
+  <select id="findByKeyword" resultMap="BookmarkMap" parameterType="map">
+    select
+      bookmark_titl
+      conts
+      bookmark_cdt
+    from bookmark
   <where>
-    <if test="title != null">titl like concat('%', #{title}, '%')</if>
-    <if test="bookTitle != null">book_titl like concat('%', #{bookTitle}, '%')</if>
-    <if test="author != null">auth like concat('%', #{author}, '%')</if>
-    <if test="date != null">cdt like concat('%', #{date}, '%')</if>
+    <if test="title != null">bookmark_titl like concat('%', #{title}, '%')</if>
+    <if test="content != null">conts like concat('%', #{content}, '%')</if>
+    <if test="date != null">bookmark_cdt like concat('%', #{date}, '%')</if>
   </where>
   </select>
-  
   </mapper>
