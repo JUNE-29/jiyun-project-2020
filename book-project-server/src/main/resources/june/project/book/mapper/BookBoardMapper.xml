@@ -6,69 +6,95 @@
 <mapper namespace="june.project.book.dao.BookBoardDao">
 
   <resultMap type="BookBoard" id="BookBoardMap">
-    <id column="board_id" property="no"/>
-  
-    <result column="titl" property="bookTitle"/>
-    <result column="auth" property="author"/>
+    <id column="bookboard_no" property="no"/>
+    <result column="bookboard_titl" property="title"/>
+    <result column="book_count" property="count"/>
+    <result column="book_no" property="bookNo"/>
+    <result column="member_no" property="memberNo"/>
+    
+    <association property="member" javaType="Member" >
+    <id column="member_no" property="no"/>
+    <result column="name" property="name"/>
+    <result column="email" property="email"/>
+    </association>
+    
+    <association property="books" javaType="Books">
+    <id column="book_no" property="no"/>
+    <result column="book_titl" property="bookTitle"/>
+    <result column="book_author" property="author"/>
     <result column="pub" property="publisher"/>
-    <result column="cate" property="categories"/>
-    <result column="pub_dt" property="publishedDate"/>
-    <result column="conts" property="content"/>
-    <result column="photo" property="photo"/>
+    <result column="isbn" property="isbn"/>
+    <result column="thumbnail" property="thumbnail"/>
     <result column="score" property="score"/>
-    <result column="book_st" property="bookStatus"/>
-    <result column="cdt" property="date"/>
+    <result column="bookboard_no" property="bookboardNo"/>
+    </association>
   </resultMap>
 
-  <sql id="select1">
-  select
-    board_id,
-    titl,
-    score,
-    cdt,
-    book_st
-  </sql>
 
-  <insert id="insert" parameterType="BookBoard">
-  insert into book_board(titl, auth, pub, cate, pub_dt, conts, photo, score, book_st) 
-  values(#{bookTitle}, #{author}, #{publisher}, #{categories}, #{publishedDate}, #{content}, #{photo}, #{score}, #{bookStatus})
+  <insert id="insert" parameterType="BookBoard"
+  useGeneratedKeys="true" keyColumn="bookboard_no" keyProperty="no">
+    insert into bookboard(
+      bookboard_titl,
+      book_no,
+      member_no
+    ) 
+    values(
+      #{title}, 
+      #{bookNo}, 
+      #{memberNo}
+    )
   </insert>
   
-  <select id="findAll" resultMap="BookBoardMap">
-  <include refid="select1"/>
-    from book_board
-    order by board_id desc
+  <select id="findAll" resultMap="BookBoardMap" parameterType="map">
+    select
+      bb.member_no,
+      bb.bookboard_titl,
+      bb.book_count,
+      bb.book_no,
+      bk.book_titl,
+      bk.book_author,
+      bk.isbn,
+      bk.thumbnail,
+      bk.score,
+      bk.bookboard_no
+    from 
+      bookboard bb
+    join 
+      books bk on bb.bookboard_no=bk.bookboard_no
+    where
+      bb.member_no=#{memberNo}
+    order by 
+      bookboard_no desc
   </select>
   
-  <select id="findByNo" resultMap="BookBoardMap" parameterType="int">
-    <include refid="select1"/>,
-    auth, 
-    pub, 
-    cate, 
-    pub_dt, 
-    conts,
-    photo
-  from book_board
-  where board_id=#{no}
+  <select id="findByBookNo" resultMap="BookBoardMap" parameterType="int">
+    select
+      bk.bookboard_no,
+      bk.book_no,
+      bk.book_titl,
+      bk.book_author,
+      bk.isbn,
+      bk.thumbnail,
+      bk.score
+    from 
+      bookboard bb
+    join
+      books bk on bb.bookboard_no=bk.bookboard_no
+    where 
+      bk.bookboard_no=#{no}
   </select>
   
   <update id="update" parameterType="BookBoard">
-  update book_board set
-    titl=#{bookTitle},
-    auth=#{author},
-    pub=#{publisher},
-    cate=#{categories},
-    pub_dt=#{publishedDate},
-    conts=#{content},
-    photo=#{photo},
-    score=#{score},
-    book_st=#{bookStatus}
-  where board_id=#{no}
+    update bookboard 
+    <set>
+      <if test="title != null and title != ''">bookboard_titl=#{title}</if>
+    </set>
+    where 
+      bookboard_no=#{no}
   </update>
   
   <delete id="delete" parameterType="int">
-  delete from book_board
-  where board_id=#{no}
+  delete from bookboard
+  where bookboard_no=#{no}
   </delete>
-  
 </mapper>

@@ -1,65 +1,37 @@
 package june.project.book.domain;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 public class BookBoard implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private int no;
-  private String bookTitle;
-  private String author;
-  private String publisher;
-  private String categories;
-  private String publishedDate;
-  private String content;
-  private String photo;
-  private int score;
-  private int bookStatus;
-  private Date date;
+  private int no; // 번호
+  private String title; // 책 게시판 제목
+  private int count; // 수량
+  private int bookNo;
+  private int memberNo;
 
-  public static BookBoard valueOf(String csv) {
-    String[] data = csv.split(",");
+  Books books;
+  Member member;
 
-    BookBoard bookBoard = new BookBoard();
-    bookBoard.setNo(Integer.parseInt(data[0]));
-    bookBoard.setBookTitle(data[1]);
-    bookBoard.setAuthor(data[2]);
-    bookBoard.setPublisher(data[3]);
-    bookBoard.setCategories(data[4]);
-    bookBoard.setPublishedDate(data[5]);
-    bookBoard.setContent(data[6]);
-    bookBoard.setPhoto(data[7]);
-    bookBoard.setBookStatus(Integer.parseInt(data[8]));
-    bookBoard.setScore(Integer.parseInt(data[9]));
-    bookBoard.setDate(Date.valueOf(data[10]));
-
-    return bookBoard;
-  }
-
-  public String toStringCsv() {
-    return String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d,%d,%s", //
-        this.getNo(), this.getBookTitle(), this.getAuthor(), this.getPublisher(),
-        this.getCategories(), this.getPublishedDate(), this.getContent(), this.getPhoto(),
-        this.getBookStatus(), this.getScore(), this.getDate());
+  @Override
+  public String toString() {
+    return "BookBoard [no=" + no + ", title=" + title + ", count=" + count + ", bookNo=" + bookNo
+        + ", memberNo=" + memberNo + ", books=" + books + ", member=" + member + "]";
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((author == null) ? 0 : author.hashCode());
-    result = prime * result + bookStatus;
-    result = prime * result + ((bookTitle == null) ? 0 : bookTitle.hashCode());
-    result = prime * result + ((categories == null) ? 0 : categories.hashCode());
-    result = prime * result + ((content == null) ? 0 : content.hashCode());
-    result = prime * result + ((date == null) ? 0 : date.hashCode());
+    result = prime * result + bookNo;
+    result = prime * result + ((books == null) ? 0 : books.hashCode());
+    result = prime * result + count;
+    result = prime * result + ((member == null) ? 0 : member.hashCode());
+    result = prime * result + memberNo;
     result = prime * result + no;
-    result = prime * result + ((photo == null) ? 0 : photo.hashCode());
-    result = prime * result + ((publishedDate == null) ? 0 : publishedDate.hashCode());
-    result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
-    result = prime * result + score;
+    result = prime * result + ((title == null) ? 0 : title.hashCode());
     return result;
   }
 
@@ -72,51 +44,28 @@ public class BookBoard implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     BookBoard other = (BookBoard) obj;
-    if (author == null) {
-      if (other.author != null)
-        return false;
-    } else if (!author.equals(other.author))
+    if (bookNo != other.bookNo)
       return false;
-    if (bookStatus != other.bookStatus)
-      return false;
-    if (bookTitle == null) {
-      if (other.bookTitle != null)
+    if (books == null) {
+      if (other.books != null)
         return false;
-    } else if (!bookTitle.equals(other.bookTitle))
+    } else if (!books.equals(other.books))
       return false;
-    if (categories == null) {
-      if (other.categories != null)
-        return false;
-    } else if (!categories.equals(other.categories))
+    if (count != other.count)
       return false;
-    if (content == null) {
-      if (other.content != null)
+    if (member == null) {
+      if (other.member != null)
         return false;
-    } else if (!content.equals(other.content))
+    } else if (!member.equals(other.member))
       return false;
-    if (date == null) {
-      if (other.date != null)
-        return false;
-    } else if (!date.equals(other.date))
+    if (memberNo != other.memberNo)
       return false;
     if (no != other.no)
       return false;
-    if (photo == null) {
-      if (other.photo != null)
+    if (title == null) {
+      if (other.title != null)
         return false;
-    } else if (!photo.equals(other.photo))
-      return false;
-    if (publishedDate == null) {
-      if (other.publishedDate != null)
-        return false;
-    } else if (!publishedDate.equals(other.publishedDate))
-      return false;
-    if (publisher == null) {
-      if (other.publisher != null)
-        return false;
-    } else if (!publisher.equals(other.publisher))
-      return false;
-    if (score != other.score)
+    } else if (!title.equals(other.title))
       return false;
     return true;
   }
@@ -129,84 +78,53 @@ public class BookBoard implements Serializable {
     this.no = no;
   }
 
-  public String getBookTitle() {
-    return bookTitle;
+  public String getTitle() {
+    return title;
   }
 
-  public void setBookTitle(String bookTitle) {
-    this.bookTitle = bookTitle;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
-  public String getAuthor() {
-    return author;
+  public int getCount() {
+    return count;
   }
 
-  public void setAuthor(String author) {
-    this.author = author;
+  public void setCount(int count) {
+    this.count = count;
   }
 
-  public String getPublisher() {
-    return publisher;
+  public int getBookNo() {
+    return bookNo;
   }
 
-  public void setPublisher(String publisher) {
-    this.publisher = publisher;
+  public void setBookNo(int bookNo) {
+    this.bookNo = bookNo;
   }
 
-  public String getCategories() {
-    return categories;
+  public int getMemberNo() {
+    return memberNo;
   }
 
-  public void setCategories(String categories) {
-    this.categories = categories;
+  public void setMemberNo(int memberNo) {
+    this.memberNo = memberNo;
   }
 
-  public String getPublishedDate() {
-    return publishedDate;
+  public Books getBooks() {
+    return books;
   }
 
-  public void setPublishedDate(String publishedDate) {
-    this.publishedDate = publishedDate;
+  public void setBooks(Books books) {
+    this.books = books;
   }
 
-  public String getContent() {
-    return content;
+  public Member getMember() {
+    return member;
   }
 
-  public void setContent(String content) {
-    this.content = content;
+  public void setMember(Member member) {
+    this.member = member;
   }
 
-  public String getPhoto() {
-    return photo;
-  }
-
-  public void setPhoto(String photo) {
-    this.photo = photo;
-  }
-
-  public int getScore() {
-    return score;
-  }
-
-  public void setScore(int score) {
-    this.score = score;
-  }
-
-  public int getBookStatus() {
-    return bookStatus;
-  }
-
-  public void setBookStatus(int bookStatus) {
-    this.bookStatus = bookStatus;
-  }
-
-  public Date getDate() {
-    return date;
-  }
-
-  public void setDate(Date date) {
-    this.date = date;
-  }
 
 }
