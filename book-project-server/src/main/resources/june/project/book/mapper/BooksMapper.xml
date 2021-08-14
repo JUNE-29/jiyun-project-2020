@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper>
+  
+  <resultMap type="Books" id="BooksMap">
+  
+    <id column="book_no" property="no"/>
+    <result column="book_titl" property="bookTitle"/>
+    <result column="book_author" property="author"/>
+    <result column="pub" property="publisher"/>
+    <result column="isbn" property="isbn"/>
+    <result column="datetime" property="publishedDate"/>
+    <result column="conts" property="content"/>
+    <result column="thumbnail" property="thumbnail"/>
+    <result column="score" property="score"/>
+    <result column="before_score" property="expectedScore"/>
+    <result column="bookboard_no" property="bookboardNo"/>
+    <result column="member_no" property="memberNo"/>
+  
+    <association property="member" javaType="Member" >
+    <id column="member_no" property="no"/>
+    <result column="name" property="name"/>
+    <result column="email" property="email"/>
+    </association>
+  
+  </resultMap>
+  
+   <insert id="insert" parameterType="Book"
+   useGeneratedKeys="true" keyColumn="book_no" keyProperty="no">
+    insert into books(
+      book_titl, 
+      book_author, 
+      pub, 
+      isbn, 
+      datetime, 
+      conts, 
+      thumbnail, 
+      score, 
+      before_score, 
+      bookboard_no, 
+      member_no
+    )
+    values(
+      #{bookTitle},
+      #{author},
+      #{publisher},
+      #{isbn},
+      #{publishedDate},
+      #{content},
+      #{thumbnail},
+      #{score},
+      #{expectedScore},
+      #{bookboardNo},
+      #{memberNo}
+      )
+    </insert>
+  
+    <select id="findByBookNo" resultMap="BooksMap" parameterType="int">
+    select
+      book_no,
+      book_titl,
+      book_author,
+      pub,
+      isbn,
+      datetime,
+      conts, 
+      thumbnail,
+      score,
+      before_score
+    from 
+      books
+    where 
+      book_no=#{no}
+    </select>
+    
+    <update id="updateBookBoardNo" parameterType="int">
+    update books
+    <set>
+      <if test="bookboardNo != null and bookboardNo != ''">bookboard_no=#{bookboardNo},</if> 
+    </set>
+    </update>
+    
+    <delete id="delete" parameterType="int">
+      delete from books
+      where book_no=#{no}
+    </delete>
+    
+  </mapper>
