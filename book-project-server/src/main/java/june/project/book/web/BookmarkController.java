@@ -64,12 +64,12 @@ public class BookmarkController {
       map.put("title", bookmark.getTitle());
     }
 
-    if (bookmark.getBookTitle().length() > 0) {
-      map.put("bookTitle", bookmark.getBookTitle());
+    if (bookmark.getTitle().length() > 0) {
+      map.put("title", bookmark.getTitle());
     }
 
-    if (bookmark.getAuthor().length() > 0) {
-      map.put("author", bookmark.getAuthor());
+    if (bookmark.getContent().length() > 0) {
+      map.put("content", bookmark.getContent());
     }
 
     if (bookmark.getDate() != null) {
