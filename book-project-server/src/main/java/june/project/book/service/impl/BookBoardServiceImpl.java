@@ -27,7 +27,7 @@ public class BookBoardServiceImpl implements BookBoardService {
 
   @Override
   public BookBoard get(int no) throws Exception {
-    return bookBoardDao.findByNo(no);
+    return bookBoardDao.findByBookNo(no);
   }
 
   @Override

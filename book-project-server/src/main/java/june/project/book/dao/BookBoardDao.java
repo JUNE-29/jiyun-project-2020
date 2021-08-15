@@ -9,7 +9,7 @@ public interface BookBoardDao {
 
   public List<BookBoard> findAll() throws Exception;
 
-  public BookBoard findByNo(int no) throws Exception;
+  public BookBoard findByBookNo(int no) throws Exception;
 
   public int update(BookBoard bookBoard) throws Exception;
 
