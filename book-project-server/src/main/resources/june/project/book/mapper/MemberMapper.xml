@@ -24,7 +24,7 @@
   </sql>
   
   <insert id="insert" parameterType="Member">
-  insert into book_member(name, email, pwd, photo)
+  insert into book_members(name, email, pwd, photo)
   values(#{name}, #{email}, password(#{password}), #{photo})
   </insert>
   
