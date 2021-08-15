@@ -28,7 +28,7 @@
   
   </resultMap>
   
-   <insert id="insert" parameterType="Book"
+   <insert id="insert" parameterType="Books"
    useGeneratedKeys="true" keyColumn="book_no" keyProperty="no">
     insert into books(
       book_titl, 
