@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-  <mapper>
+  <mapper namespace="june.project.book.dao.BooksDao">
   
   <resultMap type="Books" id="BooksMap">
   
@@ -57,6 +57,34 @@
       #{memberNo}
       )
     </insert>
+    
+    <select id="BookboardNo1List" resultMap="BooksMap">
+    select
+      book_no,
+      book_titl,
+      book_author,
+      thumbnail,
+      before_score,
+      bookboard_no
+    from
+      books
+    where
+      bookboard_no=1 AND member_no=1
+    </select>
+    
+    <select id="BookboardNo2List" resultMap="BooksMap">
+    select
+      book_no,
+      book_titl,
+      book_author,
+      thumbnail,
+      score,
+      bookboard_no
+    from
+      books
+    where
+      bookboard_no=2 AND member_no=1
+    </select>
   
     <select id="findByBookNo" resultMap="BooksMap" parameterType="int">
     select

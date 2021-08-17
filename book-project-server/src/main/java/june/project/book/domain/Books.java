@@ -10,7 +10,7 @@ public class Books implements Serializable {
   private String bookTitle;
   private String author;
   private String publisher;
-  private int isbn;
+  private String isbn;
   private String publishedDate;
   private String content;
   private String thumbnail;
@@ -20,6 +20,8 @@ public class Books implements Serializable {
   private int bookboardNo;
   private int memberNo;
 
+  Member member;
+
   @Override
   public String toString() {
     return "Books [no=" + no + ", bookTitle=" + bookTitle + ", author=" + author + ", publisher="
@@ -28,9 +30,12 @@ public class Books implements Serializable {
         + ", bookboardNo=" + bookboardNo + ", memberNo=" + memberNo + "]";
   }
 
+
+
   public int getNo() {
     return no;
   }
+
 
   public void setNo(int no) {
     this.no = no;
@@ -60,11 +65,11 @@ public class Books implements Serializable {
     this.publisher = publisher;
   }
 
-  public int getIsbn() {
+  public String getIsbn() {
     return isbn;
   }
 
-  public void setIsbn(int isbn) {
+  public void setIsbn(String isbn) {
     this.isbn = isbn;
   }
 
@@ -104,6 +109,7 @@ public class Books implements Serializable {
     return expectedScore;
   }
 
+
   public void setExpectedScore(int expectedScore) {
     this.expectedScore = expectedScore;
   }
@@ -124,6 +130,8 @@ public class Books implements Serializable {
     this.memberNo = memberNo;
   }
 
+
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -133,7 +141,7 @@ public class Books implements Serializable {
     result = prime * result + bookboardNo;
     result = prime * result + ((content == null) ? 0 : content.hashCode());
     result = prime * result + expectedScore;
-    result = prime * result + isbn;
+    result = prime * result + ((isbn == null) ? 0 : isbn.hashCode());
     result = prime * result + memberNo;
     result = prime * result + no;
     result = prime * result + ((publishedDate == null) ? 0 : publishedDate.hashCode());
@@ -171,7 +179,10 @@ public class Books implements Serializable {
       return false;
     if (expectedScore != other.expectedScore)
       return false;
-    if (isbn != other.isbn)
+    if (isbn == null) {
+      if (other.isbn != null)
+        return false;
+    } else if (!isbn.equals(other.isbn))
       return false;
     if (memberNo != other.memberNo)
       return false;
@@ -196,6 +207,7 @@ public class Books implements Serializable {
       return false;
     return true;
   }
+
 
 }
 

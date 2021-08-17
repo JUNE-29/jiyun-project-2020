@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import june.project.book.domain.BookBoard;
 import june.project.book.service.BookBoardService;
+import june.project.book.service.BooksService;
 
 @Controller
 @RequestMapping("/bookboard")
@@ -15,6 +16,9 @@ public class BookBoardController {
 
   @Autowired
   BookBoardService bookBoardService;
+
+  @Autowired
+  BooksService booksService;
 
   @GetMapping("form")
   public void form() throws Exception {}
@@ -28,6 +32,8 @@ public class BookBoardController {
   @GetMapping("list")
   public void list(Model model) throws Exception {
     model.addAttribute("list", bookBoardService.list());
+    model.addAttribute("BookBoardNo1", booksService.getBookboardNo1());
+    model.addAttribute("BookBoardNo2", booksService.getBookboardNo2());
   }
 
   @GetMapping("detail")

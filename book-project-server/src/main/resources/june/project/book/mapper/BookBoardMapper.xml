@@ -62,7 +62,7 @@
     join 
       books bk on bb.bookboard_no=bk.bookboard_no
     where
-      bb.member_no=#{memberNo}
+      bb.member_no=1
     order by 
       bookboard_no desc
   </select>

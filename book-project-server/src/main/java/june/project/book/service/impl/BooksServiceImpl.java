@@ -1,9 +1,12 @@
 package june.project.book.service.impl;
 
+import java.util.List;
+import org.springframework.stereotype.Component;
 import june.project.book.dao.BooksDao;
 import june.project.book.domain.Books;
 import june.project.book.service.BooksService;
 
+@Component
 public class BooksServiceImpl implements BooksService {
 
   BooksDao booksDao;
@@ -30,6 +33,16 @@ public class BooksServiceImpl implements BooksService {
   @Override
   public int delete(int no) throws Exception {
     return booksDao.delete(no);
+  }
+
+  @Override
+  public List<Books> getBookboardNo1() throws Exception {
+    return booksDao.BookboardNo1List();
+  }
+
+  @Override
+  public List<Books> getBookboardNo2() throws Exception {
+    return booksDao.BookboardNo2List();
   }
 
 }
