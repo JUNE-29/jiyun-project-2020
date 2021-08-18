@@ -38,8 +38,9 @@ CREATE TABLE bookmark (
   bookmark_titl     VARCHAR(255)  NOT NULL  COMMENT '게시물제목',
   conts             TEXT          NOT NULL  COMMENT '게시물내용',
   photo             VARCHAR(255)  NULL      COMMENT '사진',
-  read_book_no      INTEGER       NOT NULL  COMMENT '읽은책번호',
-  basket_book_no    INTEGER       NOT NULL  COMMENT '읽고싶은책번호',
+  bookmark_cdt      DATETIME      NOT NULL DEFAULT now() COMMENT  '등록일',
+  read_book_no      INTEGER       NULL  COMMENT '읽은책번호',
+  basket_book_no    INTEGER       NULL  COMMENT '읽고싶은책번호',
   member_no         INTEGER       NOT NULL  COMMENT '회원번호'
 );
 
@@ -80,7 +81,7 @@ ALTER TABLE bookcase
 
 
 -- 읽고 싶은 책 보관함
-CREATE TABLE bookBasket (
+CREATE TABLE bookbasket (
   basket_book_no      INTEGER         NOT NULL    COMMENT '책번호',
   book_titl           VARCHAR(255)    NOT NULL    COMMENT '책제목',
   author              VARCHAR(30)     NOT NULL    COMMENT '지은이',
@@ -94,12 +95,12 @@ CREATE TABLE bookBasket (
   member_no           INTEGER         NOT NULL    COMMENT '회원번호'
 );
 
-ALTER TABLE bookBasket
+ALTER TABLE bookbasket
   ADD CONSTRAINT PK_BOOKBASKET
   PRIMARY KEY (
   basket_book_no
 );
 
-ALTER TABLE bookBasket
+ALTER TABLE bookbasket
   MODIFY COLUMN basket_book_no INTEGER NOT NULL AUTO_INCREMENT 
   COMMENT '읽고 싶은 책 보관함 번호';
