@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="june.project.book.dao.BookBasketDao">
+  
+  <resultMap type="BookBasket" id="BookBasketMap">
+  
+    <id column="basket_book_no"   property="no"/>
+    <result column="book_titl"    property="bookTitle"/>
+    <result column="author"       property="author"/>
+    <result column="pub"          property="publisher"/>
+    <result column="isbn"         property="isbn"/>
+    <result column="datetime"     property="publishedDate"/>
+    <result column="conts"        property="content"/>
+    <result column="thumbnail"    property="thumbnail"/>
+    <result column="expected_score"   property="expectedScore"/>
+    <result column="expectation_review"   property="expectationReview"/>
+    <result column="member_no"    property="memberNo"/>
+  
+    <association property="member" javaType="Member" >
+    <id column="member_no"  property="no"/>
+    <result column="name"   property="name"/>
+    <result column="email"  property="email"/>
+    </association>
+  
+  </resultMap>
+  
+   <insert id="insert" parameterType="BookBasket"
+   useGeneratedKeys="true" keyColumn="basket_book_no" keyProperty="no">
+    insert into bookbasket(
+      book_titl, 
+      author, 
+      pub, 
+      isbn, 
+      datetime, 
+      conts, 
+      thumbnail, 
+      expected_score, 
+      expectation_review,
+      member_no
+    )
+    values(
+      #{bookTitle},
+      #{author},
+      #{publisher},
+      #{isbn},
+      #{publishedDate},
+      #{content},
+      #{thumbnail},
+      #{expectedScore},
+      #{expectationReview},
+      #{memberNo}
+      )
+    </insert>
+    
+    <select id="findAll" resultMap="BookBasketMap">
+      select
+        member_no,
+        basket_book_no,
+        book_titl,
+        author,
+        isbn,
+        thumbnail,
+        expected_score
+      from
+        bookbasket
+      where
+        member_no=#{no}
+    </select>
+  
+    <select id="findByBasketBookNo" resultMap="BookBasketMap" parameterType="int">
+    select
+      basket_book_no,
+      book_titl,
+      author,
+      pub,
+      isbn,
+      datetime,
+      conts, 
+      thumbnail,
+      expected_score,
+      expectation_review
+    from 
+      bookbasket
+    where 
+      basket_book_no=#{no}
+    </select>
+    
+    <update id="update" parameterType="BookBasket">
+    update bookbasket
+    <set>
+      <if test="expectedScore != null and expectedScore != ''">expected_score=#{expectedScore}</if>,
+      <if test="expectationReview != null and expectationReview != ''">expectation_review=#{expectationReview}</if>
+    </set>
+    </update>
+    
+    <delete id="delete" parameterType="int">
+      delete from bookbasket
+      where basket_book_no=#{no}
+    </delete>
+    
+  </mapper>
