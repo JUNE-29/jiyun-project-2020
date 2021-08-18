@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="june.project.book.dao.BookcaseDao">
+  
+  <resultMap type="Bookcase" id="BookcaseMap">
+  
+    <id column="read_book_no"     property="no"/>
+    <result column="book_titl"    property="bookTitle"/>
+    <result column="author"       property="author"/>
+    <result column="pub"          property="publisher"/>
+    <result column="isbn"         property="isbn"/>
+    <result column="datetime"     property="publishedDate"/>
+    <result column="conts"        property="content"/>
+    <result column="thumbnail"    property="thumbnail"/>
+    <result column="star_score"   property="starScore"/>
+    <result column="member_no"    property="memberNo"/>
+  
+    <association property="member" javaType="Member" >
+    <id column="member_no"  property="no"/>
+    <result column="name"   property="name"/>
+    <result column="email"  property="email"/>
+    </association>
+  
+  </resultMap>
+  
+   <insert id="insert" parameterType="Bookcase"
+   useGeneratedKeys="true" keyColumn="read_book_no" keyProperty="no">
+    insert into bookcase(
+      book_titl, 
+      author, 
+      pub, 
+      isbn, 
+      datetime, 
+      conts, 
+      thumbnail, 
+      star_score, 
+      member_no
+    )
+    values(
+      #{bookTitle},
+      #{author},
+      #{publisher},
+      #{isbn},
+      #{publishedDate},
+      #{content},
+      #{thumbnail},
+      #{starScore},
+      #{memberNo}
+      )
+    </insert>
+    
+    <select id="findAll" resultMap="BookcaseMap">
+      select
+        member_no,
+        read_book_no,
+        book_titl,
+        author,
+        isbn,
+        thumbnail,
+        star_score
+      from
+        bookcase
+      where
+        member_no=#{no}
+    </select>
+  
+    <select id="findByReadBookNo" resultMap="BookcaseMap" parameterType="int">
+    select
+      read_book_no,
+      book_titl,
+      author,
+      pub,
+      isbn,
+      datetime,
+      conts, 
+      thumbnail,
+      star_score
+    from 
+      bookcase
+    where 
+      read_book_no=#{no}
+    </select>
+    
+    <update id="updateStarScore" parameterType="Bookcase">
+    update bookcase
+    <set>
+      <if test="starScore != null and starScore != ''">star_score=#{starScore}</if> 
+    </set>
+    </update>
+    
+    <delete id="delete" parameterType="int">
+      delete from bookcase
+      where read_book_no=#{no}
+    </delete>
+    
+  </mapper>
