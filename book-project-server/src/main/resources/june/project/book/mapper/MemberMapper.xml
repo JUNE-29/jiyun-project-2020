@@ -6,26 +6,36 @@
 <mapper namespace="june.project.book.dao.MemberDao">
 
   <resultMap type="Member" id="MemberMap">
-    <id column="member_id" property="no"/>
+    <id column="member_no" property="no"/>
   
     <result column="name" property="name"/>
     <result column="email" property="email"/>
-    <result column="pwd" property="password"/>
+    <result column="password" property="password"/>
     <result column="cdt" property="registeredDate"/>
     <result column="photo" property="photo"/>
   </resultMap>
   
   <sql id="select1">
     select 
-    member_id, 
+    member_no, 
     name, 
     email, 
     cdt 
   </sql>
   
-  <insert id="insert" parameterType="Member">
-  insert into book_members(name, email, pwd, photo)
-  values(#{name}, #{email}, password(#{password}), #{photo})
+  <insert id="insert" parameterType="Member"
+  useGeneratedKeys="true" keyColumn="member_no" keyProperty="no">>
+  insert into book_members(
+    name, 
+    email, 
+    password, 
+    photo
+    )
+  values(
+    #{name},
+    #{email},
+    password(#{password}),
+    #{photo})
   </insert>
   
   <select id="findAll" resultMap="MemberMap">
@@ -35,10 +45,12 @@
   
   <select id="findByNo" resultMap="MemberMap" parameterType="int">
    <include refid="select1"/>,
-    pwd, 
+    password, 
     photo
-  from book_member
-  where member_id=#{no}
+  from 
+    book_member
+  where 
+    member_no=#{no}
   </select>
   
   <update id="update" parameterType="Member">
@@ -49,17 +61,17 @@
     <if test="password != null and password != ''">pwd=password(#{password}),</if> 
     <if test="photo != null and photo != ''">photo=#{photo}</if>
   </set>
-  where member_id=#{no}
+  where member_no=#{no}
   </update>
   
   <delete id="delete" parameterType="int">
-  delete from book_member where member_id=#{no}
+  delete from book_member where member_no=#{no}
   </delete>
   
   <select id="findByKeyword" resultMap="MemberMap" parameterType="string">
   <bind name="keywordPattern" value="'%' + _parameter + '%'"/>
   select 
-    member_id, 
+    member_no, 
     name, 
     email, 
     cdt
@@ -70,7 +82,7 @@
   
   <select id="findByEmailAndPassword" resultMap="MemberMap" parameterType="map">
   select 
-    member_id, 
+    member_no, 
     name, 
     email, 
     pwd, 
