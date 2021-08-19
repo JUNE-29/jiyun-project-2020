@@ -27,8 +27,13 @@ public class BookmarkServiceImpl implements BookmarkService {
   }
 
   @Override
-  public Bookmark get(int no) throws Exception {
-    return bookmarkDao.findByNo(no);
+  public Bookmark getBookcaseNo(int no) throws Exception {
+    return bookmarkDao.findByBookcaseNo(no);
+  }
+
+  @Override
+  public Bookmark getBookBasketNo(int no) throws Exception {
+    return bookmarkDao.findByBookBasketNo(no);
   }
 
   @Override

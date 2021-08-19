@@ -6,13 +6,14 @@
   <mapper namespace="june.project.book.dao.BookmarkDao">
   
    <resultMap type="Bookmark" id="BookmarkMap">
-    <id column="bookmark_no" property="no"/>
-    <result column="bookmark_titl" property="title"/>
-    <result column="conts" property="content"/>
-    <result column="photo" property="photoFilePath"/>
-    <result column="bookmark_cdt" property="date"/>
-    <result column="member_no" property="memberNo"/>
-    <result column="book_no" property="bookNo"/>
+    <id column="bookmark_no"        property="no"/>
+    <result column="bookmark_titl"  property="title"/>
+    <result column="conts"          property="content"/>
+    <result column="photo"          property="photoFilePath"/>
+    <result column="bookmark_cdt"   property="date"/>
+    <result column="read_book_no"   property="ReadBookNo"/>
+    <result column="basket_book_no" property="BasketBookNo"/>
+    <result column="member_no"      property="memberNo"/>
   
   <association property="member" javaType="Member" >
     <id column="member_no" property="no"/>
@@ -20,31 +21,43 @@
     <result column="email" property="email"/>
   </association>
   
-  <association property="books" javaType="Books">
-  <id column="book_no" property="no"/>
-  <result column="book_titl" property="bookTitle"/>
-  <result column="book_author" property="author"/>
-  <result column="pub" property="publisher"/>
-  <result column="isbn" property="isbn"/>
-  <result column="thumbnail" property="thumbnail"/>
-  <result column="score" property="score"/>
-  <result column="bookboard_no" property="bookboardNo"/>
+  <association property="bookBasket" javaType="BookBasket">
+    <id column="basket_book_no"       property="no"/>
+    <result column="book_titl"        property="bookTitle"/>
+    <result column="author"           property="author"/>
+    <result column="pub"              property="publisher"/>
+    <result column="isbn"             property="isbn"/>
+    <result column="thumbnail"        property="thumbnail"/>
+    <result column="expected_score"   property="expectedScore"/>
   </association>
+  
+  <association property="bookcase"  javaType="Bookcase">
+    <id column="read_book_no"         property="no"/>
+    <result column="book_titl"        property="bookTitle"/>
+    <result column="author"           property="author"/>
+    <result column="pub"              property="publisher"/>
+    <result column="isbn"             property="isbn"/>
+    <result column="thumbnail"        property="thumbnail"/>
+    <result column="star_score"       property="starScore"/>
+  </association>
+  
   </resultMap>
   
   <insert id="insert" parameterType="Bookmark"
    useGeneratedKeys="true" keyColumn="bookmark_no" keyProperty="no">
     insert into bookmark(
       member_no,
-      book_no,
+      basket_book_no,
+      read_book_no,
       bookmark_titl, 
       conts, 
       photo,
-      date
+      bookmark_cdt
       ) 
     values(
       #{memberNo},
-      #{bookNo},
+      #{BasketBookNo},
+      #{ReadBookNo},
       #{title},
       #{content},
       #{photoFilePath},
@@ -54,44 +67,57 @@
   
   <select id="findAll" resultMap="BookmarkMap" parameterType="map">
     select
-      bm.member_no,
-      bm.book_no,
-      bm.bookmark_titl,
-      bm.conts,
-      bm.photo,
-      DATE_FORMAT(bookmark_cdt, "%Y-%m-%d") as bookmark_cdt,
-      bk.book_titl,
-      bk.book_author,
-      bk.isbn,
-      bk.thumbnail,
-      bk.score,
-      bk.bookboard_no
+      member_no,
+      bookmark_titl,
+      conts,
+      photo,
+      DATE_FORMAT(bookmark_cdt, "%Y-%m-%d") as bookmark_cdt
     from 
-     bookmark bm
-    join books bk on bm.book_no=bk.book_no 
+     bookmark
     where
-      bm.member_no=#{memberNo}
+     member_no=#{memberNo}
     order by
       bookmark_no desc
   </select>
   
-  <select id="findByNo" resultMap="BookmarkMap" parameterType="int">
+  <select id="findByBookcaseNo" resultMap="BookmarkMap" parameterType="int">
     select
       bm.member_no,
-      bm.book_no,
+      bm.read_book_no,
       bm.bookmark_titl,
       bm.conts,
       bm.photo,
       DATE_FORMAT(bookmark_cdt, "%Y-%m-%d") as bookmark_cdt,
-      bk.book_titl,
-      bk.book_author,
-      bk.isbn,
-      bk.thumbnail,
-      bk.score
+      bc.book_titl,
+      bc.author,
+      bc.isbn,
+      bc.thumbnail,
+      bc.star_score
     from 
       bookmark bm
-      join books bk on bm.book_no=bk.book_no
-    where bm.bookmark_no=#{no}
+      join bookcase bc on bm.read_book_no=bc.read_book_no
+    where 
+      bm.bookmark_no=#{no}
+  </select>
+  
+  <select id="findByBookBasketNo" resultMap="BookmarkMap" parameterType="int">
+    select
+      bm.member_no,
+      bm.basket_book_no,
+      bm.bookmark_titl,
+      bm.conts,
+      bm.photo,
+      DATE_FORMAT(bookmark_cdt, "%Y-%m-%d") as bookmark_cdt,
+      bb.book_titl,
+      bb.author,
+      bb.isbn,
+      bb.thumbnail,
+      bb.expected_score
+    from 
+      bookmark bm
+      join bookbasket bb on bm.basket_book_no=bb.basket_book_no
+    where 
+      bm.bookmark_no=#{no}
   </select>
   
   <update id="update" parameterType="Bookmark">
@@ -106,7 +132,9 @@
   </update>
   
   <delete id="delete" parameterType="int">
-  delete from bookmark where bookmark_no=#{no}
+  delete from bookmark 
+  where
+   bookmark_no=#{no}
   </delete>
   
   <select id="findByKeyword" resultMap="BookmarkMap" parameterType="map">

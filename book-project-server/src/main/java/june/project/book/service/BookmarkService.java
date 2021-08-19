@@ -8,13 +8,15 @@ public interface BookmarkService {
 
   int add(Bookmark bookmark) throws Exception;
 
-  Bookmark get(int no) throws Exception;
+  List<Bookmark> list() throws Exception;
+
+  Bookmark getBookcaseNo(int no) throws Exception;
+
+  Bookmark getBookBasketNo(int no) throws Exception;
 
   int update(Bookmark bookmark) throws Exception;
 
   int delete(int no) throws Exception;
-
-  List<Bookmark> list() throws Exception;
 
   List<Bookmark> search(HashMap<String, Object> params) throws Exception;
 
