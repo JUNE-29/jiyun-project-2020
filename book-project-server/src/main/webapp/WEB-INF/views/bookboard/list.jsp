@@ -12,22 +12,43 @@
   <hr>
   <p></p>
   
-<c:forEach items="${list}" var="item">
-  <h2>${item.title}(${item.count})</h2>
+    <h2>읽고 싶은 책</h2>
+  <table border='1'>
+  <tr>
+  <th>번호</th>
+  <th>도서명</th>
+  <th>썸네일</th>
+  <th>기대점수</th>
+  </tr>
   
-    <c:choose>
-   <c:when test="${item.books.bookboardNo eq 1}">
-    <c:forEach items="${BookBoardNo1}" var="bookboard">
-     ${bookboard.no}
-     ${bookboard.thumbnail}
-     ${bookboard.bookTitle}
-     </c:forEach>
-   </c:when>
-   <c:when test="${item.no eq 2}">
-     ${BookBoardNo2.no}
-     ${BookBoardNo2.thumbnail}
-     ${BookBoardNo2.bookTitle}
-   </c:when>
-  </c:choose>
-</c:forEach>
+  <c:forEach items="${bookBasketList}" var="basket">
+  <tr>
+    <td>${basket.no}</td>
+    <td>${basket.bookTitle}</td>
+    <td>${basket.thumbnail}</td>
+    <td>${basket.expectedScore}</td>
+  </tr>
+  </c:forEach>
+  </table>
+  
+  
+  
+   <h2>읽은 책</h2>
+  <table border='1'>
+  <tr>
+  <th>번호</th>
+  <th>도서명</th>
+  <th>썸네일</th>
+  <th>별점</th>
+  </tr>
+  
+  <c:forEach items="${bookcaseList}" var="bookcase">
+  <tr>
+    <td>${bookcase.no}</td>
+    <td>${bookcase.bookTitle}</td>
+    <td>${bookcase.thumbnail}</td>
+    <td>${bookcase.score}</td>
+  </tr>
+  </c:forEach>
+  </table>
 

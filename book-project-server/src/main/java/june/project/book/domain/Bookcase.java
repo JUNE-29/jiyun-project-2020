@@ -14,7 +14,7 @@ public class Bookcase implements Serializable {
   private String publishedDate;
   private String content;
   private String thumbnail;
-  private int starScore;
+  private int score;
 
   private int memberNo;
 
@@ -24,8 +24,8 @@ public class Bookcase implements Serializable {
   public String toString() {
     return "Bookcase [no=" + no + ", bookTitle=" + bookTitle + ", author=" + author + ", publisher="
         + publisher + ", isbn=" + isbn + ", publishedDate=" + publishedDate + ", content=" + content
-        + ", thumbnail=" + thumbnail + ", score=" + starScore + ", memberNo=" + memberNo
-        + ", member=" + member + "]";
+        + ", thumbnail=" + thumbnail + ", score=" + score + ", memberNo=" + memberNo + ", member="
+        + member + "]";
   }
 
 
@@ -96,11 +96,11 @@ public class Bookcase implements Serializable {
   }
 
   public int getScore() {
-    return starScore;
+    return score;
   }
 
   public void setScore(int score) {
-    this.starScore = score;
+    this.score = score;
   }
 
   public int getMemberNo() {
@@ -133,7 +133,7 @@ public class Bookcase implements Serializable {
     result = prime * result + no;
     result = prime * result + ((publishedDate == null) ? 0 : publishedDate.hashCode());
     result = prime * result + ((publisher == null) ? 0 : publisher.hashCode());
-    result = prime * result + starScore;
+    result = prime * result + score;
     result = prime * result + ((thumbnail == null) ? 0 : thumbnail.hashCode());
     return result;
   }
@@ -186,7 +186,7 @@ public class Bookcase implements Serializable {
         return false;
     } else if (!publisher.equals(other.publisher))
       return false;
-    if (starScore != other.starScore)
+    if (score != other.score)
       return false;
     if (thumbnail == null) {
       if (other.thumbnail != null)

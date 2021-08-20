@@ -15,7 +15,7 @@
     <result column="datetime"     property="publishedDate"/>
     <result column="conts"        property="content"/>
     <result column="thumbnail"    property="thumbnail"/>
-    <result column="star_score"   property="starScore"/>
+    <result column="star_score"   property="score"/>
     <result column="member_no"    property="memberNo"/>
   
     <association property="member" javaType="Member" >
@@ -64,7 +64,7 @@
       from
         bookcase
       where
-        member_no=#{no}
+        member_no=1
     </select>
   
     <select id="findByReadBookNo" resultMap="BookcaseMap" parameterType="int">

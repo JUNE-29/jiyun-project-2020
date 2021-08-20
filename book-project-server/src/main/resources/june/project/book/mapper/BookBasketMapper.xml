@@ -67,7 +67,7 @@
       from
         bookbasket
       where
-        member_no=#{no}
+        member_no=1
     </select>
   
     <select id="findByBasketBookNo" resultMap="BookBasketMap" parameterType="int">
