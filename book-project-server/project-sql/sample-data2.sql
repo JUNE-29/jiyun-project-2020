@@ -32,6 +32,14 @@ values(1, '시선으로부터,', '정세랑', '문학동네', 9788954672214, '20
 폭넓은 작품 세계로 우리에게 늘 새로운 놀라움을 선사했던 정세랑.',
 'thumnail03.jpg', 4, '기대된다', 2);
 
+insert into bookBasket(basket_book_no, book_titl, author, pub, isbn, datetime, conts, thumbnail, 
+expected_score, expectation_review, member_no)
+values(2, '지구 끝의 온실,', '김초엽', '자이언트북스', 9791191824001, '2021-08-18', 
+' 김초엽 첫 장편소설, 모두가 간절히 기다려온 이야기 
+이미 폭넓은 독자층을 형성하며 열렬한 사랑을 받고 있는 김초엽 작가는 
+더스트로 멸망한 이후의 세계를 첫 장편소설의 무대로 삼았다. ',
+'thumnail04.jpg', 5, '완전 기대된다', 1);
+
 
 -- 책 기록함
 insert into bookmark(bookmark_no, bookmark_titl, conts, photo, bookmark_cdt,
