@@ -32,51 +32,51 @@ public class PhotoBoardController {
 
   @GetMapping("form")
   public void form(int bookmarkNo, Model model) throws Exception {
-    model.addAttribute("bookmark", bookmarkService.get(bookmarkNo));
+    //model.addAttribute("bookmark", bookmarkService.get(bookmarkNo));
   }
 
-  @PostMapping("add")
-  public String add(int bookmarkNo, String title, MultipartFile[] photoFiles) throws Exception {
-    Bookmark bookmark = bookmarkService.get(bookmarkNo);
-    if (bookmark == null) {
-      throw new Exception("북마크 번호가 유효하지 않습니다.");
-    }
+//  @PostMapping("add")
+//  public String add(int bookmarkNo, String title, MultipartFile[] photoFiles) throws Exception {
+//    Bookmark bookmark = bookmarkService.get(bookmarkNo);
+//    if (bookmark == null) {
+//      throw new Exception("북마크 번호가 유효하지 않습니다.");
+//    }
+//
+//    PhotoBoard photoBoard = new PhotoBoard();
+//    photoBoard.setTitle(title);
+//    photoBoard.setBookmark(bookmark);
+//
+//    ArrayList<PhotoFile> photos = new ArrayList<>();
+//    String dirPath = servletContext.getRealPath("/upload/photoboard");
+//    for (MultipartFile photoFile : photoFiles) {
+//      if (photoFile.getSize() <= 0) {
+//        continue;
+//      }
+//      String filename = UUID.randomUUID().toString();
+//      photoFile.transferTo(new File(dirPath + "/" + filename));
+//      photos.add(new PhotoFile().setFilePath(filename));
+//    }
+//
+//    if (photos.size() == 0) {
+//      throw new Exception("최소 한 개의 사진 파일을 등록해야 합니다.");
+//    }
+//
+//    photoBoard.setFiles(photos);
+//    photoBoardService.add(photoBoard);
+//
+//    return "redirect:list?bookmarkNo=" + bookmarkNo;
+//  }
 
-    PhotoBoard photoBoard = new PhotoBoard();
-    photoBoard.setTitle(title);
-    photoBoard.setBookmark(bookmark);
-
-    ArrayList<PhotoFile> photos = new ArrayList<>();
-    String dirPath = servletContext.getRealPath("/upload/photoboard");
-    for (MultipartFile photoFile : photoFiles) {
-      if (photoFile.getSize() <= 0) {
-        continue;
-      }
-      String filename = UUID.randomUUID().toString();
-      photoFile.transferTo(new File(dirPath + "/" + filename));
-      photos.add(new PhotoFile().setFilePath(filename));
-    }
-
-    if (photos.size() == 0) {
-      throw new Exception("최소 한 개의 사진 파일을 등록해야 합니다.");
-    }
-
-    photoBoard.setFiles(photos);
-    photoBoardService.add(photoBoard);
-
-    return "redirect:list?bookmarkNo=" + bookmarkNo;
-  }
-
-  @GetMapping("list")
-  public void list(int bookmarkNo, Model model) throws Exception {
-
-    Bookmark bookmark = bookmarkService.get(bookmarkNo);
-    if (bookmark == null) {
-      throw new Exception("번호가 유효하지 않습니다.");
-    }
-    model.addAttribute("bookmark", bookmark);
-    model.addAttribute("list", photoBoardService.listBookmarkPhoto(bookmarkNo));
-  }
+//  @GetMapping("list")
+//  public void list(int bookmarkNo, Model model) throws Exception {
+//
+//    Bookmark bookmark = bookmarkService.get(bookmarkNo);
+//    if (bookmark == null) {
+//      throw new Exception("번호가 유효하지 않습니다.");
+//    }
+//    model.addAttribute("bookmark", bookmark);
+//    model.addAttribute("list", photoBoardService.listBookmarkPhoto(bookmarkNo));
+//  }
 
   @GetMapping("detail")
   public void detail(int no, Model model) throws Exception {

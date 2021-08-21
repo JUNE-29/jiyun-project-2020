@@ -36,7 +36,7 @@ public class BookmarkController {
 
   @GetMapping("detail")
   public void detail(int no, Model model) throws Exception {
-    model.addAttribute("bookmark", bookmarkService.get(no));
+    // model.addAttribute("bookmark", bookmarkService.get(no));
   }
 
   @PostMapping("update")
