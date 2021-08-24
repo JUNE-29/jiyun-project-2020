@@ -58,4 +58,7 @@ public class BookBoardController {
 //      throw new Exception("번호가 유효하지 않습니다.");
 //   }
 //  }
+  
+  @GetMapping("search")
+  public void search() {}
 }

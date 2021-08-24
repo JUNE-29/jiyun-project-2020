@@ -1,14 +1,10 @@
-<%@page import="june.project.book.domain.BookBoard" %>
 <%@page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-  <h1>검색</h1>
-  <input id="bookName" value="" type="text">
-  <button id="search">검색</button>
-  
+  <img onclick="location.href='search'" src='${pageContext.servletContext.contextPath}/upload/bookboard/searchImage.png' height='22px'>
   <hr>
   <p></p>
   
