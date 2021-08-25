@@ -18,9 +18,9 @@ $(document).ready(function() {
 	        console.log(msg.documents[i].title);
 	        console.log(msg.documents[i].authors);
 	        $("#bookList").append(
-	        		"<img src='"+ msg.documents[i].thumbnail + "'/>"
+	        		"<li> <img src='"+ msg.documents[i].thumbnail + "'/>"
 	        		+ "<strong>"+ msg.documents[i].title + "</strong>"
-	        		+ msg.documents[i].authors
+	        		+ msg.documents[i].authors + "</li> <hr>"
 	        );
 	    	}
 	      });
