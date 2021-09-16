@@ -1,6 +1,6 @@
 package june.project.book.web;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,17 +67,24 @@ public class BookBoardController {
   public void searchDetail(String authors, String contents, String datetime, String isbn,
       String publisher, String thumbnail, String title, Model model) {
 
-    // System.out.printf("%s, %s, %s, %s, %s, %s, %s", //
-    // authors, contents, datetime, isbn, publisher, thumbnail, title);
+    HashMap<String, String> bookInfo = new HashMap<String, String>();
 
-    ArrayList<String> bookInfo = new ArrayList<String>();
-    bookInfo.add(authors);
-    bookInfo.add(contents);
-    bookInfo.add(datetime);
-    bookInfo.add(isbn);
-    bookInfo.add(publisher);
-    bookInfo.add(thumbnail);
-    bookInfo.add(title);
+    bookInfo.put("authors", authors);
+    bookInfo.put("contents", contents);
+    bookInfo.put("datetime", datetime);
+    bookInfo.put("isbn", isbn);
+    bookInfo.put("publisher", publisher);
+    bookInfo.put("thumbnail", thumbnail);
+    bookInfo.put("title", title);
+
+    // ArrayList<String> bookInfo = new ArrayList<String>();
+    // bookInfo.add(authors);
+    // bookInfo.add(contents);
+    // bookInfo.add(datetime);
+    // bookInfo.add(isbn);
+    // bookInfo.add(publisher);
+    // bookInfo.add(thumbnail);
+    // bookInfo.add(title);
 
     System.out.println(bookInfo);
 

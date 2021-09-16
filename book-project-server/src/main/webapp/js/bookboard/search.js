@@ -27,38 +27,44 @@ function bookInfo(bookNo) {
 	
 	switch (bookNo) {
 	case 0 :
-		console.log(searchList[0]);
 		bookDetailInfo = searchList[0];
 		bookDetail(bookDetailInfo) 
 		break;
 	case 1 :
-		console.log(searchList[1]);
 		bookDetailInfo = searchList[1];
 		bookDetail(bookDetailInfo) 
 		break;
 	case 2 :
 		console.log(searchList[2]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 3 :
 		console.log(searchList[3]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 4 :
 		console.log(searchList[4]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 5 :
 		console.log(searchList[5]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 6 :
 		console.log(searchList[6]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 7 :
 		console.log(searchList[7]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 8 :
 		console.log(searchList[8]);
+		bookDetail(bookDetailInfo) 
 		break;
 	case 9 :
 		console.log(searchList[9]);
+		bookDetail(bookDetailInfo) 
 		break;
 	}
 }
