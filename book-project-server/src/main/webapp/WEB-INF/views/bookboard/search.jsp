@@ -3,6 +3,11 @@
     trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<style>
+ .hidden {
+  display: none;
+  }
+</style>
 
 <h2>검색</h2>
 <input id="bookName" value="" type="text">
@@ -12,3 +17,7 @@
   
   <ul id="bookList">
   </ul>
+  
+  <form id="searchResult" action='searchDetail' method='post' class="hidden">
+   hi
+  </form>
