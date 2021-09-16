@@ -77,17 +77,6 @@ public class BookBoardController {
     bookInfo.put("thumbnail", thumbnail);
     bookInfo.put("title", title);
 
-    // ArrayList<String> bookInfo = new ArrayList<String>();
-    // bookInfo.add(authors);
-    // bookInfo.add(contents);
-    // bookInfo.add(datetime);
-    // bookInfo.add(isbn);
-    // bookInfo.add(publisher);
-    // bookInfo.add(thumbnail);
-    // bookInfo.add(title);
-
-    System.out.println(bookInfo);
-
     model.addAttribute("bookInfo", bookInfo);
 
   }
